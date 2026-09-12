@@ -489,6 +489,15 @@ gmx mdrun -v -deffnm md_5ns
 
 ---
 
+## 📄 Preprint e publicação relacionada
+
+Este tutorial também serve como material suplementar do artigo
+relacionado a esta dinâmica molecular.
+
+!!! info "Em construção"
+
+    Preprint e publicação serão adicionados aqui assim que disponíveis.
+
 ## 📜 Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.
