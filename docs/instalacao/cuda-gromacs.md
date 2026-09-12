@@ -1,11 +1,14 @@
-# Workflow de Instalação Gromacs 2026.x com CUDA 13.x no Ubuntu 24.04 Noble Numbat
+# Workflow de Instalação Gromacs 2026.x com CUDA 13.x
 
 !!! info "Testado em"
 
-    - Distro: Ubuntu 24.04.4 (kernel 6.17)
+    **Ubuntu 24.04.4** (kernel 6.17)
+
     - GROMACS: 2026.3
     - CUDA: 13.2
     - Data: *a confirmar*
+
+    **Ubuntu 26.04** — :lucide-construction: em construção
 
 ![Workstation com GPU NVIDIA usada nos testes deste tutorial](../assets/instalacao/cuda-gromacs.png)
 
@@ -140,105 +143,113 @@ sudo apt install timeshift
 ---
 ## 🔎 Instalando CUDA 13.x
 
-Verifique a compatibilidade da GPU antes. Para CUDA 12 ou superior, requer arquitetura Maxwell ou superior.
-```bash
-lspci | grep -i nvidia
-```
+=== "Ubuntu 24.04"
 
-Remova todos os driver relacionados que tiver instalado:
-```bash
-sudo apt remove --autoremove --purge "*cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" "*cusolver*" "*cusparse*" "*gds-tools*" "*npp*" "*nvjpeg*" "nsight*" "*nvvm*" "*nvidia*"
-```
-```bash
-sudo apt autoremove --purge
-```
-
-Instale os pre-requisitos para CUDA:
-```bash
-sudo apt update
-sudo apt install "linux-headers-$(uname -r)" "linux-modules-extra-$(uname -r)"
-sudo apt install \
-    g++ \
-    freeglut3-dev \
-    build-essential \
-    ca-certificates \
-    software-properties-common \
-    dkms \
-    curl \
-    wget \
-    libx11-dev \
-    libxmu-dev \
-    libxi-dev \
-    libglu1-mesa-dev \
-    libfreeimage-dev \
-    libglfw3-dev
-```
-
-Adicionar o repositório oficial NVIDIA CUDA:
-```bash
-cd $HOME/Downloads
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
-```
-```bash
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-archive-keyring.gpg
-sudo mv cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
-```
-```bash
-echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/ /" | tee /etc/apt/sources.list.d/cuda-ubuntu2404-amd64.list
-```
-```bash
-sudo apt update
-```
-
-Para avaliar as versões de drivers e CUDA disponíveis:
-```bash
-apt search cuda-toolkit | grep -E "^cuda-toolkit"
-apt search cuda-drivers | grep -E "^cuda-drivers"
-apt search nvidia-driver | grep -E "^nvidia-driver-[0-9]+"
-```
-
-Instalação:
-```bash
-sudo apt install cuda-toolkit cuda-drivers libnccl2 libnccl-dev
-sudo apt install nvidia-gds
-```
-
-Para configurar o compilador NVCC, edite o `~/.bashrc` e adicione:
-```bash
-export CUDA_HOME=/usr/local/cuda
-export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-export PATH=$CUDA_HOME/bin:$PATH
-```
-```bash
-source ~/.bashrc
-sudo dkms autoinstall
-reboot
-```
-
-Para verificar a instalação, utilize:
-```bash
-nvidia-smi
-nvcc --version
-```
-
-!!! tip
-
-    Para remover, utilize:
-
+    Verifique a compatibilidade da GPU antes. Para CUDA 12 ou superior, requer arquitetura Maxwell ou superior.
     ```bash
-    sudo apt remove --purge "*cuda*" "*nvidia*" cuda-keyring
-    sudo apt purge && sudo apt autoremove && sudo apt autoclean
+    lspci | grep -i nvidia
+    ```
+
+    Remova todos os driver relacionados que tiver instalado:
+    ```bash
+    sudo apt remove --autoremove --purge "*cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" "*cusolver*" "*cusparse*" "*gds-tools*" "*npp*" "*nvjpeg*" "nsight*" "*nvvm*" "*nvidia*"
     ```
     ```bash
-    sudo rm -f /etc/apt/preferences.d/cuda-repository-pin-600
-    sudo rm -f /etc/apt/sources.list.d/cuda*.list
-    sudo rm -rf /var/cache/apt/*
-    sudo apt clean all
+    sudo apt autoremove --purge
+    ```
+
+    Instale os pre-requisitos para CUDA:
+    ```bash
     sudo apt update
-    sudo reboot
+    sudo apt install "linux-headers-$(uname -r)" "linux-modules-extra-$(uname -r)"
+    sudo apt install \
+        g++ \
+        freeglut3-dev \
+        build-essential \
+        ca-certificates \
+        software-properties-common \
+        dkms \
+        curl \
+        wget \
+        libx11-dev \
+        libxmu-dev \
+        libxi-dev \
+        libglu1-mesa-dev \
+        libfreeimage-dev \
+        libglfw3-dev
     ```
 
+    Adicionar o repositório oficial NVIDIA CUDA:
+    ```bash
+    cd $HOME/Downloads
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+    sudo dpkg -i cuda-keyring_1.1-1_all.deb
+    ```
+    ```bash
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-archive-keyring.gpg
+    sudo mv cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
+    ```
+    ```bash
+    echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/ /" | tee /etc/apt/sources.list.d/cuda-ubuntu2404-amd64.list
+    ```
+    ```bash
+    sudo apt update
+    ```
+
+    Para avaliar as versões de drivers e CUDA disponíveis:
+    ```bash
+    apt search cuda-toolkit | grep -E "^cuda-toolkit"
+    apt search cuda-drivers | grep -E "^cuda-drivers"
+    apt search nvidia-driver | grep -E "^nvidia-driver-[0-9]+"
+    ```
+
+    Instalação:
+    ```bash
+    sudo apt install cuda-toolkit cuda-drivers libnccl2 libnccl-dev
+    sudo apt install nvidia-gds
+    ```
+
+    Para configurar o compilador NVCC, edite o `~/.bashrc` e adicione:
+    ```bash
+    export CUDA_HOME=/usr/local/cuda
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+    export PATH=$CUDA_HOME/bin:$PATH
+    ```
+    ```bash
+    source ~/.bashrc
+    sudo dkms autoinstall
+    reboot
+    ```
+
+    Para verificar a instalação, utilize:
+    ```bash
+    nvidia-smi
+    nvcc --version
+    ```
+
+    !!! tip
+
+        Para remover, utilize:
+
+        ```bash
+        sudo apt remove --purge "*cuda*" "*nvidia*" cuda-keyring
+        sudo apt purge && sudo apt autoremove && sudo apt autoclean
+        ```
+        ```bash
+        sudo rm -f /etc/apt/preferences.d/cuda-repository-pin-600
+        sudo rm -f /etc/apt/sources.list.d/cuda*.list
+        sudo rm -rf /var/cache/apt/*
+        sudo apt clean all
+        sudo apt update
+        sudo reboot
+        ```
+
+
+=== "Ubuntu 26.04"
+
+    !!! warning "Em construção"
+
+        Conteúdo para Ubuntu 26.04 em breve.
 
 ---
 ## ⌚ Instalando LACT
@@ -326,48 +337,56 @@ export LD_LIBRARY_PATH="$HOME/plumed/lib:$LD_LIBRARY_PATH"
 export PLUMED_KERNEL="$HOME/plumed/lib/libplumedKernel.so"
 ```
 
-A partir de agora, você poderá seguir a documentação oficial [guia de instalação](https://manual.gromacs.org/current/install-guide/index.html).
-```bash
-cd $HOME/Downloads
-wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
-tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
-sudo mkdir build && cd build
-```
+=== "Ubuntu 24.04"
 
-Para compilar com Cmake (versão >=3.28):
-```bash
-cmake .. \
--DCMAKE_BUILD_TYPE=Release \
--DGMX_BUILD_OWN_FFTW=ON \
--DREGRESSIONTEST_DOWNLOAD=ON \
--DGMX_OPENMP=ON \
--DGMX_THREAD_MPI=ON \
--DCMAKE_C_FLAGS="-O3 -march=native -mtune=native" \
--DCMAKE_CXX_FLAGS="-O3 -march=native -mtune=native" \
--DGMX_GPU=CUDA \
--DGMX_GPU_FFT_LIBRARY=cuFFT \
--DCUDAToolkit_ROOT=/usr/local/cuda \
--DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
--DCMAKE_CUDA_ARCHITECTURES=native \
--DCMAKE_INSTALL_PREFIX=$HOME/gromacs-cuda-torch \
--DGMX_HWLOC=ON \
--DGMX_USE_HDF5=ON \
--DGMX_USE_PLUMED=ON \
--DGMX_USE_COLVARS=INTERNAL \
--DGMX_NNPOT=TORCH \
--DGMX_EXTERNAL_TINYXML2=ON \
--DGMX_EXTERNAL_ZLIB=ON \
--DCMAKE_PREFIX_PATH="$HOME/Downloads/libtorch;/usr/local/cuda"
-```
+    A partir de agora, você poderá seguir a documentação oficial [guia de instalação](https://manual.gromacs.org/current/install-guide/index.html).
+    ```bash
+    cd $HOME/Downloads
+    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
+    tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+    sudo mkdir build && cd build
+    ```
 
-Note que criei uma pasta chamada `gromacs-cuda-torch` para os arquivos compilados e indiquei com `-DCMAKE_INSTALL_PREFIX`, pois isso facilita a atualização do GROMACS no futuro.
+    Para compilar com Cmake (versão >=3.28):
+    ```bash
+    cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DREGRESSIONTEST_DOWNLOAD=ON \
+    -DGMX_OPENMP=ON \
+    -DGMX_THREAD_MPI=ON \
+    -DCMAKE_C_FLAGS="-O3 -march=native -mtune=native" \
+    -DCMAKE_CXX_FLAGS="-O3 -march=native -mtune=native" \
+    -DGMX_GPU=CUDA \
+    -DGMX_GPU_FFT_LIBRARY=cuFFT \
+    -DCUDAToolkit_ROOT=/usr/local/cuda \
+    -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
+    -DCMAKE_CUDA_ARCHITECTURES=native \
+    -DCMAKE_INSTALL_PREFIX=$HOME/gromacs-cuda-torch \
+    -DGMX_HWLOC=ON \
+    -DGMX_USE_HDF5=ON \
+    -DGMX_USE_PLUMED=ON \
+    -DGMX_USE_COLVARS=INTERNAL \
+    -DGMX_NNPOT=TORCH \
+    -DGMX_EXTERNAL_TINYXML2=ON \
+    -DGMX_EXTERNAL_ZLIB=ON \
+    -DCMAKE_PREFIX_PATH="$HOME/Downloads/libtorch;/usr/local/cuda"
+    ```
 
-Agora é o momento de compilar, checar e instalar:
-```bash
-make -j$(nproc)
-make check -j$(nproc)
-make install -j$(nproc)
-```
+    Note que criei uma pasta chamada `gromacs-cuda-torch` para os arquivos compilados e indiquei com `-DCMAKE_INSTALL_PREFIX`, pois isso facilita a atualização do GROMACS no futuro.
+
+    Agora é o momento de compilar, checar e instalar:
+    ```bash
+    make -j$(nproc)
+    make check -j$(nproc)
+    make install -j$(nproc)
+    ```
+
+=== "Ubuntu 26.04"
+
+    !!! warning "Em construção"
+
+        Conteúdo para Ubuntu 26.04 em breve.
 
 Para carregar a biblioteca e invocar o GROMACS:
 ```bash

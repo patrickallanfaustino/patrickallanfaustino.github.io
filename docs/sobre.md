@@ -38,8 +38,8 @@ CNPq Brazil areas: Exact and Earth Sciences > Chemistry > Physical Chemistry > M
 - Software suite molecular dynamics: Gromacs 2026.x and OpenMM 8.x
 
 ## :lucide-book-open: Publicações { #publicacoes }
-- Dissertação: [Dinâmica molecular da lipase em sistemas aquosos bifásicos baseados em líquidos iônicos](https://hdl.handle.net/11449/314012)
-- Seminário: [Simulação de Biomoléculas: dinâmica molecular básica](https://github.com/patrickallanfaustino/tutorials-md/blob/main/seminario_dm.pdf)
+- Dissertação de Mestrado: [Dinâmica molecular da lipase em sistemas aquosos bifásicos baseados em líquidos iônicos](https://hdl.handle.net/11449/314012)
+- Seminário de Doutorado: [Simulação de Biomoléculas: dinâmica molecular básica](https://github.com/patrickallanfaustino/tutorials-md/blob/main/seminario_dm.pdf)
 
 ## :lucide-wrench: Skills { #skills }
 
