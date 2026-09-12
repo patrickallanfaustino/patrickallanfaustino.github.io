@@ -17,7 +17,7 @@ nav = [
     { "gridUNESP" = "instalacao/gridunesp.md" },
   ] },
   { "Dinâmica molecular" = [
-    { "DM básica (1S0Q)" = "dinamica/md-easy.md" },
+    { "DM básica" = "dinamica/md-easy.md" },
     { "Análise de resultados" = "dinamica/md-analysis.md" },
     { "Imagens e vídeos" = "dinamica/md-visual.md" },
   ] },
