@@ -12,7 +12,6 @@ edit_uri = "edit/main/docs"
 nav = [
   { "Início" = "index.md" },
   { "Instalação" = [
-    { "Visão geral" = "instalacao/index.md" },
     { "GROMACS + CUDA" = "instalacao/cuda-gromacs.md" },
     { "GROMACS + ROCm" = "instalacao/rocm-acpp-gromacs.md" },
     { "gridUNESP" = "instalacao/gridunesp.md" },
