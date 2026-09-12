@@ -4,7 +4,7 @@ message: "Se você usou este material, cite-o como abaixo."
 type: software
 authors:
   - family-names: "Faustino"
-    given-names: "Patrick Allan dos Santos"
+    given-names: "Patrick Allan Santos"
     orcid: "https://orcid.org/0000-0002-9323-2489"
     affiliation: "Universidade Estadual Paulista (UNESP)"
 doi: "10.5281/zenodo.22729510"
