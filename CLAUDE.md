@@ -1,4 +1,4 @@
-# Site de tutoriais de dinâmica molecular e QM/MM
+# Documentação sobre Química Biofísica Computacional
 
 Site estático em Zensical, publicado em patrickallanfaustino.github.io.
 Conteúdo em português do Brasil, público-alvo: alunos de iniciação científica e de pós-graduação começando em simulação de biomoléculas.

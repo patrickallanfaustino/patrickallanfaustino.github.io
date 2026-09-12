@@ -1,0 +1,28 @@
+{
+  "title": "Documentação sobre Química Biofísica Computacional",
+  "description": "Documentação sobre simulação de dinâmica molecular de biomoléculas.",
+  "creators": [
+    {
+      "name": "Faustino, Patrick Allan dos Santos",
+      "affiliation": "Universidade Estadual Paulista (UNESP)",
+      "orcid": "0000-0002-9323-2489"
+    }
+  ],
+  "license": "CC-BY-4.0",
+  "upload_type": "software",
+  "language": "por",
+  "keywords": [
+    "dinâmica molecular",
+    "GROMACS",
+    "simulação computacional",
+    "biofísica",
+    "ensino"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://patrickallanfaustino.github.io/",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ]
+}

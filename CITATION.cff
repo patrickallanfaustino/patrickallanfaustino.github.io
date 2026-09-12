@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "Documentação sobre Química Biofísica Computacional"
+message: "Se você usou este material, cite-o como abaixo."
+type: software
+authors:
+  - family-names: "Faustino"
+    given-names: "Patrick Allan dos Santos"
+    orcid: "https://orcid.org/0000-0002-9323-2489"
+    affiliation: "Universidade Estadual Paulista (UNESP)"
+doi: "10.5281/zenodo.22729510"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22729510"
+    description: "DOI permanente (todas as versões)"
+  - type: doi
+    value: "10.5281/zenodo.22729511"
+    description: "DOI da versão v1.0.1"
+repository-code: "https://github.com/patrickallanfaustino/patrickallanfaustino.github.io"
+url: "https://patrickallanfaustino.github.io/"
+license: CC-BY-4.0
+version: "1.0.1"
+date-released: "2026-09-12"
+keywords:
+  - dinâmica molecular
+  - GROMACS
+  - simulação computacional
+  - biofísica
+  - ensino
