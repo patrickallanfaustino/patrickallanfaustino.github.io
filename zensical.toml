@@ -21,7 +21,7 @@ nav = [
     { "Análise de resultados" = "dinamica/md-analysis.md" },
     { "Imagens e vídeos" = "dinamica/md-visual.md" },
   ] },
-  { "Tese" = [
+  { "Doutorado" = [
     { "Pipeline de moléculas e ajustes" = "tese/pipeline-moleculas.md" },
   ] },
   { "Sobre" = "sobre.md" },
@@ -73,8 +73,8 @@ features = [
 # logo = "lucide/smile"
 
 [project.theme.font]
-text = "Roboto"
-code = "Roboto Mono"
+text = "IBM Plex Sans"
+code = "IBM Plex Mono"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme)"
@@ -84,16 +84,16 @@ toggle.name = "Switch to light mode"
 [[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
-primary = "teal"
-accent = "teal"
+primary = "white"
+accent = "light blue"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
-primary = "teal"
-accent = "teal"
+primary = "black"
+accent = "light blue"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to system preference"
 

@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22729510.svg)](https://doi.org/10.5281/zenodo.22729510)
 [![Build](https://img.shields.io/github/actions/workflow/status/patrickallanfaustino/patrickallanfaustino.github.io/docs.yml?label=build)](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/actions)
-[![Licença](https://img.shields.io/badge/licen%C3%A7a-CC%20BY%204.0-lightgrey?logo=creativecommons&logoColor=white)](https://creativecommons.org/licenses/by/4.0/)
+[![License](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?logo=creativecommons&logoColor=white)](https://creativecommons.org/licenses/by/4.0/)
 [![Site](https://img.shields.io/website?url=https%3A%2F%2Fpatrickallanfaustino.github.io%2F&label=site)](https://patrickallanfaustino.github.io/)
 [![Último commit](https://img.shields.io/github/last-commit/patrickallanfaustino/patrickallanfaustino.github.io)](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/commits/main)
 
@@ -37,20 +37,20 @@ CNPq Brazil areas: Exact and Earth Sciences > Chemistry > Physical Chemistry > M
 - 51.4 TFLOPS Go!
 - Software suite molecular dynamics: Gromacs 2026.x and OpenMM 8.x
 
-## :lucide-book-open: Publicações { #publicacoes }
-- Dissertação de Mestrado: [Dinâmica molecular da lipase em sistemas aquosos bifásicos baseados em líquidos iônicos](https://hdl.handle.net/11449/314012)
-- Seminário de Doutorado: [Simulação de Biomoléculas: dinâmica molecular básica](https://github.com/patrickallanfaustino/tutorials-md/blob/main/seminario_dm.pdf)
+## :lucide-book-open: Publications { #publications }
+- Master's Thesis: [Dinâmica molecular da lipase em sistemas aquosos bifásicos baseados em líquidos iônicos](https://hdl.handle.net/11449/314012)
+- PhD Seminar: [Simulação de Biomoléculas: dinâmica molecular básica](https://github.com/patrickallanfaustino/tutorials-md/blob/main/seminario_dm.pdf)
 
 ## :lucide-wrench: Skills { #skills }
 
 ![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ableton,anaconda,android,apache,arduino,apptainer,autocad,bash,bootstrap,chatgpt,claude,cmake,c,cs,cpp,css,cuda,deepseek,digitalocean,discord,docker,dreamweaver,excel,edge,facebook,ffmpeg,firefox,gemini,gromacs,git,gitbash,github,githubcopilot,githubpages,gitlab,googlecolab,gmail,html,jquery,julia,jupyter,latex,libreoffice,linkedin,linux,mariadb,markdown,matplotlib,mysql,mistral,notepadpp,nvidia,obs,numpy,octave,onedrive,outlook,openmm,pandas,perl,photoshop,php,powerpoint,powershell,putty,python,pytorch,scikitlearn,scipy,seaborn,scratch,sqlite,steam,terminal,teams,ubuntu,vim,visualstudio,vscode,wsl,x,word,windows&theme=light)
 
-## :lucide-quote: Como citar { #como-citar }
+## :lucide-quote: How to cite { #how-to-cite }
 
-Se este material foi útil para sua pesquisa ou estudo, cite conforme abaixo (veja também o [CITATION.cff](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/CITATION.cff) do repositório):
+If this material was useful for your research or studies, please cite it as below (see also the repository's [CITATION.cff](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/CITATION.cff)):
 
-FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.
+FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. Zenodo, 2026. DOI: 10.5281/zenodo.22729510. Available at: <https://doi.org/10.5281/zenodo.22729510>.
 
-## :lucide-scale: Licença { #licenca }
+## :lucide-scale: License { #license }
 
-Este conteúdo está licenciado sob [CC BY 4.0](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/LICENSE) (Creative Commons Attribution 4.0 International): você pode compartilhar e adaptar o material para qualquer fim, inclusive comercial, desde que dê o devido crédito.
+This content is licensed under [CC BY 4.0](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/LICENSE) (Creative Commons Attribution 4.0 International): you may share and adapt the material for any purpose, including commercially, as long as you give appropriate credit.
