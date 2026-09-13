@@ -11,7 +11,7 @@
 
 > Tutorial para compilar o GROMACS 2026.0 com suporte NNPOT-PyTorch (Redes Neurais) em GPU, utilizando ROCm 6.4 (AdaptiveCpp 25.x como opcional) no Ubuntu 24.04.4 Kernel 6.8.
 
-## 💻 Computador testado e pré-requisitos:
+## :lucide-laptop: Computador testado e pré-requisitos:
 - CPU Ryzen 7 2700X, Memória 2x16 GB DDR4, Chipset X470, GPU ASRock RX 6600 8 GB e Ubuntu 24.04.
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
@@ -33,7 +33,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt update && sudo apt upgrade
 ```
 
-Verifique também a versão do kernel (⚠️ versão = 6.8):
+Verifique também a versão do kernel (:lucide-triangle-alert: versão = 6.8):
 ```bash
 uname -r
 cat /etc/os-release
@@ -58,7 +58,7 @@ Verifique seu diretorio padrão `$HOME`, pois será o caminho utilizado para a m
 
 
 ---
-## 🔧 Instalando Timeshif
+## :lucide-wrench: Instalando Timeshif
 
 O [Timeshift](https://www.edivaldobrito.com.br/como-instalar-o-timeshift-no-ubuntu-linux-e-derivados/) é um software para criar backups. Recomendamos que seja criados backups para cada etapa completa. Para instalar o `Timeshift`, siga estas etapas:
 ```bash
@@ -85,7 +85,7 @@ sudo apt install timeshift
 
 
 ---
-## 🔎 Instalando ROCm 6.x
+## :lucide-search: Instalando ROCm 6.x
 
 Recomenda-se realizar todas as instalações na pasta `Downloads`. Vamos instalar o [ROCm 6.4](https://rocm.docs.amd.com/projects/install-on-linux/en/docs-6.4.3/install/install-methods/amdgpu-installer/amdgpu-installer-ubuntu.html).
 ```bash
@@ -153,7 +153,7 @@ A GPU deverá ser identificada nas informações. Caso não consiga, experimente
 
 
 ---
-## ⌚ Instalando LACT
+## :lucide-gauge: Instalando LACT
 
 O aplicativo [LACT](https://github.com/ilya-zlobintsev/LACT) é utilizado para controlar e realizar overclocking em GPU AMD, Intel e Nvidia em sistemas GNU/Linux.
 ```bash
@@ -175,7 +175,7 @@ sudo systemctl enable --now lactd
 
 
 ---
-## 🎏 Instalando Hardware Sensors Indicator
+## :lucide-thermometer: Instalando Hardware Sensors Indicator
 
 O aplicativo [HSI](https://github.com/alexmurray/indicator-sensors) é utilizado para monitorar a temperatura de CPU, GPU, Motherboard, etc. Recomenda-se a instalação pela Central de Aplicativos [Snap](https://snapcraft.io/indicator-sensors) do Ubuntu e configurar para inicialização automatica com monitoramento da CPU (Tctl).
 ```bash
@@ -184,7 +184,7 @@ sudo snap install indicator-sensors
 
 ---
 
-## 🔨 Instalando AdaptiveCpp 25.x (opcional)
+## :lucide-hammer: Instalando AdaptiveCpp 25.x (opcional)
 
 O [AdaptiveCpp 25.x](https://github.com/AdaptiveCpp/AdaptiveCpp) irá trabalhar em backend com `rocm`. Recomenda-se o uso da pasta `Downloads`. Para instalar:
 
@@ -230,7 +230,7 @@ acpp --version
 
 
 ---
-## 💎 Instalação do GROMACS 2026.x
+## :lucide-gem: Instalação do GROMACS 2026.x
 
 **LIBTORCH!** É possivel instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais. Verifique a versão mais recente. Utilize a pasta `Downloads`.
 ```bash
@@ -338,7 +338,7 @@ gmx -version
 
 
 ---
-## 🐍 Instalando ANACONDA e PyTorch
+## :simple-python: Instalando ANACONDA e PyTorch
 
 O [Anaconda](https://www.anaconda.com) é um importante pacote de bibliotecas Python voltados para o uso científico.
 ```bash
@@ -388,7 +388,7 @@ python3 -c "import torch; print(torch.__version__)"                        # ret
 
 ---
 
-## 💎 Instalação do OpenMM 8.x
+## :lucide-gem: Instalação do OpenMM 8.x
 
 O [OpenMM](https://openmm.org/) é outro software baseado em Python para simulação de dinâmica molecular. Para sua instalação, vamos criar um ambiente virtual e instalar via pip no diretório padrão `$HOME`.
 ```bash
@@ -416,7 +416,7 @@ python -m openmm.testInstallation
 Para remover o ambiente conda criado `conda env remove --name openmm-conda` e para listar todas os ambientes utilize `conda env list`.
 
 ---
-## 🧬 Instalando VMD e Pymol
+## :lucide-dna: Instalando VMD e Pymol
 
 O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação:
 ```bash
@@ -436,7 +436,7 @@ sudo snap install pymol-oss
 ```
 
 ---
-## 🧮 Instalando o Julia
+## :lucide-calculator: Instalando o Julia
 
 O [Julia](https://julialang.org/) é uma linguagem de programação voltada para cálculos científicos, similar ao Python. Para instalar:
 
@@ -454,13 +454,13 @@ Para atualizar, utilize no terminal `juliaup update`.
 
 ---
 
-### 🧪⚗️ *Boas simulações moleculares!* 🦠🧬
+### :lucide-flask-conical: *Boas simulações moleculares!*
 
 ---
-## 📚 Leitura complementar
+## :lucide-book-open: Leitura complementar
 
 - [Install workflow with AMD GPU support (Framework 16, Ubuntu 24.04, GPU: AMD Radeon RX 7700S)](https://gromacs.bioexcel.eu/t/install-workflow-with-amd-gpu-support-framework-16-ubuntu-24-04-gpu-amd-radeon-rx-7700s/10870)
 
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

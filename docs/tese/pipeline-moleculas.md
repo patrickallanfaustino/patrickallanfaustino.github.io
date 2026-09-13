@@ -8,7 +8,7 @@
 > Primeira etapa do projeto de doutorado: seleção, preparo e ajuste das
 > moléculas de interesse que serão utilizadas nas simulações subsequentes.
 
-## 📄 Preprint e publicação relacionada
+## :lucide-file-text: Preprint e publicação relacionada
 
 Este conteúdo também servirá como material suplementar do artigo
 relacionado a esta etapa da pesquisa.
@@ -17,6 +17,6 @@ relacionado a esta etapa da pesquisa.
 
     Preprint e publicação serão adicionados aqui assim que disponíveis.
 
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

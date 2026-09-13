@@ -1,4 +1,4 @@
-# Workflow de Instalação Gromacs 2026.x com CUDA 13.x
+# Workflow de Instalação GROMACS 2026.x com CUDA 13.x
 
 !!! info "Testado em"
 
@@ -6,24 +6,22 @@
 
     - GROMACS: 2026.3
     - CUDA: 13.2
-    - Data: *a confirmar*
 
-    **Ubuntu 26.04** — :lucide-construction: em construção
+    **Ubuntu 26.04** (kernel 7.0)
 
-![Workstation com GPU NVIDIA usada nos testes deste tutorial](../assets/instalacao/cuda-gromacs.png)
+    - GROMACS: 2026.3
+    - CUDA: 13.2
 
-> Tutorial para compilar o GROMACS 2026.3 com suporte NNPOT-PyTorch (Redes Neurais) em GPU, utilizando CUDA 13.2 no Ubuntu 24.04.4 Kernel 6.17.
+## :lucide-laptop: Computador testado e pré-requisitos:
+- Verificar minha [Workstation Home](../sobre.md).
 
-## 💻 Computador testado e pré-requisitos:
-- Verificar minha [Workstation](https://github.com/patrickallanfaustino).
+Antes de começar, verifique se você atende aos seguintes requisitos:
 
-Antes de começar, verifique se você atendeu aos seguintes requisitos:
-
-- Você tem uma máquina linux `Ubuntu 24.04` com instalação limpa e atualizado.
-- Você tem uma GPU série `Ada Lovelace`.
+- Máquina em Linux com distro Ubuntu com instalação limpa e atualizado.
+- GPU série Ada Lovelace.
 - Documentações [CUDA 13](https://docs.nvidia.com/cuda/index.html), [Drivers NVidia](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/introduction.html) e [GROMACS 2026.x](https://manual.gromacs.org/current/index.html).
 
-Você vai precisar atualizar e instalar pacotes em sua máquina:
+Atualizar e instalar pacotes em sua máquina:
 ```bash
 sudo apt update && sudo apt upgrade
 sudo apt autoremove && sudo apt autoclean
@@ -32,20 +30,13 @@ sudo apt install \
     libboost-all-dev \
     git \
     cmake \
-    cmake-curses-gui \
     software-properties-common \
     ca-certificates \
     gpg \
     wget
 ```
 
-Para adicionar ferramentas necessárias ou atualizar com versões mais recentes:
-```bash
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt update && sudo apt upgrade
-```
-
-Verifique também a versão do kernel (⚠️ versão = 6.8 ou 6.17):
+Verifique a versão do kernel e bibliotecas:
 ```bash
 uname -r
 cat /etc/os-release
@@ -54,18 +45,17 @@ g++ --version
 ldd --version
 ```
 
-Verifique seu diretorio padrão `$HOME`, pois será o caminho utilizado para a maioria das instalações e configurações. Explore!
-
 !!! tip
 
-    Para instalar o Kernel 6.8 GA (General Availability):
+    Para instalar o Kernel GA (General Availability):
     ```bash
     sudo apt install linux-image-generic
     ```
 
-    Para instalar o Kernel 6.17 HWE (Hardware Enablement):
+    Para instalar o Kernel HWE (Hardware Enablement):
     ```bash
-    sudo apt install --install-recommends linux-generic-hwe-24.04
+    sudo apt install --install-recommends linux-generic-hwe-24.04    # para Ubuntu 24.04
+    sudo apt install --install-recommends linux-generic-hwe-26.04    # para Ubuntu 26.04
     ```
 
     Para remover kernel antigos incompatíveis:
@@ -73,27 +63,13 @@ Verifique seu diretorio padrão `$HOME`, pois será o caminho utilizado para a m
     dpkg --list | egrep -i --color 'linux-image|linux-headers'
     ```
 
-    Para atualizar as versões do gcc e cmake (recomendado):
+    Para compilar o CMake atual, utilize o repositório oficial do Kitware:
     ```bash
-    sudo apt install gcc-15 g++-15
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100
-    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
-    sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-15 100
+    cd ~/Downloads
+    wget -O kitware-archive.sh https://apt.kitware.com/kitware-archive.sh
+    sudo bash kitware-archive.sh
+    sudo apt install cmake
     ```
-    ```bash
-
-    # Adicione a chave GPG do Kitware
-    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
-     gpg --dearmor - | \
-     sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-
-    # Adicione o repositório ao sources.list
-    echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ >$(lsb_release -cs) main" | \
-     sudo tee /etc/apt/sources.list.d/kitware.list
-
-    sudo apt update
-    ```
-
 
 Algumas configurações podem ajudar em sistemas dual boot:
 ```bash
@@ -103,25 +79,28 @@ sudo apt install ubuntu-restricted-extras
 # Conflitos de horários entre Windows e Ubuntu para casos de dualboot
 timedatectl set-local-rtc 1 --adjust-system-clock
 
-# Performance
-echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-
-# Gerenciamento de memória
-sudo apt install zram-config
-
 # Acesso ao disco NTFS do Windows
 sudo apt install ntfs-3g
 ```
 
 ---
-## 🔧 Instalando Timeshif
+## :lucide-wrench: Instalando Timeshif
+Software para criar snapshots do sistema e restaurar em caso de falhas. Para instalar:
 
-O [Timeshift](https://www.edivaldobrito.com.br/como-instalar-o-timeshift-no-ubuntu-linux-e-derivados/) é um software para criar backups. Recomendamos que seja criados backups para cada etapa completa. Para instalar o `Timeshift`, siga estas etapas:
-```bash
-sudo add-apt-repository ppa:teejee2008/timeshift
-sudo apt update
-sudo apt install timeshift
-```
+=== "Ubuntu 24.04"
+
+    ```bash
+    sudo add-apt-repository ppa:teejee2008/timeshift
+    sudo apt update
+    sudo apt install timeshift
+    ```
+
+=== "Ubuntu 26.04"
+
+    ```bash
+    sudo apt update
+    sudo apt install timeshift
+    ```
 
 !!! tip
 
@@ -141,7 +120,7 @@ sudo apt install timeshift
 
 
 ---
-## 🔎 Instalando CUDA 13.x
+## :lucide-search: Instalando CUDA 13.x
 
 === "Ubuntu 24.04"
 
@@ -252,7 +231,7 @@ sudo apt install timeshift
         Conteúdo para Ubuntu 26.04 em breve.
 
 ---
-## ⌚ Instalando LACT
+## :lucide-gauge: Instalando LACT
 
 O aplicativo [LACT](https://github.com/ilya-zlobintsev/LACT) é utilizado para controlar e realizar overclocking em GPU AMD, Intel e Nvidia em sistemas GNU/Linux.
 ```bash
@@ -273,7 +252,7 @@ sudo systemctl enable --now lactd
 
 
 ---
-## 🎏 Instalando Hardware Sensors Indicator
+## :lucide-thermometer: Instalando Hardware Sensors Indicator
 
 O aplicativo [HSI](https://github.com/alexmurray/indicator-sensors) é utilizado para monitorar a temperatura de CPU, GPU, Motherboard, etc. Recomenda-se a instalação pela Central de Aplicativos [Snap](https://snapcraft.io/indicator-sensors) do Ubuntu e configurar para inicialização automatica com monitoramento da CPU (Tctl).
 ```bash
@@ -283,7 +262,7 @@ indicator-sensors
 ```
 
 ---
-## 💎 Instalação do GROMACS 2026.x
+## :lucide-gem: Instalação do GROMACS 2026.x
 
 **LIBTORCH** É possivel instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais. Verifique a versão mais recente. Utilize a pasta `Downloads`.
 ```bash
@@ -400,7 +379,7 @@ gmx -version
 
 
 ---
-## 🐍 Instalando MINICONDA e PyTorch
+## :simple-python: Instalando MINICONDA e PyTorch
 
 O [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) é um importante pacote de bibliotecas Python voltados para o uso científico.
 ```bash
@@ -450,7 +429,7 @@ python3 -c "import torch; print(torch.__version__)"                        # ret
 
 ---
 
-## 💎 Instalação do OpenMM 8.x
+## :lucide-gem: Instalação do OpenMM 8.x
 
 O [OpenMM](https://openmm.org/) é outro software baseado em Python para simulação de dinâmica molecular. Para sua instalação, vamos criar um ambiente virtual e instalar via pip no diretório padrão `$HOME`.
 ```bash
@@ -478,7 +457,7 @@ python -m openmm.testInstallation
 Para remover o ambiente conda criado `conda env remove --name openmm` e para listar todas os ambientes utilize `conda env list`.
 
 ---
-## 🧬 Instalando VMD e Pymol
+## :lucide-dna: Instalando VMD e Pymol
 
 O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação:
 ```bash
@@ -500,7 +479,7 @@ conda install -c conda-forge pymol-open-source
 ```
 
 ---
-## 🧮 Instalando o Julia
+## :lucide-calculator: Instalando o Julia
 
 O [Julia](https://julialang.org/) é uma linguagem de programação voltada para cálculos científicos, similar ao Python. Para instalar:
 
@@ -513,7 +492,7 @@ curl -fsSL https://install.julialang.org | sh
 Para atualizar, utilize no terminal `juliaup update`. Para remover utilize `juliaup self uninstall`.
 
 ---
-## 🧰 Instalando ferramentas para topologias: Toolkit, OpenBabel, AmberTools/ACPYPE, CGenFF, LigParGen e Packmol.
+## :lucide-toolbox: Instalando ferramentas para topologias: Toolkit, OpenBabel, AmberTools/ACPYPE, CGenFF, LigParGen e Packmol.
 
 !!! note
 
@@ -582,7 +561,7 @@ acpype --version
 acpype -i ethanol.mol2               # exemplo de uso para uma molécula de etanol.
 ```
 
-[CGenFF](https://cgenff.com/) é um servidor web para gerar topologias de moléculas para o campo de força CHARMM36. É possivel obter as topologias e coordenadas diretamente no formato para Gromacs ou obter o arquivo `.str` para posterior conversão em ambiente. É necessário obter a molécula de interesse no formato `.mol2`. (⚠️ Verifique o suporte 32bits das bibliotecas do sistema!)
+[CGenFF](https://cgenff.com/) é um servidor web para gerar topologias de moléculas para o campo de força CHARMM36. É possivel obter as topologias e coordenadas diretamente no formato para Gromacs ou obter o arquivo `.str` para posterior conversão em ambiente. É necessário obter a molécula de interesse no formato `.mol2`. (:lucide-triangle-alert: Verifique o suporte 32bits das bibliotecas do sistema!)
 
 ```bash
 conda create --name cgenff python=3.7
@@ -636,7 +615,7 @@ pip install packmol
 
 ---
 
-## 🧰 Instalando ferramentas para análises: Alchemlyb/PyMBAR, MDAnalysis, MDTraj, PyEMMA e GMX_MMPBSA.
+## :lucide-toolbox: Instalando ferramentas para análises: Alchemlyb/PyMBAR, MDAnalysis, MDTraj, PyEMMA e GMX_MMPBSA.
 
 !!! note
 
@@ -705,13 +684,13 @@ gmx_MMPBSA_test -f $HOME/Documentos -n 16
 
 ---
 
-### 🧪⚗️ *Boas simulações moleculares!* 🦠🧬
+### :lucide-flask-conical: *Boas simulações moleculares!*
 
 ---
-## 📚 Leitura complementar
+## :lucide-book-open: Leitura complementar
 
 - [How to Install CUDA on Ubuntu](https://linuxcapable.com/how-to-install-cuda-on-ubuntu-linux/)
 
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

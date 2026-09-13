@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 90 90"
+   width="90"
+   height="90"
+   version="1.1"
+   id="svg19"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview19"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.6403846"
+     inkscape:cx="246.58851"
+     inkscape:cy="-2.133646"
+     inkscape:window-width="1853"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg19"
+     inkscape:export-bgcolor="#ffffff05" />
+  <defs
+     id="defs5">
+    <!-- Gradiente Tecnológico / Biofísico -->
+    <linearGradient
+       id="bioTechGrad"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#0284c7"
+         id="stop1" />
+      <!-- Azul Ciano / Computacional -->
+      <stop
+         offset="50%"
+         stop-color="#0d9488"
+         id="stop2" />
+      <!-- Verde Petróleo / Bio -->
+      <stop
+         offset="100%"
+         stop-color="#10b981"
+         id="stop3" />
+      <!-- Esmeralda -->
+    </linearGradient>
+    <!-- Gradiente para o texto PCK -->
+    <linearGradient
+       id="pckGrad"
+       x1="92.825729"
+       y1="62.807438"
+       x2="156.81511"
+       y2="62.807438"
+       gradientTransform="matrix(4.8184158,0,0,1.8487131,-340.95681,-168.42651)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#0f172a"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#1e293b"
+         id="stop5" />
+    </linearGradient>
+    <style
+       id="style5">
+      .node { fill: #0d9488; transition: all 0.3s ease; }
+      .bond { stroke: #0284c7; stroke-width: 2.2; stroke-linecap: round; opacity: 0.75; }
+      .grid-line { stroke: #94a3b8; stroke-dasharray: 2, 4; stroke-width: 1.2; opacity: 0.4; }
+      .pck-title { font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 54px; letter-spacing: 2px; }
+      .pck-sub { font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 5px; fill: #0d9488; text-transform: uppercase; }
+      
+      /* Compatibilidade com modo escuro no Zensical */
+      @media (prefers-color-scheme: dark) {
+        .pck-title { fill: #f8fafc !important; }
+        .grid-line { stroke: #475569; opacity: 0.6; }
+      }
+    </style>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#bioTechGrad"
+       id="linearGradient2"
+       x1="27.5"
+       y1="22.5"
+       x2="102.5"
+       y2="97.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#bioTechGrad"
+       id="linearGradient3"
+       x1="28.520411"
+       y1="23.08383"
+       x2="101.26927"
+       y2="95.832687"
+       gradientTransform="scale(0.9905187,1.0095721)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <!-- ================= ÍCONE / EMBLEMA BIOFÍSICO ================= -->
+  <g
+     transform="translate(-20,-15)"
+     id="g18"
+     inkscape:export-filename="logo2.svg"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <!-- Linhas de Matriz Computacional -->
+    <path
+       class="grid-line"
+       d="m 30,20 h 70 M 20,60 h 90 m -80,40 h 70"
+       id="path5" />
+    <path
+       class="grid-line"
+       d="m 35,15 v 90 M 65,15 v 90 M 95,15 v 90"
+       id="path6" />
+    <!-- Curvas de Hélice Molecular (Fita de DNA / Backbone de Proteína) -->
+    <path
+       d="m 30,25 c 30,0 40,70 70,70"
+       fill="none"
+       stroke="url(#bioTechGrad)"
+       stroke-width="5"
+       stroke-linecap="round"
+       id="path7"
+       style="stroke:url(#linearGradient2)" />
+    <path
+       d="M 30,95 C 60,95 70,25 100,25"
+       fill="none"
+       stroke="url(#bioTechGrad)"
+       stroke-width="3.5"
+       stroke-dasharray="4, 3"
+       stroke-linecap="round"
+       id="path8"
+       style="stroke:url(#linearGradient3)" />
+    <!-- Ligações Químicas / Conexões de Rede -->
+    <line
+       class="bond"
+       x1="42"
+       y1="40"
+       x2="88"
+       y2="80"
+       id="line8" />
+    <line
+       class="bond"
+       x1="65"
+       y1="60"
+       x2="65"
+       y2="60"
+       id="line9" />
+    <line
+       class="bond"
+       x1="42"
+       y1="80"
+       x2="88"
+       y2="40"
+       id="line10" />
+    <!-- Átomos / Nodos de Dados -->
+    <circle
+       class="node"
+       cx="30"
+       cy="25"
+       r="5.5"
+       fill="#0284c7"
+       id="circle10" />
+    <circle
+       class="node"
+       cx="100"
+       cy="95"
+       r="5.5"
+       fill="#10b981"
+       id="circle11" />
+    <circle
+       class="node"
+       cx="30"
+       cy="95"
+       r="4.5"
+       fill="#0d9488"
+       id="circle12" />
+    <circle
+       class="node"
+       cx="100"
+       cy="25"
+       r="4.5"
+       fill="#0284c7"
+       id="circle13" />
+    <circle
+       class="node"
+       cx="65"
+       cy="60"
+       r="6"
+       fill="#0f766e"
+       id="circle14" />
+    <circle
+       class="node"
+       cx="42"
+       cy="40"
+       r="3.5"
+       fill="#38bdf8"
+       id="circle15" />
+    <circle
+       class="node"
+       cx="88"
+       cy="80"
+       r="3.5"
+       fill="#34d399"
+       id="circle16" />
+    <circle
+       class="node"
+       cx="42"
+       cy="80"
+       r="3.5"
+       fill="#34d399"
+       id="circle17" />
+    <circle
+       class="node"
+       cx="88"
+       cy="40"
+       r="3.5"
+       fill="#38bdf8"
+       id="circle18" />
+  </g>
+  <!-- ================= TIPOGRAFIA ================= -->
+  <!-- Sigla PCK -->
+  <!-- Linha divisória técnica minimalista -->
+  <!-- Subtítulo -->
+</svg>

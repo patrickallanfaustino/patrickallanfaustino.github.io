@@ -11,10 +11,10 @@
 
 > Tutorial para criar contêiner com suporte ao uso de GPU CUDA no gridUNESP.
 
-⚠️ Antes de começar, leia a documentação do [gridUNESP](https://www.ncc.unesp.br/gridunesp/docs/v2/index.html) e documentações complementares [CUDA 13](https://docs.nvidia.com/cuda/index.html) e [GROMACS 2026.x](https://manual.gromacs.org/current/index.html).
+:lucide-triangle-alert: Antes de começar, leia a documentação do [gridUNESP](https://www.ncc.unesp.br/gridunesp/docs/v2/index.html) e documentações complementares [CUDA 13](https://docs.nvidia.com/cuda/index.html) e [GROMACS 2026.x](https://manual.gromacs.org/current/index.html).
 
 ---
-## 🔧 Criando o container com Apptainer
+## :lucide-wrench: Criando o container com Apptainer
 
 A tecnica de contêineres com apptainer, docker e outros softwares busca criar imagens e ambientes de sistemas com bibliotecas instaladas o qual o processamento é feito dentro do contêiner que se comunica com o host principal. Recentemente, o gridUNESP implementou a contêinirização em seus servidores.
 
@@ -156,7 +156,7 @@ sbatch build.sh
 
 
 ---
-## 💎 Dinâmicas moleculares no contêiner
+## :lucide-gem: Dinâmicas moleculares no contêiner
 
 Para a dinâmica, utilize os arquivos de exemplo [md1.sh](../assets/instalacao/gridunesp/md1.sh) e [run1.sh](../assets/instalacao/gridunesp/run1.sh).
 
@@ -208,7 +208,7 @@ sbatch run1.sh
 ```
 
 ---
-## 🧰 Dicas para gridUNESP
+## :lucide-toolbox: Dicas para gridUNESP
 
 ```bash
 ssh usuario@access.grid.unesp.br    # para acesso
@@ -233,9 +233,9 @@ sinfo -t idle        # nós que estão disponíveis.
 
 ---
 
-### 🧪⚗️ *Boas simulações moleculares!* 🦠🧬
+### :lucide-flask-conical: *Boas simulações moleculares!*
 
 ---
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

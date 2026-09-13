@@ -2,9 +2,9 @@
 
 > O objetivo deste tutorial é criar imagens e video com qualidade para publicações a partir da dinâmica molecular da tripsina pancreática bovina.
 >
-> Explore, colabore e estude! 😄 Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
+> Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-## 📖 Índice
+## :lucide-list: Índice
 
 - [Representação gráfica no VMD](#representacao-grafica-no-vmd)
 - [Visualização de trajetória no VMD](#visualizacao-de-trajetoria-no-vmd)
@@ -120,10 +120,10 @@ O video será salvo como `movie.mkv` e pode ser hospedado no YouTube ou qualquer
 
 ---
 
-### 🧪⚗️ *Boas simulações moleculares!* 🦠🧬
+### :lucide-flask-conical: *Boas simulações moleculares!*
 
 ---
 
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

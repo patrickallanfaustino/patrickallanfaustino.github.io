@@ -10,6 +10,6 @@
 
 Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-## 📜 Como citar
+## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.
