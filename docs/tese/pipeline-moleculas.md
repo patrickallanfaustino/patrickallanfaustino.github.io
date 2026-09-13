@@ -1,9 +1,20 @@
 # Pipeline das moléculas de interesse e ajustes
 
+!!! info "Diário do doutorado"
+
+    Esta página faz parte do acompanhamento das etapas do meu doutorado.
+
 !!! warning "Em construção"
 
-    Esta página faz parte do acompanhamento das etapas do doutorado e
-    ainda está sendo escrita.
+    Esta página ainda está sendo escrita.
+
+!!! info "Versões fixadas para reprodutibilidade"
+
+    Para o desenvolvimento do doutorado e a garantia da reprodutibilidade
+    científica dos dados, as versões do Ubuntu 26.04, GROMACS 2026.x e
+    demais bibliotecas utilizadas serão mantidas e não
+    atualizadas, a não ser que haja estrita necessidade para garantir a
+    confiabilidade dos dados.
 
 > Primeira etapa do projeto de doutorado: seleção, preparo e ajuste das
 > moléculas de interesse que serão utilizadas nas simulações subsequentes.

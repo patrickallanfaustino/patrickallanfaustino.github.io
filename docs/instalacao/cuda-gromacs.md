@@ -371,7 +371,7 @@ export PLUMED_KERNEL="$HOME/software/plumed/lib/libplumedKernel.so"
 
         Para instalar o Openblas com o CP2K, utilize `--with-openblas=install` e descubra o diretório de instalação do Openblas com `find ~/software/cp2k-2026.2/install -name "libopenblas.so"`. Utilize o diretório para configurar o GROMACS com `-DGMX_BLAS_USER=/path/to/openblas/lib/libopenblas.so` e `-DGMX_LAPACK_USER=/path/to/openblas/lib/libopenblas.so`.
 
-
+    Agora, instale o GROMACS 2026.x com suporte a CUDA e CP2K:
 
     ```bash
     cd ~/Downloads
@@ -466,316 +466,66 @@ export PLUMED_KERNEL="$HOME/software/plumed/lib/libplumedKernel.so"
     gmx -version
     ```
 
-
----
-## :simple-python: Instalando MINICONDA e PyTorch
-
-O [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) é um importante pacote de bibliotecas Python voltados para o uso científico.
-```bash
-cd $HOME/Downloads
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-source ~/.bashrc
-conda config --set auto_activate_base false
-conda info
-```
-
-Com os comandos acima será carregado no prompt (`source ~/.bashrc`) o conda `base`. Para desativar o carregamento automatico, utilizar `conda config --set auto_activate_base false`.
-
-!!! tip
-
-    Para atualizar o gerenciador de pacotes conda use `conda update conda`. Para atualizar as bibliotecas dentro de um ambiente `conda update --all` e para uma limpeza `conda clean --all -y`.
-
-
-!!! warning
-
-    Certifique de que a instalação será no diretório `$HOME/miniconda3` confirmando `yes` para todas as respostas. **NÃO UTILIZE `sudo`**.
-
-
-Agora, vamos criar um ambiente virtual e instalar o [Pytorch](https://pytorch.org/get-started/locally/). No diretório `$HOME`, crie um ambiente `gromacs-nnpot`:
-```bash
-cd $HOME
-sudo apt install python3-venv libjpeg-dev python3-dev python3-pip
-python3 -m venv gromacs-nnpot
-source $HOME/gromacs-nnpot/bin/activate
-python3 -m pip install --upgrade setuptools pip wheel
-pip3 install torch torchvision
-```
-
-Para testar:
-```bash
-python3 -c 'import torch' 2> /dev/null && echo 'Success' || echo 'Failure' # retorna Success
-python3 -c "import torch; print(torch.cuda.is_available())"                # retorna True
-python3 -c "import torch; print(torch.cuda.get_device_properties(0))"      # retorna informações GPU
-python3 -c "import torch; x = torch.rand(5, 3); print(x)"                  # retorna matriz
-python3 -c "import torch; print(torch.__version__)"                        # retorna a versão do Torch
-```
-
-!!! tip
-
-    Caso deseje desistalar utilize `pip3 uninstall <biblioteca>`, para atualizar `pip3 install --upgrade <biblioteca>` e para listar os pacotes instalados `pip3 list`.
-
-
 ---
 
 ## :lucide-gem: Instalação do OpenMM 8.x
 
-O [OpenMM](https://openmm.org/) é outro software baseado em Python para simulação de dinâmica molecular. Para sua instalação, vamos criar um ambiente virtual e instalar via pip no diretório padrão `$HOME`.
-```bash
-cd $HOME
-python3 -m venv openmm
-source $HOME/openmm/bin/activate
-pip3 install openmm[cuda13]
-```
+!!! warning "Atenção!"
 
-Para sair do ambiente criado, basta utilizar `deactivate`. Para verificar a instalação, onde será realizado teste com a Referência, CPU, HIP e OpenCL:
+    Certifique-se de ter o Miniconda instalado.
+
 ```bash
+conda create --name openmm
+conda activate openmm
+conda install -c conda-forge openmm openmmforcefields pdbfixer openmm-setup flask openmmtools pymbar
+
 python -m openmm.testInstallation
 ```
 
-!!! note
+!!! note "Dica:"
 
-    ***Extra:*** para compilar no Conda:
-    ```bash
-    conda create --name openmm
-    conda activate openmm
-    conda install -c conda-forge openmm openmmforcefields pdbfixer openmm-setup flask openmmtools pymbar
-    ```
-
-
-Para remover o ambiente conda criado `conda env remove --name openmm` e para listar todas os ambientes utilize `conda env list`.
+    Para atualizar utilize `conda update --all` e para listar os pacotes instalados `conda list`.
+    Para remover o ambiente conda criado `conda env remove --name openmm` e para listar todas os ambientes utilize `conda env list`.
 
 ---
-## :lucide-eye: Instalando VMD e Pymol
+## :lucide-eye: Instalando VMD
 
-O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação:
+O VMD permite visualizar moléculas e realizar análises. Para instalação:
 ```bash
-cd $HOME
+cd ~/software
 wget https://www.ks.uiuc.edu/Research/vmd/alpha/vmd-2.0.1a1.bin.LINUXAMD64.tar.gz
 tar xvzf vmd-2.0.1a1.bin.LINUXAMD64.tar.gz
 cd  vmd-2.0.1a1
-./configure
-cd src
-sudo make install -j$(nproc)
-vmd
 ```
 
-O [Pymol](https://www.pymol.org/) é outro software muito utilizado para visualização de moléculas:
+!!! note "Dica:"
+
+    Verifique o arquivo `configure.options` para configurar o VMD de acordo com sua máquina.
+    No arquivo `configure`, altere $install_bin_dir e $install_lib_dir para o diretório de instalação desejado. Por exemplo, para instalar em $HOME/software/vmd
+
 ```bash
-conda create -n pymol python=3.10
-conda activate pymol
-conda install -c conda-forge pymol-open-source
+./configure
+cd src
+make install -j$(nproc)
+
+vmd
 ```
 
 ---
 ## :lucide-calculator: Instalando o Julia
 
-O [Julia](https://julialang.org/) é uma linguagem de programação voltada para cálculos científicos, similar ao Python. Para instalar:
+O Julia é uma linguagem de programação voltada para cálculos científicos, similar ao Python. Para instalar:
 
 ```bash
-cd $HOME
-sudo apt install curl
+mkdir -p ~/software/julia
+cd ~/software/julia
 curl -fsSL https://install.julialang.org | sh
 ```
 
 Para atualizar, utilize no terminal `juliaup update`. Para remover utilize `juliaup self uninstall`.
 
 ---
-## :lucide-toolbox: Instalando ferramentas para topologias: Toolkit, OpenBabel, AmberTools/ACPYPE, CGenFF, LigParGen e Packmol.
 
-!!! note
-
-    A adoção de ambientes isolados visa assegurar a manutenção e mitigar incompatibilidades entre bibliotecas.
-
-
-**TOOLKIT**: é uma caixa de ferramenta com bibliotecas utilizadas em bioinformatica.
-
-```bash
-conda create --name mdtoolkit python=3.12
-
-conda activate mdtoolkit
-
-conda install -c conda-forge \
-rdkit openbabel py3dmol pillow \
-numpy scipy pandas matplotlib plotly seaborn scikit-learn \
-jupyterlab ipykernel notebook nglview watermark jupyterlab-language-pack-pt-BR \
-parmed panedr pyedr dssp pymbar alchemlyb statsmodels tqdm numba networkx ipympl pytest \
-pdbfixer openmm pdb2pqr propka biopython requests netcdf4 pyjuliapkg
-
-conda config --append channels salilab
-conda install -c salilab modeller
-```
-
-Para utilizar o openbabel:
-```bash
-obabel -ismi ethanol.smi -opdb -O ethanol.pdb --title ETHANOL --gen3d --minimize --sd --ff GAFF --log
-
-obabel -:'CCO' -ogro -O ethanol.gro --title ETHANOL --gen3d --minimize --sd --ff GAFF --log
-
-obabel -:"CC(=O)OC1=CC=CC=C1C(=O)O" -opdb -O aspirin.pdb --title ASPIRIN --gen3d --minimize --sd --ff GAFF --log
-
-obabel ethanol.gro -O ethanol.mol2
-
-obabel ethanol.gro -opdb -O ethanol.pdb
-```
-
-Temas para o jupyter notebook:
-```bash
-pip install theme-darcula
-pip install jupyterlab-theme-solarized-dark
-pip install jupyterlab-day
-pip install jupyterlab-solarized-light-theme
-```
-
-!!! note
-
-    Para utilizar o notebook `jupyter lab`.
-
-
-[AmberTools](https://ambermd.org/AmberTools.php) é uma coleção de programas gratuitos e de código aberto usados ​​para configurar, executar e analisar simulações moleculares.. Para instalar:
-
-```bash
-cd $HOME
-conda create --name acpype
-conda activate acpype
-conda install --channel conda-forge ambertools openbabel
-```
-
-Em conjunto com o AmberTools, o [ACPYPE](https://github.com/alanwilter/acpype) é um pacote em python para gerar topologias de moléculas. Para instalar e utilizar:
-
-```bash
-conda install -c conda-forge acpype
-acpype --version
-
-acpype -i ethanol.mol2               # exemplo de uso para uma molécula de etanol.
-```
-
-[CGenFF](https://cgenff.com/) é um servidor web para gerar topologias de moléculas para o campo de força CHARMM36. É possivel obter as topologias e coordenadas diretamente no formato para Gromacs ou obter o arquivo `.str` para posterior conversão em ambiente. É necessário obter a molécula de interesse no formato `.mol2`. (:lucide-triangle-alert: Verifique o suporte 32bits das bibliotecas do sistema!)
-
-```bash
-conda create --name cgenff python=3.7
-conda activate cgenff
-conda install networkx=2.3 numpy
-
-python cgenff_charmm2gmx_py3_nx2.py ETH ethanol.mol2 ethanol.str charmm36-jul2022.ff     # o campo de força deverá estar no mesmo diretório de trabalho.
-```
-
-[LigPargen](https://github.com/Isra3l/ligpargen/tree/main) é uma biblioteca desenvolvida para gerar topologias de moléculas para o campo de força OPLS. Faça o download do software [BOSS](https://traken.chem.yale.edu/software.html), descompacte em um diretório de trabalho.
-
-```bash
-sudo apt install csh
-export BOSSdir=PATH_TO_BOSS_DIRECTORY            # pode ser incluido no arquivo ~/.bashrc
-export PATH=$BOSSdir/scripts:$BOSSdir/exe:$PATH
-```
-
-Para criar o ambiente e instalar:
-
-```bash
-conda create --name ligpargen python=3.7
-conda activate ligpargen
-conda install -c conda-forge rdkit openbabel
-```
-```bash
-cd $HOME
-git clone https://github.com/Isra3l/ligpargen.git
-pip install -e ligpargen
-cd ligpargen
-python -m unittest test_ligpargen/test_ligpargen.py
-ligpargen -h
-```
-
-Para gerar topologia de moléculas, utilize:
-
-```bash
-ligpargen -s 'CCO' -n ethanol -p molecule -r ETH -c 0 -o 3 -cgen CM1A-LBCC -verbose -check
-
-ou
-
-ligpargen -s CC(=O)[O-] -n ethanol -p molecule -r CAR -c -1 -o 3 -cgen CM1A -verbose -check
-```
-
-[Packmol](https://m3g.github.io/packmol/) é uma biblioteca criada para construir configurações iniciais de sistemas complexos para simulação. Para instalar:
-```bash
-cd $HOME
-python3 -m venv packmol
-source $HOME/packmol/bin/activate
-pip install packmol
-```
-
----
-
-## :lucide-toolbox: Instalando ferramentas para análises: Alchemlyb/PyMBAR, MDAnalysis, MDTraj, PyEMMA e GMX_MMPBSA.
-
-!!! note
-
-    A adoção de ambientes isolados visa assegurar a manutenção e mitigar incompatibilidades entre bibliotecas.
-
-
-[Alchemlyb](https://github.com/alchemistry/alchemlyb) é uma biblioteca voltado para análises de energia livres altamente eficiente, utilizando aprendizagem de máquina nas análises. Para instalar:
-
-```bash
-conda create -n mbar
-conda activate mbar
-conda install -c conda-forge alchemlyb pymbar jax jaxlib seaborn "jaxlib=*=*cuda*"
-```
-
-[MDAnalysis](https://www.mdanalysis.org/) é "agnóstica" quanto ao formato de arquivo (lê GROMACS, Amber, CHARMM, NAMD, etc. sem precisar converter). É orientada a objetos, permitindo seleções de átomos muito complexas e poderosas. É excelente para escrever ferramentas de análise personalizadas, embora possa ser ligeiramente mais lenta que o MDTraj em cálculos massivos.
-
-```bash
-conda create --name mdanalysis
-conda activate mdanalysis
-conda install -c conda-forge mdanalysis waterdynamics mdaencore
-```
-
-[MDTraj](https://www.mdtraj.org/1.9.8.dev0/index.html) projetada para ser extremamente rápida e eficiente em memória, utiliza arrays do NumPy nativamente. É ideal para processar grandes volumes de dados (Big Data) e para converter formatos de trajetória. É frequentemente a escolha preferida para alimentar pipelines de Machine Learning devido à sua integração fácil com o ecossistema Scikit-learn/NumPy.
-
-```bash
-conda create --name mdtraj
-conda activate mdtraj
-conda install -c conda-forge mdtraj
-```
-
-[PyEMMA](http://emma-project.org/latest/) usada para analisar a cinética e a termodinâmica de sistemas moleculares. Ela pega dados de simulação (frequentemente processados via MDTraj) e ajuda a identificar estados metaestáveis, barreiras de energia e taxas de transição. É muito usada para entender folding de proteínas ou mudanças conformacionais complexas através de redução de dimensionalidade (TICA).
-
-```bash
-conda create --name pyemma
-conda activate pyemma
-conda install -c conda-forge pyemma
-```
-
-[gmx_MMPBSA](https://valdes-tresanco-ms.github.io/gmx_MMPBSA/dev/) utiliza os métodos MM/PBSA (Molecular Mechanics Poisson-Boltzmann Surface Area) e MM/GBSA para calculos de energias livres.
-
-```bash
-sudo apt install openmpi-bin libopenmpi-dev openssh-client
-conda create -n gmxMMPBSA python=3.11.8
-conda activate gmxMMPBSA
-conda install -c conda-forge "mpi4py=4.0.1" "ambertools<=23.6"
-conda install -c conda-forge numpy matplotlib scipy pandas seaborn
-python -m pip install "pyqt6==6.7.1" "parmed"
-python -m pip install gmx_MMPBSA
-
-gmx_MMPBSA --version
-```
-Para configurar o Autocompletion, edite no `.bashrc` e adicione:
-```bash
-export GMX_COMP_PATH=$HOME/anaconda3/envs/gmxMMPBSA/lib/python3.11/site-packages/GMXMMPBSA/GMXMMPBSA.sh
-
-chmod +x $GMX_COMP_PATH
-
-if [ -f "$GMX_COMP_PATH" ]; then
-    source "$GMX_COMP_PATH"
-fi
-```
-Para testar:
-```bash
-gmx_MMPBSA_test -f $HOME/Documentos -n 16
-```
-
----
-
-### :lucide-flask-conical: *Boas simulações moleculares!*
-
----
 ## :lucide-book-open: Leitura complementar
 
 - [How to Install CUDA on Ubuntu](https://linuxcapable.com/how-to-install-cuda-on-ubuntu-linux/)

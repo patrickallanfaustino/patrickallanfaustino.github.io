@@ -10,12 +10,6 @@ Tutoriais e workflows práticos de simulação de dinâmica molecular de biomol�
 
 **Site:** <https://patrickallanfaustino.github.io/>
 
-## Conteúdo
-
-- Instalação do GROMACS com CUDA, ROCm e gridUNESP
-- Dinâmica molecular básica, análise de resultados, imagens e vídeos
-- Acompanhamento das etapas do doutorado
-
 ## Como citar
 
 Veja [CITATION.cff](CITATION.cff) ou a seção [How to cite](https://patrickallanfaustino.github.io/sobre/#how-to-cite) do site.

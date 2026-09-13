@@ -5,7 +5,7 @@
 [![Último commit](https://img.shields.io/github/last-commit/patrickallanfaustino/patrickallanfaustino.github.io)](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/commits/main)
 
 <div align="center">
-    <img src="assets/fig.png" alt="protein">
+    <img src="assets/fig.png">
 </div>
 
 ## :lucide-graduation-cap: About Me { #about-me }

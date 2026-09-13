@@ -2,6 +2,10 @@
 
 # Documentação sobre Química Biofísica Computacional { #documentacao-sobre-quimica-biofisica-computacional }
 
+<div align="center">
+    <img src="assets/logo.svg">
+</div>
+
 Tutoriais e workflows práticos de simulação de dinâmica molecular de
 biomoléculas, voltados a quem está começando: alunos de iniciação
 científica e de pós-graduação.
@@ -17,6 +21,12 @@ Se você nunca instalou o GROMACS na sua máquina, comece pela seção
 
 Com o GROMACS instalado, siga para **Dinâmica molecular** e rode sua
 primeira simulação do início ao fim, com a [DM básica](dinamica/md-easy.md).
+
+## :lucide-graduation-cap: Acompanhamento do doutorado { #acompanhamento-do-doutorado }
+
+Este site também é um diário das etapas do meu
+doutorado. Acompanhe o progresso na seção **Doutorado**, começando pelo
+[Pipeline e ajustes](tese/pipeline-moleculas.md).
 
 ## :lucide-info: Sobre este material { #sobre-este-material }
 
