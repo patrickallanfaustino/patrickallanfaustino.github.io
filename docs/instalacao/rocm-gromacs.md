@@ -58,7 +58,7 @@ Verifique seu diretorio padrão `$HOME`, pois será o caminho utilizado para a m
 
 
 ---
-## :lucide-wrench: Instalando Timeshif
+## :lucide-history: Instalando Timeshif
 
 O [Timeshift](https://www.edivaldobrito.com.br/como-instalar-o-timeshift-no-ubuntu-linux-e-derivados/) é um software para criar backups. Recomendamos que seja criados backups para cada etapa completa. Para instalar o `Timeshift`, siga estas etapas:
 ```bash
@@ -85,7 +85,7 @@ sudo apt install timeshift
 
 
 ---
-## :lucide-search: Instalando ROCm 6.x
+## :simple-amd: Instalando ROCm 6.x
 
 Recomenda-se realizar todas as instalações na pasta `Downloads`. Vamos instalar o [ROCm 6.4](https://rocm.docs.amd.com/projects/install-on-linux/en/docs-6.4.3/install/install-methods/amdgpu-installer/amdgpu-installer-ubuntu.html).
 ```bash
@@ -116,7 +116,7 @@ sudo rocm-smi
 /opt/rocm/bin/hipconfig --full
 ```
 
-!!! warning
+!!! note
 
     Quando printar `rocminfo`, verificar o nome da placa que será apresentado como `gfx1032` (para RX 6600).
 
@@ -290,7 +290,7 @@ sudo cmake .. \
 
 Note que criei uma pasta chamada `gromacs-acpp-torch` para os arquivos compilados e indiquei com `-DCMAKE_INSTALL_PREFIX`, pois isso facilita a atualização do GROMACS no futuro.
 
-!!! note
+!!! warning
 
     **Meu Caso**: Atenção ao `-DHIPSYCL_TARGETS='hip:gfxABC'`, substitua com seus valores para a GPU.
 
@@ -313,7 +313,7 @@ gmx -version
     Você poderá editar o arquivo `$HOME/.bashrc` e adicionar o código `source $HOME/gromacs-hip-torch/bin/GMXRC`. Assim, toda vez que abrir o terminal carregara o GROMACS.
 
 
-!!! note
+!!! tip
 
     ***Extra:*** para compilar com suporte AdaptiveCpp e Torch (CPU):
     ```bash
@@ -403,7 +403,7 @@ Para sair do ambiente criado, basta utilizar `deactivate`. Para verificar a inst
 python -m openmm.testInstallation
 ```
 
-!!! note
+!!! tip
 
     ***Extra:*** para compilar no Conda com suporte Torch:
     ```bash
@@ -416,7 +416,7 @@ python -m openmm.testInstallation
 Para remover o ambiente conda criado `conda env remove --name openmm-conda` e para listar todas os ambientes utilize `conda env list`.
 
 ---
-## :lucide-dna: Instalando VMD e Pymol
+## :lucide-eye: Instalando VMD e Pymol
 
 O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação:
 ```bash

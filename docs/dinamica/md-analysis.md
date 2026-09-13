@@ -1,6 +1,6 @@
 # Análises de Resultados de Dinâmica Molecular
 
-!!! note "Página em construção"
+!!! warning "Página em construção"
 
     Este tutorial ainda está sendo escrito. Em breve você encontrará aqui o
     passo a passo para calcular RMSD, RMSF, DSSP, pontes de hidrogênio, SASA,

@@ -13,7 +13,7 @@
 Este conteúdo também servirá como material suplementar do artigo
 relacionado a esta etapa da pesquisa.
 
-!!! info "Em construção"
+!!! warning "Em construção"
 
     Preprint e publicação serão adicionados aqui assim que disponíveis.
 

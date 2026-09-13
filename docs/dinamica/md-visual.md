@@ -10,7 +10,7 @@
 - [Visualização de trajetória no VMD](#visualizacao-de-trajetoria-no-vmd)
 - [Criar video da dinâmica molecular com VMD](#criar-video-da-dinamica-molecular-com-vmd)
 
-## Representação gráfica no VMD
+## :lucide-eye: Representação gráfica no VMD
 O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação, verifique este repositório.
 
 Para carregar o arquivo de coordenadas no VMD:
@@ -57,7 +57,7 @@ File > Render > Start Rendering
 É possivel alterar o motor de renderização para `Tachyon (internal, in-memory rendering)` e renomear o arquivo juntamente com a extensão `.png` ou `.jpg`.
 
 
-## Visualização de trajetória no VMD
+## :lucide-route: Visualização de trajetória no VMD
 !!! note
 
     Após finalização da etapa de produção, é necessário ajustar as trajetórias `.xtc` ou `.trr` para a devida visualização no VMD. Esse procedimento não altera a dinâmica molecular.
@@ -84,10 +84,10 @@ Para carregar as coordenadas e trajetória no VMD:
 vmd md_5ns.gro md_noPBC.xtc
 ```
 
-## Criar video da dinâmica molecular com VMD
+## :lucide-video: Criar video da dinâmica molecular com VMD
 Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/IQGiznRc0Xo](https://youtu.be/IQGiznRc0Xo).
 
-!!! note
+!!! tip
 
     Crie uma pasta para salvar os snapshots de cada frame.
 

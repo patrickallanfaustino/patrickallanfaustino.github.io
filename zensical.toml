@@ -13,8 +13,9 @@ nav = [
   { "Início" = "index.md" },
   { "Instalação" = [
     { "GROMACS + CUDA" = "instalacao/cuda-gromacs.md" },
-    { "GROMACS + ROCm" = "instalacao/rocm-acpp-gromacs.md" },
+    { "GROMACS + ROCm" = "instalacao/rocm-gromacs.md" },
     { "gridUNESP" = "instalacao/gridunesp.md" },
+    { "Bibliotecas" = "instalacao/bibliotecas.md" },
   ] },
   { "Dinâmica molecular" = [
     { "DM básica" = "dinamica/md-easy.md" },
@@ -22,7 +23,7 @@ nav = [
     { "Imagens e vídeos" = "dinamica/md-visual.md" },
   ] },
   { "Doutorado" = [
-    { "Pipeline de moléculas e ajustes" = "tese/pipeline-moleculas.md" },
+    { "Pipeline e ajustes" = "tese/pipeline-moleculas.md" },
   ] },
   { "Sobre" = "sobre.md" },
 ]
@@ -36,7 +37,7 @@ extra_javascript = [
 [project.theme]
 # variant = "classic"
 custom_dir = "overrides"
-# favicon = "images/favicon.png"
+favicon = "assets/logo.svg"
 language = "pt-BR"
 features = [
   "announce.dismiss",
@@ -67,7 +68,7 @@ features = [
   # "toc.integrate",
 ]
 
-# logo = "assets/logo.png"
+logo = "assets/logo.svg"
 
 # [project.theme.icon]
 # logo = "lucide/smile"

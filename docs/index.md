@@ -12,7 +12,7 @@ Se você nunca instalou o GROMACS na sua máquina, comece pela seção
 **Instalação**, escolhendo o guia de acordo com sua GPU:
 
 - [GROMACS + CUDA](instalacao/cuda-gromacs.md) — GPUs NVIDIA
-- [GROMACS + ROCm](instalacao/rocm-acpp-gromacs.md) — GPUs AMD
+- [GROMACS + ROCm](instalacao/rocm-gromacs.md) — GPUs AMD
 - [gridUNESP](instalacao/gridunesp.md) — cluster HPC via contêiner Apptainer
 
 Com o GROMACS instalado, siga para **Dinâmica molecular** e rode sua

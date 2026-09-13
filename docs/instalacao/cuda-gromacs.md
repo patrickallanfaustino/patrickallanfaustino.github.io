@@ -1,19 +1,19 @@
-# Workflow de Instalação GROMACS 2026.x com CUDA 13.x
+# Instalação do GROMACS 2026.x e CUDA 13.x
 
 !!! info "Testado em"
 
     **Ubuntu 24.04.4** (kernel 6.17)
 
     - GROMACS: 2026.3
-    - CUDA: 13.2
+    - CUDA: 13.3
 
-    **Ubuntu 26.04** (kernel 7.0)
+    **Ubuntu 26.04.1** (kernel 7.0)
 
     - GROMACS: 2026.3
-    - CUDA: 13.2
+    - CUDA: 13.4
 
 ## :lucide-laptop: Computador testado e pré-requisitos:
-- Verificar minha [Workstation Home](../sobre.md).
+- Verificar minha [Workstation Home](../sobre#workstation-home).
 
 Antes de começar, verifique se você atende aos seguintes requisitos:
 
@@ -45,7 +45,7 @@ g++ --version
 ldd --version
 ```
 
-!!! tip
+!!! tip "Extra:"
 
     Para instalar o Kernel GA (General Availability):
     ```bash
@@ -84,8 +84,15 @@ sudo apt install ntfs-3g
 ```
 
 ---
-## :lucide-wrench: Instalando Timeshif
+## :lucide-history: Instalando Timeshif
 Software para criar snapshots do sistema e restaurar em caso de falhas. Para instalar:
+
+=== "Ubuntu 26.04"
+
+    ```bash
+    sudo apt update
+    sudo apt install timeshift
+    ```
 
 === "Ubuntu 24.04"
 
@@ -95,16 +102,9 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
     sudo apt install timeshift
     ```
 
-=== "Ubuntu 26.04"
+!!! tip "Extra:"
 
-    ```bash
-    sudo apt update
-    sudo apt install timeshift
-    ```
-
-!!! tip
-
-    Se desejar, instale o [GRUB CUSTOMIZER](https://www.edivaldobrito.com.br/grub-customizer-no-ubuntu/) para gerenciar o inicializador e [MAINLINE](https://www.edivaldobrito.com.br/como-instalar-o-ubuntu-mainline-kernel-installer-no-ubuntu-e-derivados/) para gerenciar o kernel instalado.
+    Se desejar, instale o GRUB CUSTOMIZER para gerenciar o inicializador e MAINLINE para gerenciar o kernel instalado.
 
     ```bash
     sudo add-apt-repository ppa:danielrichter2007/grub-customizer
@@ -118,11 +118,10 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
     sudo apt install mainline
     ```
 
-
 ---
-## :lucide-search: Instalando CUDA 13.x
+## :simple-nvidia: Instalando CUDA 13.x
 
-=== "Ubuntu 24.04"
+=== "Ubuntu 26.04"
 
     Verifique a compatibilidade da GPU antes. Para CUDA 12 ou superior, requer arquitetura Maxwell ou superior.
     ```bash
@@ -131,9 +130,7 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
 
     Remova todos os driver relacionados que tiver instalado:
     ```bash
-    sudo apt remove --autoremove --purge "*cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" "*cusolver*" "*cusparse*" "*gds-tools*" "*npp*" "*nvjpeg*" "nsight*" "*nvvm*" "*nvidia*"
-    ```
-    ```bash
+    sudo apt remove --purge "*cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" "*cusolver*" "*cusparse*" "*gds-tools*" "*npp*" "*nvjpeg*" "nsight*" "*nvvm*" "*nvidia*"
     sudo apt autoremove --purge
     ```
 
@@ -142,61 +139,30 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
     sudo apt update
     sudo apt install "linux-headers-$(uname -r)" "linux-modules-extra-$(uname -r)"
     sudo apt install \
-        g++ \
-        freeglut3-dev \
+        gcc \
         build-essential \
         ca-certificates \
-        software-properties-common \
         dkms \
-        curl \
-        wget \
-        libx11-dev \
-        libxmu-dev \
-        libxi-dev \
-        libglu1-mesa-dev \
-        libfreeimage-dev \
-        libglfw3-dev
+        wget 
     ```
 
     Adicionar o repositório oficial NVIDIA CUDA:
     ```bash
-    cd $HOME/Downloads
-    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+    cd ~/Downloads
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2604/x86_64/cuda-keyring_1.1-1_all.deb
     sudo dpkg -i cuda-keyring_1.1-1_all.deb
-    ```
-    ```bash
-    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-archive-keyring.gpg
-    sudo mv cuda-archive-keyring.gpg /usr/share/keyrings/cuda-archive-keyring.gpg
-    ```
-    ```bash
-    echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/ /" | tee /etc/apt/sources.list.d/cuda-ubuntu2404-amd64.list
-    ```
-    ```bash
+    
     sudo apt update
+    sudo apt install cuda-toolkit nvidia-open    # nvidia-drivers
     ```
 
-    Para avaliar as versões de drivers e CUDA disponíveis:
-    ```bash
-    apt search cuda-toolkit | grep -E "^cuda-toolkit"
-    apt search cuda-drivers | grep -E "^cuda-drivers"
-    apt search nvidia-driver | grep -E "^nvidia-driver-[0-9]+"
-    ```
-
-    Instalação:
-    ```bash
-    sudo apt install cuda-toolkit cuda-drivers libnccl2 libnccl-dev
-    sudo apt install nvidia-gds
-    ```
-
-    Para configurar o compilador NVCC, edite o `~/.bashrc` e adicione:
+    Para configurar o compilador NVCC, edite o `~/.bashrc` e adicione as linhas abaixo:
     ```bash
     export CUDA_HOME=/usr/local/cuda
     export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
     export PATH=$CUDA_HOME/bin:$PATH
-    ```
-    ```bash
+    
     source ~/.bashrc
-    sudo dkms autoinstall
     reboot
     ```
 
@@ -206,15 +172,13 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
     nvcc --version
     ```
 
-    !!! tip
+    !!! note "Dica:"
 
         Para remover, utilize:
 
         ```bash
         sudo apt remove --purge "*cuda*" "*nvidia*" cuda-keyring
         sudo apt purge && sudo apt autoremove && sudo apt autoclean
-        ```
-        ```bash
         sudo rm -f /etc/apt/preferences.d/cuda-repository-pin-600
         sudo rm -f /etc/apt/sources.list.d/cuda*.list
         sudo rm -rf /var/cache/apt/*
@@ -224,29 +188,48 @@ Software para criar snapshots do sistema e restaurar em caso de falhas. Para ins
         ```
 
 
-=== "Ubuntu 26.04"
-
-    !!! warning "Em construção"
-
-        Conteúdo para Ubuntu 26.04 em breve.
+=== "Ubuntu 24.04"
+    
+    Para compilar o CUDA 13.x no Ubuntu 24.04, siga os mesmos passos do Ubuntu 26.04, mas utilize o repositório oficial NVIDIA CUDA para Ubuntu 24.04:
+    ```bash
+    cd ~/Downloads
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+    sudo dpkg -i cuda-keyring_1.1-1_all.deb
+    
+    sudo apt update
+    sudo apt install cuda-toolkit nvidia-open    # nvidia-drivers
+    ```
 
 ---
 ## :lucide-gauge: Instalando LACT
 
-O aplicativo [LACT](https://github.com/ilya-zlobintsev/LACT) é utilizado para controlar e realizar overclocking em GPU AMD, Intel e Nvidia em sistemas GNU/Linux.
-```bash
-cd $HOME/Downloads
-wget https://github.com/ilya-zlobintsev/LACT/releases/download/v0.9.0/lact-0.9.0-0.amd64.ubuntu-2404.deb
-sudo dpkg -i lact-0.9.0-0.amd64.ubuntu-2404.deb
-sudo systemctl enable --now lactd
-```
+O aplicativo LACT é utilizado para controlar e realizar overclocking em GPU AMD, Intel e Nvidia em sistemas GNU/Linux.
 
-!!! warning
+=== "Ubuntu 26.04"
+
+    ```bash
+    cd ~/Downloads
+    wget https://github.com/ilya-zlobintsev/LACT/releases/download/v0.10.1/lact-0.10.1-0.amd64.ubuntu-2604.deb
+    sudo dpkg -i lact-0.10.1-0.amd64.ubuntu-2604.deb
+    sudo systemctl enable --now lactd
+    ```
+
+=== "Ubuntu 24.04"
+
+    ```bash
+    cd ~/Downloads
+    wget https://github.com/ilya-zlobintsev/LACT/releases/download/v0.10.1/lact-0.10.1-0.amd64.ubuntu-2404.deb
+    sudo dpkg -i lact-0.10.1-0.amd64.ubuntu-2404.deb
+    sudo systemctl enable --now lactd
+    ```
+
+
+!!! warning "Atenção!"
 
     Faça o download do pacote [LACT](https://github.com/ilya-zlobintsev/LACT/releases/) de acordo com a distribuição do Linux.
 
 
-!!! note
+!!! note "Dica:"
 
     Para remover versões anteriores, utilize `sudo dpkg -r lact`.
 
@@ -254,26 +237,27 @@ sudo systemctl enable --now lactd
 ---
 ## :lucide-thermometer: Instalando Hardware Sensors Indicator
 
-O aplicativo [HSI](https://github.com/alexmurray/indicator-sensors) é utilizado para monitorar a temperatura de CPU, GPU, Motherboard, etc. Recomenda-se a instalação pela Central de Aplicativos [Snap](https://snapcraft.io/indicator-sensors) do Ubuntu e configurar para inicialização automatica com monitoramento da CPU (Tctl).
+O aplicativo HSI é utilizado para monitorar a temperatura de CPU, GPU, Motherboard, etc. Recomenda-se a instalação pela Central de Aplicativos Snap e configurar para inicialização automatica com monitoramento da CPU (Tctl).
 ```bash
 sudo snap install indicator-sensors
-
 indicator-sensors
 ```
 
 ---
 ## :lucide-gem: Instalação do GROMACS 2026.x
 
-**LIBTORCH** É possivel instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais. Verifique a versão mais recente. Utilize a pasta `Downloads`.
+**LIBTORCH** É possível instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais.
 ```bash
-cd $HOME/Downloads
+mkdir -p ~/software
+cd ~/software
 wget https://download.pytorch.org/libtorch/cu130/libtorch-shared-with-deps-2.10.0%2Bcu130.zip
 unzip libtorch-shared-with-deps-2.10.0+cu130.zip
 ```
 
-Podemos instalar algumas bibliotecas auxiliares para o GROMACS:
+Para instalar bibliotecas auxiliares para o GROMACS:
 ```bash
-sudo apt install grace \
+sudo apt install \
+    grace \
     hwloc \
     libhwloc-dev \
     libhdf5-dev \
@@ -297,36 +281,155 @@ sudo apt install grace \
     pkg-config
 ```
 
-**PLUMED 2.x** Para instalar a biblioteca [Plumed](https://www.plumed.org/):
+**PLUMED 2.x** Para instalar a biblioteca Plumed:
 ```bash
+cd ~/Downloads
 wget https://github.com/plumed/plumed2/releases/download/v2.10.1/plumed-src-2.10.1.tgz
 tar -xzf plumed-src-2.10.1.tgz
 cd plumed-2.10.1
-./configure --prefix=$HOME/plumed --enable-mpi --enable-modules=all CXX=mpicxx CC=mpicc FC=mpifort
+./configure --prefix=$HOME/software/plumed --enable-mpi --enable-modules=all CXX=mpicxx CC=mpicc FC=mpifort
 make -j$(nproc)
 make install
 
 plumed info --version
 ```
+!!! warning "Compatibilidade"
+
+    Confira na documentação oficial do Plumed a compatibilidade de patch com o GROMACS 2026.x.
 
 Atualize no `.bashrc`:
 ```bash
-export PATH="$HOME/plumed/bin:$PATH"
-export LD_LIBRARY_PATH="$HOME/plumed/lib:$LD_LIBRARY_PATH"
-export PLUMED_KERNEL="$HOME/plumed/lib/libplumedKernel.so"
+export PATH="$HOME/software/plumed/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/software/plumed/lib:$LD_LIBRARY_PATH"
+export PLUMED_KERNEL="$HOME/software/plumed/lib/libplumedKernel.so"
 ```
+
+=== "Ubuntu 26.04"
+
+    **CP2K 2026.x** Para instalar a biblioteca CP2K (QM/MM):
+
+    !!! note "Dica:"
+
+        Se necessário, para corrigir problemas com OpenGL utilize `export HWLOC_COMPONENTS=-gl`.
+
+    !!! warning "Compatibilidade"
+
+        Para usar GROMACS + CP2K para QM/MM, é necessário o uso em comum das bibliotecas fftw3 e openblas.
+    
+    ```bash
+    sudo apt install libopenblas0-openmp libopenblas-openmp-dev
+
+    sudo update-alternatives --config libopenblas.so.0-x86_64-linux-gnu
+    sudo update-alternatives --config libblas.so.3-x86_64-linux-gnu
+    sudo update-alternatives --config liblapack.so.3-x86_64-linux-gnu
+
+    # e os grupos de desenvolvimento, se existirem:
+    sudo update-alternatives --config libopenblas.so-x86_64-linux-gnu
+    sudo update-alternatives --config libblas.so-x86_64-linux-gnu
+    sudo update-alternatives --config liblapack.so-x86_64-linux-gnu
+
+    sudo ldconfig
+    ```
+
+    ```bash
+    cd ~/Downloads
+    wget https://github.com/cp2k/cp2k/releases/download/v2026.2/cp2k-2026.2.tar.bz2
+    tar -xjf cp2k-2026.2.tar.bz2
+    cd ~/Downloads/cp2k-2026.2/tools/toolchain
+
+    ./install_cp2k_toolchain.sh \
+    -j$(nproc) \
+    --with-openblas=system \
+    --with-fftw=system \
+    --with-openmpi=system \
+    --with-scalapack=install \
+    --with-elpa=install \
+    --with-cosma=install \
+    --with-libxsmm=install \
+    --with-libxc=install \
+    --with-libint=install \
+    --with-plumed=install \
+    --with-gsl=install \
+    --with-libvdwxc=no \
+    --with-spglib=no \
+    --with-hdf5=no \
+    --with-spfft=no \
+    --with-libvori=no \
+    --with-sirius=no \
+    --enable-cuda=no
+
+    ./build_cp2k.sh -j$(nproc) --prefix ~/software/cp2k-2026.2/install
+
+    source $HOME/software/cp2k-2026.2/install/cp2k_env    # configurar no .bashrc
+    source ~/.bashrc
+
+    which cp2k.psmp
+    cp2k.psmp --version
+    ```
+
+    !!! note "Dica:"
+
+        Para instalar o Openblas com o CP2K, utilize `--with-openblas=install` e descubra o diretório de instalação do Openblas com `find ~/software/cp2k-2026.2/install -name "libopenblas.so"`. Utilize o diretório para configurar o GROMACS com `-DGMX_BLAS_USER=/path/to/openblas/lib/libopenblas.so` e `-DGMX_LAPACK_USER=/path/to/openblas/lib/libopenblas.so`.
+
+
+
+    ```bash
+    cd ~/Downloads
+    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
+    tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+    mkdir -p build && cd build
+    ```
+
+    ```bash
+    cmake .. \
+    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3-qmmm \
+    -DCMAKE_PREFIX_PATH="/usr;/usr/local/cuda" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DGMX_MPI=ON \
+    -DGMX_GPU=CUDA \
+    -DCUDAToolkit_ROOT=/usr/local/cuda \
+    -DGMX_FFT_LIBRARY=fftw3 \
+    -DFFTWF_LIBRARY=/usr/lib/x86_64-linux-gnu/libfftw3f.so \
+    -DFFTWF_INCLUDE_DIR=/usr/include \
+    -DGMX_BLAS_USER=/usr/lib/x86_64-linux-gnu/openblas-openmp/libopenblas.so \
+    -DGMX_LAPACK_USER=/usr/lib/x86_64-linux-gnu/openblas-openmp/libopenblas.so \
+    -DGMX_CP2K=ON \
+    -DCP2K_DIR=$HOME/software/cp2k-2026.2/install/lib \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_SIMD=AVX2_256 \
+    -DGMX_HWLOC=ON \
+    -DGMX_USE_COLVARS=INTERNAL \
+    -DGMX_USE_PLUMED=ON \
+    -DGMXAPI=OFF \
+    -DGMX_INSTALL_NBLIB_API=OFF \
+    -DMPI_C_COMPILER=$(which mpicc) \
+    -DMPI_CXX_COMPILER=$(which mpicxx) \
+    -DMPI_Fortran_COMPILER=$(which mpif90) \
+    -DGMX_USE_HDF5=ON \
+    -DGMX_EXTERNAL_TINYXML2=ON \
+    -DGMX_EXTERNAL_ZLIB=ON
+    ```
+    
+    ```bash
+    make -j$(nproc)
+    make check -j$(nproc)
+    make install -j$(nproc)
+
+    source $HOME/software/gromacs-2026.3-qmmm/bin/GMXRC    # configurar no .bashrc
+    source ~/.bashrc
+
+    gmx -version
+    ```
 
 === "Ubuntu 24.04"
 
-    A partir de agora, você poderá seguir a documentação oficial [guia de instalação](https://manual.gromacs.org/current/install-guide/index.html).
     ```bash
-    cd $HOME/Downloads
+    cd ~/Downloads
     wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
     tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
-    sudo mkdir build && cd build
+    mkdir -p build && cd build
     ```
 
-    Para compilar com Cmake (versão >=3.28):
     ```bash
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
@@ -341,7 +444,7 @@ export PLUMED_KERNEL="$HOME/plumed/lib/libplumedKernel.so"
     -DCUDAToolkit_ROOT=/usr/local/cuda \
     -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
     -DCMAKE_CUDA_ARCHITECTURES=native \
-    -DCMAKE_INSTALL_PREFIX=$HOME/gromacs-cuda-torch \
+    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3 \
     -DGMX_HWLOC=ON \
     -DGMX_USE_HDF5=ON \
     -DGMX_USE_PLUMED=ON \
@@ -349,33 +452,19 @@ export PLUMED_KERNEL="$HOME/plumed/lib/libplumedKernel.so"
     -DGMX_NNPOT=TORCH \
     -DGMX_EXTERNAL_TINYXML2=ON \
     -DGMX_EXTERNAL_ZLIB=ON \
-    -DCMAKE_PREFIX_PATH="$HOME/Downloads/libtorch;/usr/local/cuda"
+    -DCMAKE_PREFIX_PATH="$HOME/software/libtorch;/usr/local/cuda"
     ```
 
-    Note que criei uma pasta chamada `gromacs-cuda-torch` para os arquivos compilados e indiquei com `-DCMAKE_INSTALL_PREFIX`, pois isso facilita a atualização do GROMACS no futuro.
-
-    Agora é o momento de compilar, checar e instalar:
     ```bash
     make -j$(nproc)
     make check -j$(nproc)
     make install -j$(nproc)
+
+    source $HOME/software/gromacs-2026.3/bin/GMXRC    # configurar no .bashrc
+    source ~/.bashrc
+
+    gmx -version
     ```
-
-=== "Ubuntu 26.04"
-
-    !!! warning "Em construção"
-
-        Conteúdo para Ubuntu 26.04 em breve.
-
-Para carregar a biblioteca e invocar o GROMACS:
-```bash
-source $HOME/gromacs-cuda-torch/bin/GMXRC
-gmx -version
-```
-
-!!! tip
-
-    Você poderá editar o arquivo `$HOME/.bashrc` e adicionar o código `source $HOME/gromacs-cuda-torch/bin/GMXRC`. Assim, toda vez que abrir o terminal carregara o GROMACS.
 
 
 ---
@@ -457,7 +546,7 @@ python -m openmm.testInstallation
 Para remover o ambiente conda criado `conda env remove --name openmm` e para listar todas os ambientes utilize `conda env list`.
 
 ---
-## :lucide-dna: Instalando VMD e Pymol
+## :lucide-eye: Instalando VMD e Pymol
 
 O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação:
 ```bash

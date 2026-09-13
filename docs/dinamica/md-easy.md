@@ -14,7 +14,7 @@
 - [Produção: integradores](#producao-integradores)
 - [Resumo](#resumo)
 
-## Arquivos iniciais
+## :lucide-download: Arquivos iniciais
 
 Para iniciar a simulação, obtenha os arquivos de topologia (campos de força), as coordenadas iniciais da biomolécula e os parâmetros de entrada para a dinâmica molecular.
 
@@ -35,7 +35,7 @@ A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica 
     Organize seu diretório de trabalho. Crie duas subpastas: `analysis`, destinada aos resultados das análises, e `inputs`, para armazenar os arquivos de parâmetros da dinâmica molecular (.mdp).
 
 
-## Preparo da topologia da molécula: campos de forças
+## :lucide-atom: Preparo da topologia da molécula: campos de forças
 
 O arquivo **1S0Q.pdb** contém, além das coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realize essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
 
@@ -104,7 +104,7 @@ Campo de Força  |  Informações  |  Modelo de água  |  cut-off
     É de extrema importância o conhecimento completo sobre os formatos de arquivos utilizados pelo GROMACS. Para estudos: [File formats topology](https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html) e [File formats](https://manual.gromacs.org/current/reference-manual/file-formats.html).
 
 
-## Definindo a caixa de simulação: dimensões, solvatação e neutralização
+## :lucide-box: Definindo a caixa de simulação: dimensões, solvatação e neutralização
 
 Nesta etapa, defina a caixa de simulação e ajuste seus parâmetros, como as dimensões, a distância da biomolécula até as bordas e outras configurações relevantes para a correta montagem do sistema.
 
@@ -127,7 +127,7 @@ Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-s
     Essa função é util para converter arquivos .pdb <--> .gro usando `gmx editconf -f <file>.gro -o <file>.pdb`.
 
 
-!!! warning
+!!! note
 
     A tag `-box` pode ser utilizada para definir as dimensões da caixa de simulação. Por exemplo, ao executar `gmx editconf -f insulina.gro -o box.gro -c -d 2.5 -bt cubic -box 10 10 10`, obtém-se uma caixa cúbica com arestas de 10 nm. Nessa configuração, a distância da borda definida como 2,5 nm será considerada, resultando em um espaço útil de 7,5 nm para a acomodação das moléculas, garantindo o afastamento adequado entre a molécula e as bordas da caixa.
 
@@ -148,7 +148,7 @@ vmd box.gro
 Extensions > Tk Console > pbc box -color blue
 ```
 
-### Solvatação
+### :lucide-droplets: Solvatação
 
 Em seguida, preencha a caixa de simulação com moléculas de água para solvatar a insulina. Este procedimento garante que a biomolécula fique imersa em um ambiente aquoso, simulando as condições fisiológicas necessárias para a análise da dinâmica molecular.
 
@@ -180,7 +180,7 @@ O GROMACS acaba de preencher a caixa com moléculas de água do arquivo `spc216.
 
 >PDB 1S0Q solvatada com água modelo TIP3P
 
-### Neutralização
+### :lucide-scale: Neutralização
 A etapa final na preparação da caixa é a neutralização do sistema com a adição de íons. Este passo é fundamental, pois os algoritmos da simulação funcionam com maior eficiência em sistemas eletricamente neutros. Como visto na etapa anterior, a carga total da insulina é de 8,000 e. Portanto, adicione dois cátions para compensar essa carga e zerar a carga total do sistema.
 
 Antes de neutralizar com a função `genion`, é necessário gerar um arquivo binário `.tpr` com as informações necessárias para o processamento:
@@ -230,7 +230,7 @@ Na mensagem de saída, pode-se observar a mensagem `Will try to add XX NA ions a
 
 >PDB 1S0Q solvatada e neutralizada. Em 🔵 NA e 🟢 CL.
 
-## Minimização do sistema
+## :lucide-trending-down: Minimização do sistema
 
 O próximo passo é a minimização de energia. Este procedimento remove sobreposições entre as moléculas e garante uma configuração estrutural estável, essencial para as etapas seguintes da simulação. Para isso, execute duas ações em sequência: primeiro, gere um novo arquivo binário `.tpr` para a minimização; depois, execute o comando de minimização de energia com o arquivo recém-criado.
 
@@ -276,11 +276,11 @@ Observe a curva no gráfico, a qual indica a minimização efetiva do sistema.
 <img src="../assets/dinamica/minim.png" alt="gráfico da energia minimizada">
 </div>
 
-## Equilíbrio NVT e NPT: termostatos e barostatos
+## :lucide-sliders-horizontal: Equilíbrio NVT e NPT: termostatos e barostatos
 
 As próximas etapas são a equilibração da temperatura e da pressão do sistema. Primeiro, ajuste a temperatura para 298,15 K (25 °C) e, em seguida, a pressão para 1 bar (0,98 atm). Essas condições visam simular um ambiente termodinâmico semelhante ao meio biológico.
 
-### NVT: ajustando a temperatura da caixa de simulação
+### :lucide-thermometer: NVT: ajustando a temperatura da caixa de simulação
 Inicie a equilibração de temperatura (ensemble NVT), na qual o número de moléculas (N), o volume (V) e a temperatura (T) são mantidos constantes. Para esta etapa, gere o arquivo binário `.tpr` utilizando o arquivo de parâmetros [nvt.mdp](../assets/dinamica/inputs-easy/nvt.mdp). Este arquivo contém as seguintes definições:
 
 * Define a restrição da biomolécula, com `define = -DPOSRES`.
@@ -325,7 +325,7 @@ xmgrace temperature.xvg
 
 Após 20 ps, observe que a temperatura do sistema estabilizou em 298,15 K. Caso a estabilização não seja alcançada, aumente o valor de `nsteps` e realiza novamente a etapa. Após a temperatura devidamente controlada, procede-se ao ajuste da pressão do sistema.
 
-### NPT: ajustando a pressão da caixa de simulação
+### :lucide-gauge: NPT: ajustando a pressão da caixa de simulação
 Concluída a equilibração da temperatura, inicie a equilibração da pressão (ensemble NPT). Nesta etapa, a densidade do sistema será ajustada para a pressão correta, mantendo-se constantes o número de moléculas (N), a pressão (P) e a temperatura (T). Para isso, gere um novo arquivo binário .tpr utilizando o arquivo de parâmetros [npt.mdp](../assets/dinamica/inputs-easy/npt.mdp). Este arquivo contém as seguintes definições:
 
 * O algoritmo responsável por ajustar a pressão, com `pcoul = C-rescale`.
@@ -377,12 +377,12 @@ A seguir, apresentamos um breve resumo dos principais termostatos e barostatos d
     O GROMACS recomenda: **V-rescale** e **C-rescale**.
 
 
-!!! note
+!!! tip
 
     Verifique a performance na mensagem de saída, pode ser útil para planejar o tempo da simulação baseado no seu computador. Exemplo: 995.45 ns/day ou 0.024 hour/ns.
 
 
-## Produção: integradores
+## :lucide-play: Produção: integradores
 A etapa final é a simulação de produção. Se todos os passos anteriores foram concluídos sem erros, seu sistema foi preparado corretamente e a simulação de produção tem grandes chances de ser bem-sucedida. Durante a execução, que pode ser longa, monitore a carga de trabalho (CPU/GPU) e a temperatura do seu computador, pois problemas externos de hardware ou software ainda podem interromper o processo.
 
 Inicie a simulação de produção. Primeiro, gere o arquivo de entrada binário (.tpr) com base no arquivo de parâmetros [md.mdp](../assets/dinamica/inputs-easy/md.mdp). Logo depois, inicie a simulação final de dinâmica molecular executando o comando a partir desse arquivo `.tpr`.
@@ -446,7 +446,7 @@ Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/IQGiz
 
 ---
 
-## Resumo
+## :lucide-clipboard-list: Resumo
 
 ```
 grep -v HETATM 1S0Q.pdb > 1S0Q_clean.pdb
@@ -494,7 +494,7 @@ gmx mdrun -v -deffnm md_5ns
 Este tutorial também serve como material suplementar do artigo
 relacionado a esta dinâmica molecular.
 
-!!! info "Em construção"
+!!! warning "Em construção"
 
     Preprint e publicação serão adicionados aqui assim que disponíveis.
 
