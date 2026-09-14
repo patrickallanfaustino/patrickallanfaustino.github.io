@@ -124,6 +124,10 @@ conda install networkx=2.3 numpy
 python cgenff_charmm2gmx_py3_nx2.py ETH ethanol.mol2 ethanol.str charmm36-jul2022.ff     # o campo de força deverá estar no mesmo diretório de trabalho.
 ```
 
+!!! note "Nota:"
+
+    Os arquivos cgenff_charmm2gmx_py3_nx2.py podem ser obtidos [aqui](../assets/instalacao/cgenff_charmm2gmx_py3_nx2.py).
+
 ### LigPargen
 É uma biblioteca desenvolvida para gerar topologias de moléculas para o campo de força OPLS. Faça o download do software [BOSS](https://traken.chem.yale.edu/software.html), descompacte em um diretório de trabalho.
 

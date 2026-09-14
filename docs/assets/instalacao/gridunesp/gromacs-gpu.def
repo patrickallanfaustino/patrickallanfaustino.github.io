@@ -2,100 +2,108 @@ Bootstrap: docker
 From: nvidia/cuda:12.9.1-devel-ubuntu24.04
 
 %post
-    # --- 1. Preparação do Sistema ---
+    set -eu
+
     export DEBIAN_FRONTEND=noninteractive
     export CUDA_HOME=/usr/local/cuda
     export PATH=$CUDA_HOME/bin:$PATH
-    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-    
-    apt update
-    apt-mark hold $(apt-cache pkgnames | grep -E "^cuda|^libnvidia|^libcudnn") 2>/dev/null || true
-    apt upgrade -y
-    
-    nvcc --version
-    cat /etc/os-release
-    uname -r
-    g++ --version
-    ldd --version
-    
-    apt install -y \
-        build-essential \
-        libboost-all-dev \
-        cmake \
-        unzip \
-        bzip2 \
-        file \
-        gcc \
-        g++ \
-        gfortran \
-        perl \
-        gawk \
-        curl \
-        git \
-        hwloc \
-        libhwloc-dev \
-        libopenblas-dev \
-        liblapack-dev \
-        libfftw3-dev \
-        wget \
-        ca-certificates
-    
-    apt autoremove -y
-    apt autoclean -y
-    
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}
+
+    NJOBS=32
+    SRC=/opt/src
+
+    # --- 1. Pacotes ----------------------------------------------------------
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential cmake git wget curl unzip bzip2 file \
+        gfortran perl gawk python3 python3-dev ca-certificates tzdata \
+        hwloc libhwloc-dev \
+        libtinyxml2-dev zlib1g-dev libhdf5-dev
+
     ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
     dpkg-reconfigure -f noninteractive tzdata
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    # --- 2. Compilação do GROMACS ---
-    GROMACS_VERSION=2026.2
-    
-    cd /opt
-    wget https://download.pytorch.org/libtorch/cu128/libtorch-shared-with-deps-2.10.0%2Bcu128.zip
-    unzip libtorch-shared-with-deps-2.10.0+cu128.zip
-    rm libtorch-shared-with-deps-2.10.0+cu128.zip
-    mv libtorch /usr/local/libtorch
+    nvcc --version
+    g++ --version
+    cmake --version
 
-    wget https://ftp.gromacs.org/gromacs/gromacs-${GROMACS_VERSION}.tar.gz
+    # Se a primeira linha util do log nao for esta, o .def nao e o que voce pensa.
+    rm -rf ${SRC}
+    mkdir -p ${SRC}
+
+    # --- 2. GROMACS 2026.3 ---------------------------------------------------
+    export GROMACS_VERSION=2026.3
+    cd ${SRC}
+    wget -q https://ftp.gromacs.org/gromacs/gromacs-${GROMACS_VERSION}.tar.gz
     tar xfz gromacs-${GROMACS_VERSION}.tar.gz
-    cd gromacs-${GROMACS_VERSION}
-    
-    mkdir build
-    cd build
-    
+    cd gromacs-${GROMACS_VERSION} \
+        || { echo "FATAL: source do GROMACS nao existe em ${SRC}"; exit 1; }
+    test -f CMakeLists.txt \
+        || { echo "FATAL: nao estou na raiz do GROMACS (cwd=$(pwd))"; exit 1; }
+
+    mkdir -p build && cd build
+
     cmake .. \
         -DCMAKE_BUILD_TYPE=Release \
         -DGMX_BUILD_OWN_FFTW=ON \
         -DREGRESSIONTEST_DOWNLOAD=ON \
-        -DGMX_SIMD=AVX_512 \
+        -DGMX_OPENMP=ON \
+        -DGMX_THREAD_MPI=ON \
+        -DGMX_SIMD=AVX2_256 \
         -DGMX_GPU=CUDA \
+        -DGMX_GPU_FFT_LIBRARY=cuFFT \
         -DCUDAToolkit_ROOT=/usr/local/cuda \
         -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
+        -DCMAKE_CUDA_ARCHITECTURES=89 \
         -DGMX_HWLOC=ON \
-        -DGMX_USE_PLUMED=ON \
+        -DGMX_USE_HDF5=ON \
         -DGMX_USE_COLVARS=INTERNAL \
-        -DGMX_NNPOT=TORCH \
-        -DCMAKE_PREFIX_PATH="/usr/local/libtorch;/usr/local/cuda" \
+        -DGMX_EXTERNAL_TINYXML2=ON \
+        -DGMX_EXTERNAL_ZLIB=ON \
+        -DCMAKE_PREFIX_PATH="/usr/local/cuda" \
         -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs
 
-    make -j$(nproc)
-    make install -j$(nproc)
-    
+    make -j${NJOBS}
+    make install
+
+    test -x /usr/local/gromacs/bin/gmx \
+        || { echo "FATAL: gmx nao foi instalado"; exit 1; }
+
+    cd / && rm -rf ${SRC}
+
 %environment
-    # --- Variáveis do GROMACS (Definições) ---
+    export CUDA_HOME=/usr/local/cuda
+    export PATH=$CUDA_HOME/bin:$PATH
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
     export GMXBIN=/usr/local/gromacs/bin
     export GMXLDLIB=/usr/local/gromacs/lib
     export GMXMAN=/usr/local/gromacs/share/man
     export GMXDATA=/usr/local/gromacs/share/gromacs
     export PATH=$GMXBIN:$PATH
-    export LD_LIBRARY_PATH=$GMXLDLIB:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GMXLDLIB:$LD_LIBRARY_PATH
     export MANPATH=$GMXMAN:$MANPATH
 
+%test
+    export PATH=/usr/local/gromacs/bin:$PATH
+    export LD_LIBRARY_PATH=/usr/local/gromacs/lib:$LD_LIBRARY_PATH
+
+    echo "--- [1/2] GROMACS roda? ---"
+    gmx --version | grep -E "GROMACS version|GPU support|SIMD instructions" || exit 1
+
+    echo "--- [2/2] SIMD e o que voce escolheu (e NAO o do no de build)? ---"
+    gmx --version | grep -q "AVX2_256" \
+        && echo "OK: AVX2_256 — roda em qualquer no do GridUnesp" \
+        || { echo "FALHA: SIMD nao e AVX2_256. Autodetecçao pegou o no de build."; exit 1; }
+
+    echo ""
+    echo "==== CONTEINER VALIDADO ===="
+
 %runscript
-    echo "Conteiner GROMACS Classic iniciado..."
-    echo "Autor: Patrick Allan dos Santos Faustino, PhD"
     exec "$@"
 
 %labels
-    Author "Patrick Allan dos Santos Faustino"
-    Version "2026.06.19"
-    Stack "Ubuntu 24.04 | CUDA 12 (sm_89) | GROMACS 2026.2 with NNPOT"
+    Author  "Patrick Allan dos Santos Faustino"
+    Version "2026.3-gridunesp"
+    Stack   "Ubuntu 24.04 | CUDA 12.9 (sm_89) | GROMACS 2026.3 thread-MPI"

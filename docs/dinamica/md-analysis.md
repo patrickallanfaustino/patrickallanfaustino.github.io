@@ -6,9 +6,47 @@
     passo a passo para calcular RMSD, RMSF, DSSP, pontes de hidrogênio, SASA,
     raio de giro (Rg), distribuição radial e propriedades termodinâmicas a
     partir da dinâmica molecular básica descrita em
-    [DM básica (1S0Q)](md-easy.md).
+    [DM básica](md-easy.md).
 
-Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
+> Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
+
+## Análise de replicabilidade e convergência
+
+---
+
+## RMSD
+
+---
+
+## RMSF
+
+---
+
+## Rg
+
+---
+
+## SASA
+
+---
+
+## RDF
+
+---
+
+## Análises avançadas
+
+### Convergência no subespaço
+
+### DSSP
+
+### H-bonds
+
+### MSD
+
+### KBI
+
+---
 
 ## :lucide-quote: Como citar
 

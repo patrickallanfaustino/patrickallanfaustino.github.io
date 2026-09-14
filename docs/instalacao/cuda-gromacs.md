@@ -246,14 +246,6 @@ indicator-sensors
 ---
 ## :lucide-gem: Instalação do GROMACS 2026.x
 
-**LIBTORCH** É possível instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais.
-```bash
-mkdir -p ~/software
-cd ~/software
-wget https://download.pytorch.org/libtorch/cu130/libtorch-shared-with-deps-2.10.0%2Bcu130.zip
-unzip libtorch-shared-with-deps-2.10.0+cu130.zip
-```
-
 Para instalar bibliotecas auxiliares para o GROMACS:
 ```bash
 sudo apt install \
@@ -279,29 +271,6 @@ sudo apt install \
     libzstd-dev \
     zlib1g-dev \
     pkg-config
-```
-
-**PLUMED 2.x** Para instalar a biblioteca Plumed:
-```bash
-cd ~/Downloads
-wget https://github.com/plumed/plumed2/releases/download/v2.10.1/plumed-src-2.10.1.tgz
-tar -xzf plumed-src-2.10.1.tgz
-cd plumed-2.10.1
-./configure --prefix=$HOME/software/plumed --enable-mpi --enable-modules=all CXX=mpicxx CC=mpicc FC=mpifort
-make -j$(nproc)
-make install
-
-plumed info --version
-```
-!!! warning "Compatibilidade"
-
-    Confira na documentação oficial do Plumed a compatibilidade de patch com o GROMACS 2026.x.
-
-Atualize no `.bashrc`:
-```bash
-export PATH="$HOME/software/plumed/bin:$PATH"
-export LD_LIBRARY_PATH="$HOME/software/plumed/lib:$LD_LIBRARY_PATH"
-export PLUMED_KERNEL="$HOME/software/plumed/lib/libplumedKernel.so"
 ```
 
 === "Ubuntu 26.04"
@@ -423,6 +392,14 @@ export PLUMED_KERNEL="$HOME/software/plumed/lib/libplumedKernel.so"
 
 === "Ubuntu 24.04"
 
+    **LIBTORCH** É possível instalar a biblioteca [libtorch](https://pytorch.org/) para utilizar Redes Neurais.
+    ```bash
+    mkdir -p ~/software
+    cd ~/software
+    wget https://download.pytorch.org/libtorch/cu130/libtorch-shared-with-deps-2.10.0%2Bcu130.zip
+    unzip libtorch-shared-with-deps-2.10.0+cu130.zip
+    ```
+
     ```bash
     cd ~/Downloads
     wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
@@ -490,6 +467,42 @@ python -m openmm.testInstallation
 ---
 ## :lucide-eye: Instalando VMD
 
+Instale bibliotecas auxiliares para a representação gráfica molecular:
+```bash
+sudo apt install \
+    libpng-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    ffmpeg \
+    vlc
+```
+```bash
+cd ~/software
+git clone https://github.com/thesketh/Tachyon.git tachyon
+cd tachyon
+```
+
+No arquivo Make-config:
+```bash
+USEJPEG = -DUSEJPEG
+JPEGINC = -I/usr/include
+JPEGLIB = -ljpeg
+
+USEPNG  = -DUSEPNG
+PNGINC  = -I/usr/include
+PNGLIB  = -lpng -lz
+```
+
+No arquivo Make-arch, localize `linux-64-thr` e acrescentar nas CFLAGS: `-march=znver3 -mtune=znver3`
+```bash
+cd tachyon/unix
+make linux-64-thr
+```
+
+!!! note "Dica:"
+
+    O Taychon pode ser obtido [aqui](../assets/instalacao/tachyon.tar.xz).
+
 O VMD permite visualizar moléculas e realizar análises. Para instalação:
 ```bash
 cd ~/software
@@ -511,6 +524,17 @@ make install -j$(nproc)
 vmd
 ```
 
+## :lucide-eye: Instalando o ChimeraX
+
+O ChimeraX permite visualizar moléculas e realizar análises. Para instalação:
+```bash
+cd ~/software
+wget -O ucsf-chimerax_1.12ubuntu24.04_amd64.deb "https://www.cgl.ucsf.edu/chimerax/cgi-bin/secure/chimerax-get.py?file=1.12/ubuntu-24.04/ucsf-chimerax_1.12ubuntu24.04_amd64.deb"
+sudo apt install ~/software/ucsf-chimerax_1.12ubuntu24.04_amd64.deb
+
+chimerax
+```
+
 ---
 ## :lucide-calculator: Instalando o Julia
 
@@ -529,6 +553,7 @@ Para atualizar, utilize no terminal `juliaup update`. Para remover utilize `juli
 ## :lucide-book-open: Leitura complementar
 
 - [How to Install CUDA on Ubuntu](https://linuxcapable.com/how-to-install-cuda-on-ubuntu-linux/)
+- [Compiling Gromacs with CP2K for QMMM simulation](https://freezing.cool/notes/compile-gmx-with-cp2k/)
 
 ## :lucide-quote: Como citar
 

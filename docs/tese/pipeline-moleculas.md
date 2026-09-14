@@ -10,11 +10,10 @@
 
 !!! info "Versões fixadas para reprodutibilidade"
 
-    Para o desenvolvimento do doutorado e a garantia da reprodutibilidade
-    científica dos dados, as versões do Ubuntu 26.04, GROMACS 2026.x e
-    demais bibliotecas utilizadas serão mantidas e não
-    atualizadas, a não ser que haja estrita necessidade para garantir a
-    confiabilidade dos dados.
+    Visando assegurar a reprodutibilidade computacional, o ambiente de simulação será 
+    mantido estável nas versões Ubuntu 26.04 e GROMACS 2026.x, juntamente com suas respectivas bibliotecas. 
+    Nenhuma atualização de software será realizada ao longo da pesquisa, salvo sob estrita necessidade 
+    de correção para preservar a confiabilidade dos dados.
 
 > Primeira etapa do projeto de doutorado: seleção, preparo e ajuste das
 > moléculas de interesse que serão utilizadas nas simulações subsequentes.

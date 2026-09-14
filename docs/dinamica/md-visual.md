@@ -1,126 +1,162 @@
-# Criar imagens e videos de dinâmicas moleculares
+# Renderizar imagens e videos de dinâmicas moleculares
 
-> O objetivo deste tutorial é criar imagens e video com qualidade para publicações a partir da dinâmica molecular da tripsina pancreática bovina.
+> O objetivo é renderizar imagens e video com qualidade para publicações a partir da dinâmica molecular.
 >
 > Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-## :lucide-list: Índice
 
-- [Representação gráfica no VMD](#representacao-grafica-no-vmd)
-- [Visualização de trajetória no VMD](#visualizacao-de-trajetoria-no-vmd)
-- [Criar video da dinâmica molecular com VMD](#criar-video-da-dinamica-molecular-com-vmd)
-
-## :lucide-eye: Representação gráfica no VMD
-O [VMD](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) permite visualizar moléculas e realizar análises. Para instalação, verifique este repositório.
-
-Para carregar o arquivo de coordenadas no VMD:
+## :lucide-route: Ajuste de trajetória
+Para ajustar a trajetória:
 ```bash
-vmd md_5ns.gro
+# 1. Periodicidade
+gmx trjconv -s md.tpr -f md.xtc -o 1_mol.xtc -pbc mol -center -ur compact
+#    grupos: Protein (centro) / System (saída)
+
+# 2. Remover rotação e translação globais
+gmx trjconv -s md.tpr -f 1_mol.xtc -o 2_fit.xtc -fit rot+trans
+#    grupos: Backbone (ajuste) / System (saída)
+
+# 3. Filtragem passa-baixa com decimação
+gmx filter -s md.tpr -f 2_fit.xtc -ol 3_video.xtc -nf 10 -nojump -nofit
+
 ```
 
-No menu do VMD, podemos realizar algumas melhorias na visualização:
-```
-Display > Orthographic    # para alterar a visão referencial
-Display > Axes > Off    # para remover o eixo axial do painel de visualização
-Display > Rendermode > GLSL    # para alterar o motor de renderização
-Graphics > Colors > Display > Background > 8 white    # altera a cor do plano de fundo
-```
-
-Para modificar a forma de representação das moléculas:
-```
-Graphics > Representations
-```
-
-Na janela que abrir, vamos criar representações para `protein`, `water`, `resname NA` e `resname CL` utilizando o botão **Create Rep**, e realizar as seguintes configurações:
-```
-Selected Atoms: protein; Coloring Method: Secundary Structure; Drawing Method: NewCartoon; Material: EdgyShiny
-Selected Atoms: water; Coloring Method: ColorId - 22 cyan3; Drawing Method: QuickSurf; Material: Transparent
-Selected Atoms: resname NA; Coloring Method: Name; Drawing Method: VDW; Material: EdgyShiny
-Selected Atoms: resname CL; Coloring Method: Name; Drawing Method: VDW; Material: EdgyShiny
-```
-
-<div align="center">
-<img src="../assets/dinamica/tripsina-in-box.png" alt="tripsina pancreática bovina">
-</div>
-
->PDB 1S0Q, Tripsina Pancreática Bovina. O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para Hélices 3-10; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
-
-!!! tip
-
-    Na janela Graphics > Representations... é possivel desativar ou ativar a visualização da representação com clique duplo sobre a molécula desejada.
-
-
-Para renderizar em arquivo de imagem:
-```
-File > Render > Start Rendering
-```
-É possivel alterar o motor de renderização para `Tachyon (internal, in-memory rendering)` e renomear o arquivo juntamente com a extensão `.png` ou `.jpg`.
-
-
-## :lucide-route: Visualização de trajetória no VMD
-!!! note
-
-    Após finalização da etapa de produção, é necessário ajustar as trajetórias `.xtc` ou `.trr` para a devida visualização no VMD. Esse procedimento não altera a dinâmica molecular.
-
-
-Para ajustar a trajetória no Gromacs:
+Para imagens com o ChimeraX, utilize a estrutura mais populosa do cluster:
 ```bash
-gmx trjconv -f md_5ns.xtc -s md_5ns.tpr -o md_noPBC.xtc -pbc mol -center -ur compact
-
-# -pbc = mol, para visualizar as moléculas inteiras.
-# -center = centraliza a proteina na caixa.
-# -ur = compact, para uma visualização compacta na caixa.
-```
-
-Quando solicitado, selecione `1 Protein` para indicar que a proteina deverá ser centralizada na caixa e `0 System` para solicitar que todo o sistema esteja no arquivo de saida **md_noPBC.xtc**.
-
-!!! note
-
-    Saiba mais sobre [trjconv](https://manual.gromacs.org/current/onlinehelp/gmx-trjconv.html).
-
-
-Para carregar as coordenadas e trajetória no VMD:
-```bash
-vmd md_5ns.gro md_noPBC.xtc
-```
-
-## :lucide-video: Criar video da dinâmica molecular com VMD
-Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/IQGiznRc0Xo](https://youtu.be/IQGiznRc0Xo).
-
-!!! tip
-
-    Crie uma pasta para salvar os snapshots de cada frame.
-
-
-Para criar o video, inicialmente instale as bibliotecas:
-```bash
-sudo apt install netpbm ffmpeg
-```
-
-No VMD, após ajustes nas visualizações e carregar os arquivos de coordenadas e trajetória, crie snapshots para cada frame:
+gmx cluster -s md.tpr -f 2_fit.xtc -cl clusters.pdb -cutoff 0.15 -method gromos
+#   grupos: Protein (ajuste) / Protein (saída)
 
 ```
-Extensions > Visualization > Movie Maker
-```
 
-Na janela que abrir, selecione a pasta onde os snapshots serão salvos. Certifique que:
-- `Name of movie: untitled`
-- `Rotation angle=0`
-- `Trajectory step size=1`
-- `Movie duration (s)=0`
+## :lucide-eye: Representação gráfica
 
-No menu `Renderer`, selecione `Snapshot` ou `Internal Tachyon`. Em `Movie Settings`, selecione `Trajectory` e desabilite a opção `4: Delete image files`. Em `Format`, selecione `MPEG-1`. Clique em Make Movie.
+=== "Video"
 
-Na pasta onde estão os snapshots, crie o video:
-```bash
-ffmpeg -framerate 30 -i untitled.%05d.ppm -vf scale=1920:-2:flags=lanczos -c:v libx265 -crf 18 -preset slow movie.mkv
-```
+    Para carregar uma trajetória no VMD, utilize o comando:
+    ```bash
+    vmd md.gro 3_video.xtc
+    ```
+    O present utilizado abaixo é para melhorar a visualização da molécula e da trajetória:
+    ```bash
+    Display > Orthographic          # projeção ortográfica, sem distorção de perspectiva
+    Display > Rendermode > GLSL
+    Display > Axes > Off            # remove os eixos
+    Display > Depth Cue > off       # remove a névoa de profundidade
+    Display > Display Settings > Shadows > On
+    Display > Display Settings > Amb. Occl. > On
+    Display > Display Settings > DoF > On
+    Graphics > Colors > Display > Background > 8 white
+    ```
 
-O video será salvo como `movie.mkv` e pode ser hospedado no YouTube ou qualquer serviço de hospedagem.
+    Para alterar as representação da molécula, utilize `protein`, `water`, `resname NA` e `resname CL`:
+    ```bash
+    Selected Atoms: protein; Coloring Method: Secundary Structure; Drawing Method: NewCartoon; Material: AOChalky
+    Selected Atoms: water; Coloring Method: ColorId - 22 cyan3; Drawing Method: QuickSurf; Material: Transparent
+    Selected Atoms: resname NA; Coloring Method: Name; Drawing Method: Licorice; Material: AOChalky
+    Selected Atoms: resname CL; Coloring Method: Name; Drawing Method: Licorice; Material: AOChalky
+    ```
 
----
+    Em Plugins > TkConsole, é possível alterar a resolução da imagem:
+    ```bash
+    display resize 960 540    # enquadre a molécula na janela.
+    ```
 
-### :lucide-flask-conical: *Boas simulações moleculares!*
+    Em File > Save Visualization State, salve o estado da visualização em um arquivo `cena.vmd`.
+
+    Em seguida, no prompt de comando e utilizando [esse arquivo](../assets/dinamica/render_4k_external.tcl), digite:
+    ```bash
+    vmd -dispdev text -size 3840 2160 -e render_4k_external.tcl
+    ```
+    
+    !!! warning "Atenção!"
+        O arquivo `render_4k_external.tcl` deve estar na mesma pasta que o arquivo `cena.vmd`. Caso contrário, o VMD não irá renderizar a imagem.
+        Abra e configure corretamente o arquivo `render_4k_external.tcl`.
+
+    Para renderizar o video:
+    ```bash
+    # em 4K
+    ffmpeg -framerate 30 -i frames/f%05d.png -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p -movflags +faststart video_4k.mp4
+
+    # em 1080p
+    ffmpeg -framerate 30 -i frames/f%05d.png -vf "scale=1920:-2:flags=lanczos" -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart video_1080p.mp4
+
+    ```
+
+    <div align="center">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ygxD4YCAXkQ?si=MxXslrvHmzIpHj_U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    >O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para Hélices 3-10; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
+
+=== "Imagem"
+
+    Para a representação gráfica de alta qualidade em artigos, use o ChimeraX. Abra o arquivo `.pdb` e configure no ChimeraX.
+    
+    !!! note "Dica:"
+        Para converter arquivo `.gro` em `.pdb` para uso no ChimeraX, utilize:
+        ```bash
+        gmx trjconv -s md.tpr -f 2_fit.xtc -o frame_200ns.pdb -dump 200000 -conect
+        ```
+    
+    ```bash
+    set bgColor white
+    camera ortho
+    material dull
+    hide solvent; hide H
+    view orient
+
+    graphics quality 6
+    lighting soft
+    lighting depthCue false
+    lighting shadows false
+    lighting multiShadow 512
+    graphics silhouettes true width 3 color gray depthJump 0.02
+
+    cartoon style protein xsection barbell barScale 0.6 modeHelix default arrows false
+    cartoon style strand xsection rectangle
+    cartoon style sides 24 divisions 20
+    ```
+
+    Para ajustar o esquema de cores:
+    ```bash
+    ==============================
+    Nomes de cor (VMD)
+    ==============================
+    color helix purple
+    color strand yellow
+    color coil darkgray
+
+    ==============================
+    Nomes de cor (Okabe–Ito, recomendado)
+    ==============================
+    color name okorange #E69F00;
+    color name okskyblue #56B4E9;
+    color name okgreen #009E73;
+    color name okyellow #F0E442;
+    color name okblue #0072B2;
+    color name okvermillion #D55E00;
+    color name okpurple #CC79A7;
+    color name neutromid #BBBBBB
+
+    color #1 neutromid
+    color helix okorange
+    color strand okblue
+    color coil neutromid
+    color ligand okgreen
+    color ligand byhet
+    ```
+
+    Para salvar:
+    ```bash
+    save fig.png width 3200 height 2400 supersample 4 transparentBackground true
+    save fig.glb textureColors true     # para blender
+    save fig.cxs                        # estado padrão
+    ```
+
+    <div align="center">
+        <img src="../assets/dinamica/fig.png">
+    </div>
+    >A paleta Okabe-Ito fornece 8 cores fáceis de distinguir para pessoas com daltonismo (dificuldade para ver certas cores) em gráficos científicos.
+
 
 ---
 

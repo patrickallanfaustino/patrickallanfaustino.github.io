@@ -1,18 +1,13 @@
-# Dinâmica Molecular de Biomolécula (PDB: 1S0Q) em água
+# Dinâmica Molecular de uma biomolécula em água
 
-> O objetivo deste tutorial é simular a enzima digestiva tripsina pancreática bovina em uma caixa cúbica com água sob condições de 298 K e 1 bar.
->
+!!! warning "Atenção!"
+    Página em atualização.
+
+
+
+> O objetivo é simular uma biomolécula simples em uma caixa periódica com água sob condições de 298 K e 1 bar, sem viés.
 > Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-## :lucide-list: Índice
-
-- [Arquivos iniciais](#arquivos-iniciais)
-- [Preparo da topologia da molécula: campos de forças](#preparo-da-topologia-da-molecula-campos-de-forcas)
-- [Definindo a caixa de simulação: dimensões, solvatação e neutralização](#definindo-a-caixa-de-simulacao-dimensoes-solvatacao-e-neutralizacao)
-- [Minimização do sistema](#minimizacao-do-sistema)
-- [Equilíbrio NVT e NPT: termostatos e barostatos](#equilibrio-nvt-e-npt-termostatos-e-barostatos)
-- [Produção: integradores](#producao-integradores)
-- [Resumo](#resumo)
 
 ## :lucide-download: Arquivos iniciais
 
@@ -482,10 +477,6 @@ xmgrace density.xvg
 gmx grompp -v -f inputs/md.mdp -c npt.gro -t npt.cpt -o md_5ns.tpr -p topol.top
 gmx mdrun -v -deffnm md_5ns
 ```
-
----
-
-### :lucide-flask-conical: *Boas simulações moleculares!*
 
 ---
 

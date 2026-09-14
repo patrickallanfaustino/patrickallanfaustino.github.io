@@ -2,7 +2,7 @@
 
 gmx --version
 
-cd 4c_cho
+cd rep1
 
 gmx grompp -v \
     -f inputs/md.mdp \
@@ -23,7 +23,7 @@ gmx grompp -v \
 #    -bonded gpu \
 #    -update gpu \
 #    -pin on \
-#    -maxh 23.3
+#    -maxh 23.4
 #
 # ------------------------------------------------------------
 # VARIANTE B — sistemas com TIP4P/TIP4P-Ew (virtual site)
@@ -32,30 +32,26 @@ gmx grompp -v \
 gmx mdrun -v \
     -deffnm md_200ns \
     -ntmpi 1 \
-    -ntomp 24 \
+    -ntomp 16 \
     -gpu_id 0 \
     -nb gpu \
     -pme gpu \
     -bonded gpu \
     -pin on \
-    -maxh 23.3
-
+    -maxh 23.4
+#
+#
 # ------------------------------------------------------------
-# VARIANTE B — sistemas com TIP4P/TIP4P-Ew (virtual site)
-# -configuração para 2 GPUs (1 rank PP + 1 rank PME)
-# -para sistemas pequenos/médios de ~150k atomos
-# SBATCH --cpus-per-task=24
-# SBATCH --gres=gpu:2
+# Para continuar a simulação
 # ------------------------------------------------------------
 #gmx mdrun -v \
 #    -deffnm md_200ns \
-#    -ntmpi 2 \
-#    -ntomp 12 \
-#    -npme 1 \
-#    -gpu_id 01 \
+#    -cpi md_200ns.cpt \
+#    -ntmpi 1 \
+#    -ntomp 16 \
+#    -gpu_id 0 \
 #    -nb gpu \
 #    -pme gpu \
 #    -bonded gpu \
 #    -pin on \
-#    -maxh 23.3
-#
+#    -maxh 23.4

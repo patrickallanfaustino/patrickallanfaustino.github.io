@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH -t 24:00:00
-#SBATCH --job-name=apptainer
+#SBATCH -t 00:30:00
+#SBATCH --job-name=gmx_gpu
 #SBATCH --cpus-per-task=32
-#SBATCH --mail-user=patrick.faustino@unesp.br
+#SBATCH --mail-user=<yourmail>@unesp.br
 #SBATCH --mail-type=BEGIN,END,FAIL
 
 export INPUT="gromacs-gpu.def"

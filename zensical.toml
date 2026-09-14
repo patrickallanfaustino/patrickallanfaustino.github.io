@@ -14,8 +14,9 @@ nav = [
   { "Instalação" = [
     { "GROMACS + CUDA" = "instalacao/cuda-gromacs.md" },
     { "GROMACS + ROCm" = "instalacao/rocm-gromacs.md" },
-    { "gridUNESP" = "instalacao/gridunesp.md" },
+    { "GROMACS + PLUMED" = "instalacao/cuda-gromacs-plumed.md" },
     { "Bibliotecas" = "instalacao/bibliotecas.md" },
+    { "gridUNESP" = "instalacao/gridunesp.md" },
   ] },
   { "Dinâmica molecular" = [
     { "DM básica" = "dinamica/md-easy.md" },
