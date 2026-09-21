@@ -37,6 +37,8 @@ Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](ht
 
 Desenvolvi um notebook para fazer os ajustes necessários. Download [aqui](../assets/notebooks/protein_builder_v16.ipynb). Faça o download dos arquivos e realize os ajustes no notebook.
 
+[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder_v16.ipynb)
+
 <div align="center">
     <img src="../assets/dinamica/xilanase.png">
 </div>
