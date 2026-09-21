@@ -1,35 +1,50 @@
-# Dinâmica Molecular de uma biomolécula em água
+# Dinâmica Molecular Clássica de uma biomolécula em água
 
 !!! warning "Atenção!"
-    Página em atualização.
+    Página em reformulação.
+
+    Esta página foi reescrita para incorporar preparação escalonada, critério objetivo de equilibração e réplicas.
+
+O objetivo é simular uma biomolécula em uma caixa periódica com água a 298,15 K e 1 bar, sem viés — e terminar com um resultado que você consiga defender.
+
+Três decisões separam uma trajetória que roda de uma que significa alguma coisa:
+
+1. **Como preparar o sistema?**. Não em três etapas, mas em dez, liberando os graus de liberdade na ordem em que eles relaxam.
+2. **Como saber que a equilibração terminou?**. Com um teste numérico, não olhando o formato da curva de densidade.
+3. **Quantas vezes simular?**. Uma trajetória não permite estimar a própria incerteza, por mais longa que seja.
+
+!!! info "Por que dez etapas e não três"
+
+    * O solvente reorganiza-se em picossegundos. Cadeias laterais levam centenas de picossegundos. Estrutura secundária, nanossegundos.
+
+    * Retirar todas as restrições ao mesmo tempo faz o calor liberado ao relaxar um contato estérico se dissipar deformando a vizinhança. A restrição escalar resolve isso prendendo o que é lento enquanto o rápido relaxa, e afrouxando por degraus.
+
+    * O custo é na ordem de unidades de ns por réplica — irrelevante frente a uma produção de centenas de nanossegundos.
 
 
+Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-> O objetivo é simular uma biomolécula simples em uma caixa periódica com água sob condições de 298 K e 1 bar, sem viés.
-> Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
-
-
+---
 ## :lucide-download: Arquivos iniciais
 
 Para iniciar a simulação, obtenha os arquivos de topologia (campos de força), as coordenadas iniciais da biomolécula e os parâmetros de entrada para a dinâmica molecular.
 
-Utilize a estrutura da 1S0Q com o código [1S0Q](https://www.rcsb.org/structure/1S0Q) do PDB, que possui uma resolução de 1,02 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Uma resolução menor proporciona maior detalhamento cristalográfico.
+Utilize a estrutura da **Xilanase G11** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB, que possui uma resolução de 1,49 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Uma resolução menor proporciona maior detalhamento cristalográfico. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
 
-Acesse a página da estrutura no [PDB (*Protein Data Bank*)](https://www.rcsb.org/) para uma análise aprofundada. Para garantir maior precisão e realismo, explore os detalhes complementares da estrutura. Verifique o método experimental usado para sua obtenção, a presença de ligantes, possíveis modificações estruturais e os estados de protonação dos resíduos. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
+A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica.
 
-A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica. Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), possui extrema importância por determinar o estado de protonação correto dos aminoácidos tituláveis; ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
+Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), possui extrema importância por determinar o estado de protonação correto dos aminoácidos tituláveis; ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
+
+Desenvolvi um notebook para fazer os ajustes necessários. Download [aqui](../assets/notebooks/protein_builder_v16.ipynb). Faça o download dos arquivos e realize os ajustes no notebook.
 
 <div align="center">
-<img src="../assets/dinamica/tripsina.png" alt="tripsina pancreática bovina">
+    <img src="../assets/dinamica/xilanase.png">
 </div>
 
->PDB 1S0Q, Tripsina Pancreática Bovina. O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para Hélices 3-10; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
-
-!!! tip
-
-    Organize seu diretório de trabalho. Crie duas subpastas: `analysis`, destinada aos resultados das análises, e `inputs`, para armazenar os arquivos de parâmetros da dinâmica molecular (.mdp).
+>Xilanase, 1XNB. O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para Hélices 3-10; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
 
 
+---
 ## :lucide-atom: Preparo da topologia da molécula: campos de forças
 
 O arquivo **1S0Q.pdb** contém, além das coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realize essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.

@@ -1,10 +1,10 @@
 # Renderizar imagens e videos de dinâmicas moleculares
 
-> O objetivo é renderizar imagens e video com qualidade para publicações a partir da dinâmica molecular.
->
-> Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
+O objetivo é renderizar imagens e video com qualidade para publicações a partir da dinâmica molecular.
 
+Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
+---
 ## :lucide-route: Ajuste de trajetória
 Para ajustar a trajetória:
 ```bash
@@ -28,6 +28,7 @@ gmx cluster -s md.tpr -f 2_fit.xtc -cl clusters.pdb -cutoff 0.15 -method gromos
 
 ```
 
+---
 ## :lucide-eye: Representação gráfica
 
 === "Video"
@@ -159,7 +160,6 @@ gmx cluster -s md.tpr -f 2_fit.xtc -cl clusters.pdb -cutoff 0.15 -method gromos
 
 
 ---
-
 ## :lucide-quote: Como citar
 
 FAUSTINO, P. A. S. *Documentação sobre Química Biofísica Computacional*. [S. l.]: Zenodo, 2026. DOI 10.5281/zenodo.22729510. Disponível em: <https://doi.org/10.5281/zenodo.22729510>.

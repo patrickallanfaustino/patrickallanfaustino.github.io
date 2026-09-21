@@ -16,6 +16,10 @@
 
 ## RMSD
 
+<div align="center">
+    <iframe src="../assets/plots/rmsd.html" width="100%" height="440" style="border:0" loading="lazy"></iframe>
+</div>
+
 ---
 
 ## RMSF

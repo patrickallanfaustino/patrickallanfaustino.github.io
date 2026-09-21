@@ -18,6 +18,7 @@
 - Research on the behavior of biomolecules in ionic liquids.
 - Investigation of enzymatic decarboxylation for the production of drop-in bio-hydrocarbons, using Molecular Dynamics for thermodynamic property.
 - I welcome discussions, consultations and collaboration opportunities in the areas of computational chemistry and molecular dynamics simulations. Feel free to contact me or if you would like to discuss possible cooperations.
+- I am a 3D printing enthusiast. DIY.
 
 ## :lucide-mail: Contact { #contact }
 - Email: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
@@ -34,7 +35,8 @@ CNPq Brazil areas: Exact and Earth Sciences > Chemistry > Physical Chemistry > M
 ## :lucide-monitor: Workstation Home { #workstation-home }
 - AMD Ryzen 9 5900XT (16/32) @ OC 4300 MHz with Water-Cooler 360 Kalkan and Corsair 4000D computer case; ASUS TUF Gaming X570 Plus; Corsair Dominator 2x16 GB DDR4 @ 3200 MT/s XMP2; MSI RTX 4070 Ti Gaming Trio X; Power Supply Energy Corsair RM1000e 1000 W.
 - AMD Ryzen 7 2700X (8/16) @ OC 3400 MHz with Water-Cooler 240 Rise and Gamemax Fortress computer case; Biostar Racing X470GTA; Geil 2x16 GB DDR4 @ 3000 MT/s XMP2; AsRock RX 6600XT Challenger D; Power Supply Energy AeroCool KCAS 500 W.
-- 51.4 TFLOPS Go!
+- Creality Ender 3 V3 KE
+- 52.4 TFLOPS Go!
 - Software suite molecular dynamics: Gromacs 2026.x and OpenMM 8.x
 
 ## :lucide-book-open: Publications { #publications }
@@ -43,7 +45,7 @@ CNPq Brazil areas: Exact and Earth Sciences > Chemistry > Physical Chemistry > M
 
 ## :lucide-wrench: Skills { #skills }
 
-![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ableton,anaconda,android,apache,arduino,apptainer,autocad,bash,bootstrap,chatgpt,claude,cmake,c,cs,cpp,css,cuda,deepseek,digitalocean,discord,docker,dreamweaver,excel,edge,facebook,ffmpeg,firefox,gemini,gromacs,git,gitbash,github,githubcopilot,githubpages,gitlab,googlecolab,gmail,html,jquery,julia,jupyter,latex,libreoffice,linkedin,linux,mariadb,markdown,matplotlib,mysql,mistral,notepadpp,nvidia,obs,numpy,octave,onedrive,outlook,openmm,pandas,perl,photoshop,php,powerpoint,powershell,putty,python,pytorch,scikitlearn,scipy,seaborn,scratch,sqlite,steam,terminal,teams,ubuntu,vim,visualstudio,vscode,wsl,x,word,windows&theme=light)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ableton,anaconda,android,apache,arduino,apptainer,autocad,bash,bootstrap,chatgpt,claude,cmake,c,cs,cpp,css,cuda,deepseek,digitalocean,discord,docker,dreamweaver,excel,edge,facebook,ffmpeg,firefox,gemini,gromacs,git,gitbash,github,githubcopilot,githubpages,gitlab,googlecolab,gmail,html,huggingface,jquery,julia,jupyter,latex,libreoffice,linkedin,linux,mariadb,markdown,matplotlib,mysql,mistral,notepadpp,nvidia,obs,numpy,octave,onedrive,outlook,openmm,pandas,plotly,perl,photoshop,php,powerpoint,powershell,putty,python,pytorch,scikitlearn,scipy,seaborn,scratch,sqlite,steam,terminal,teams,ubuntu,vim,visualstudio,vscode,wsl,x,word,windows&theme=light)
 
 ## :lucide-quote: How to cite { #how-to-cite }
 
