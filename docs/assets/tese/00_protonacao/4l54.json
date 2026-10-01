@@ -1,0 +1,75 @@
+{
+  "descricao": "OleT_JE (CYP152L1), PDB 4L54 (sem ligante, 2,3 A), cadeia A. Sistema APO: mesmo conjunto de protonacao dos complexos (4L40); heme IC6 de Shahrokh et al. (2012) entra depois (preparar_heme.py).",
+  "input_structure": "4L54.pdb",
+  "chain_ids": [
+    "A"
+  ],
+  "ph": 7.5,
+  "ffout": "AMBER",
+  "keep_water": false,
+  "keep_metals": false,
+  "keep_ligands": false,
+  "build_missing_loops": true,
+  "drop_terminal_missing": true,
+  "loop_refine": true,
+  "aguas_enterradas": true,
+  "limiar_sasa_agua": 1.0,
+  "b_max_agua": null,
+  "modelo_agua": "opc",
+  "protonation_overrides": [
+    {
+      "cadeia": "A",
+      "numero": 85,
+      "estado": "HID",
+      "fonte": "Mesmo tautomero da serie de complexos (HID aqui; variante HIE via preparar_heme.py 85=HIE). No 4L54 o NE2 so tem a agua W689 (3,31 A), que liga W691 (2,81 A do Fe) e Arg245 NH2."
+    },
+    {
+      "cadeia": "A",
+      "numero": 92,
+      "estado": "HIE",
+      "fonte": "PROPKA neutra (pKa ~2); NE2 voltado ao propionato O1D (4L54: 2,80 A). Fixado igual em apo e complexos."
+    },
+    {
+      "cadeia": "A",
+      "numero": 120,
+      "estado": "HID",
+      "fonte": "PROPKA neutra (pKa ~5,1); sem parceiros polares. Tautomero fixado igual em apo e complexos."
+    },
+    {
+      "cadeia": "A",
+      "numero": 210,
+      "estado": "HIE",
+      "fonte": "Triagem estrutural no 4L54: NE2...O Gly207 3,19 A. Mesmo estado dos complexos."
+    },
+    {
+      "cadeia": "A",
+      "numero": 222,
+      "estado": "HID",
+      "fonte": "PROPKA neutra (pKa ~5,9); so agua no NE2. Tautomero fixado igual em apo e complexos."
+    },
+    {
+      "cadeia": "A",
+      "numero": 259,
+      "estado": "HIE",
+      "fonte": "Triagem estrutural no 4L54: NE2...O Leu395 3,13 A (aceitador); ND1...OH Tyr289 2,70 A. Mesmo estado dos complexos."
+    },
+    {
+      "cadeia": "A",
+      "numero": 325,
+      "estado": "HIE",
+      "fonte": "Triagem estrutural no 4L54: NE2...O Tyr288 2,92 A e O Arg287 3,23 A (aceitadores). Mesmo estado dos complexos. Refazer no protonated.pdb (flip)."
+    },
+    {
+      "cadeia": "A",
+      "numero": 363,
+      "estado": "HIP",
+      "fonte": "Triagem estrutural no 4L54 com heme: ND1...O2D propionato 2,77 A; NE2...OD1 Asp88 2,86 A (4L40: 2,68/2,80 A). PROPKA ignora o HEM."
+    },
+    {
+      "cadeia": "A",
+      "numero": 365,
+      "estado": "CYM",
+      "fonte": "Tiolato axial do Fe(III) (Belcher et al. 2014, J Biol Chem, PDB 4L40). Na montagem, cargas da CYP de Shahrokh et al. 2012 (IC6/CPDI) substituem as da CYM."
+    }
+  ]
+}

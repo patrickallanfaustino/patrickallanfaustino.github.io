@@ -35,8 +35,8 @@ CNPq Brazil areas: Exact and Earth Sciences > Chemistry > Physical Chemistry > M
 ## :lucide-monitor: Workstation Home { #workstation-home }
 - AMD Ryzen 9 5900XT (16/32) @ OC 4300 MHz with Water-Cooler 360 Kalkan and Corsair 4000D computer case; ASUS TUF Gaming X570 Plus; Corsair Dominator 2x16 GB DDR4 @ 3200 MT/s XMP2; MSI RTX 4070 Ti Gaming Trio X; Power Supply Energy Corsair RM1000e 1000 W.
 - AMD Ryzen 7 2700X (8/16) @ OC 3400 MHz with Water-Cooler 240 Rise and Gamemax Fortress computer case; Biostar Racing X470GTA; Geil 2x16 GB DDR4 @ 3000 MT/s XMP2; AsRock RX 6600XT Challenger D; Power Supply Energy AeroCool KCAS 500 W.
-- Creality Ender 3 V3 KE
-- 52.4 TFLOPS Go!
+- Creality Ender 3 V3 KE with Anti shake; Spool Holder Stand with Filament Spool Guide; Cover X-Axis stepper motor; Spine Chain Cable with Cable Holder; Extruder Housing with resized dual fans 5010 and 4020. DIY.
+- 45 TFLOPS (NVIDIA) and 11 TFLOPS (AMD). Go!
 - Software suite molecular dynamics: Gromacs 2026.x and OpenMM 8.x
 
 ## :lucide-book-open: Publications { #publications }

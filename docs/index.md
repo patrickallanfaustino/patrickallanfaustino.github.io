@@ -26,7 +26,7 @@ primeira simulação do início ao fim, com a [DM básica](dinamica/md-easy.md).
 
 Este site também é um diário das etapas do meu
 doutorado. Acompanhe o progresso na seção **Doutorado**, começando pelo
-[Pipeline e ajustes](tese/pipeline-moleculas.md).
+[Sistemas](tese/sistemas.md).
 
 ## :lucide-info: Sobre este material { #sobre-este-material }
 

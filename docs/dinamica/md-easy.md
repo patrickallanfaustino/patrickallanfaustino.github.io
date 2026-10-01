@@ -3,8 +3,6 @@
 !!! warning "Atenção!"
     Página em reformulação.
 
-    Esta página foi reescrita para incorporar preparação escalonada, critério objetivo de equilibração e réplicas.
-
 O objetivo é simular uma biomolécula em uma caixa periódica com água a 298,15 K e 1 bar, sem viés — e terminar com um resultado que você consiga defender.
 
 Três decisões separam uma trajetória que roda de uma que significa alguma coisa:
@@ -13,7 +11,7 @@ Três decisões separam uma trajetória que roda de uma que significa alguma coi
 2. **Como saber que a equilibração terminou?**. Com um teste numérico, não olhando o formato da curva de densidade.
 3. **Quantas vezes simular?**. Uma trajetória não permite estimar a própria incerteza, por mais longa que seja.
 
-!!! info "Por que dez etapas e não três"
+!!! info "Por que dez etapas?"
 
     * O solvente reorganiza-se em picossegundos. Cadeias laterais levam centenas de picossegundos. Estrutura secundária, nanossegundos.
 
@@ -29,15 +27,15 @@ Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br]
 
 Para iniciar a simulação, obtenha os arquivos de topologia (campos de força), as coordenadas iniciais da biomolécula e os parâmetros de entrada para a dinâmica molecular.
 
-Utilize a estrutura da **Xilanase G11** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB, que possui uma resolução de 1,49 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Uma resolução menor proporciona maior detalhamento cristalográfico. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
+Utilize a estrutura da **Xilanase** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB, que possui uma resolução de 1,49 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Uma resolução menor proporciona maior detalhamento cristalográfico. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
 
 A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica.
 
 Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), possui extrema importância por determinar o estado de protonação correto dos aminoácidos tituláveis; ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
 
-Desenvolvi um notebook para fazer os ajustes necessários. Download [aqui](../assets/notebooks/protein_builder_v16.ipynb). Faça o download dos arquivos e realize os ajustes no notebook.
-
-[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder_v16.ipynb)
+!!! note "Dica:"
+    Desenvolvi um notebook para fazer os ajustes necessários na molécula. Faça o download dos arquivos e configure corretamente o notebook.
+    Download [aqui](../assets/notebooks/protein_builder.ipynb) ou [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder.ipynb)
 
 <div align="center">
     <img src="../assets/dinamica/xilanase.png">
@@ -61,7 +59,7 @@ Observe que algumas biomoléculas apresenta múltiplas cadeias, identificadas co
 
 Em seguida, escolha o campo de força e o modelo de água que serão usados na simulação:
 
-!!! note
+!!! note "Dica:"
 
     Caso utilize um campo de força externo, coloque a pasta correspondente no diretório de trabalho como <<name>>.ff.
 

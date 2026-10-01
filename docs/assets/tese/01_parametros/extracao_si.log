@@ -1,0 +1,13 @@
+IC6_HEM.mol2      73 atomos  carga -1.5976
+IC6_CYP.mol2      10 atomos  carga -0.4024
+IC6.frcmod       extraido
+DIOXY_HEM.mol2    75 atomos  carga -2.5336
+DIOXY_CYP.mol2    10 atomos  carga -0.4664
+DIOXY.frcmod     extraido
+CPDI_HEM.mol2     74 atomos  carga -1.6141
+CPDI_CYP.mol2     10 atomos  carga -0.3859
+CPDI.frcmod      extraido
+IC6    HEM + CYP = -1.5976 -0.4024 = -2.0000
+DIOXY  HEM + CYP = -2.5336 -0.4664 = -3.0000
+CPDI   HEM + CYP = -1.6141 -0.3859 = -2.0000
+sha256 do SI em texto: 856a1b854e291b2d66cd01d8c1f4df01f3e046e91d477d8f9829b27aeea28b4b

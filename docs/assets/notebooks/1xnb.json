@@ -1,0 +1,53 @@
+{
+  "descricao": "Xilanase GH11 de Bacillus circulans (BcX), apo, PDB 1XNB. pH otimo 5,7 (McIntosh et al. 1996, PMID 8756457)",
+  "input_structure": "1XNB.pdb",
+  "chain_ids": [
+    "A"
+  ],
+  "ph": 5.7,
+  "ffout": "AMBER",
+  "keep_water": false,
+  "keep_metals": false,
+  "keep_ligands": false,
+  "aguas_enterradas": true,
+  "limiar_sasa_agua": 1.0,
+  "b_max_agua": null,
+  "modelo_agua": "opc",
+  "arquivo_itp_agua": "../../../../software/gromacs-2026.3-qmmm/share/gromacs/top/amber19sb.ff/opc.itp",
+  "protonation_overrides": [
+    {
+      "cadeia": "A",
+      "numero": 78,
+      "estado": "GLU",
+      "pKa_medido": 4.6,
+      "papel": "nucleofilo",
+      "fonte": "McIntosh LP et al. (1996) The pKa of the general acid/base carboxyl group of a glycosidase cycles during catalysis: a 13C-NMR study of Bacillus circulans xylanase. Biochemistry 35:9958-9966. PMID 8756457"
+    },
+    {
+      "cadeia": "A",
+      "numero": 172,
+      "estado": "GLH",
+      "pKa_medido": 6.7,
+      "papel": "acido/base geral",
+      "fonte": "McIntosh LP et al. (1996) The pKa of the general acid/base carboxyl group of a glycosidase cycles during catalysis: a 13C-NMR study of Bacillus circulans xylanase. Biochemistry 35:9958-9966. PMID 8756457"
+    },
+    {
+      "cadeia": "A",
+      "numero": 149,
+      "estado": "HIE",
+      "pKa_medido": null,
+      "pKa_nota": "< 2.3 (limite superior); neutra em todas as condicoes",
+      "papel": "His enterrada; tautomero Ne2-H ligado a agua interna",
+      "fonte": "Plesniak LA, Connelly GP, Wakarchuk WW, McIntosh LP (1996) Characterization of a buried neutral histidine residue in Bacillus circulans xylanase: NMR assignments, pH titration, and hydrogen exchange. Protein Sci 5:2319-2328. PMID 8931150"
+    },
+    {
+      "cadeia": "A",
+      "numero": 156,
+      "estado": "HIP",
+      "pKa_medido": 6.5,
+      "pKa_nota": "~6,5; ~86 % protonada a pH 5,7",
+      "papel": "His exposta ao solvente",
+      "fonte": "Plesniak LA, Connelly GP, Wakarchuk WW, McIntosh LP (1996) Characterization of a buried neutral histidine residue in Bacillus circulans xylanase: NMR assignments, pH titration, and hydrogen exchange. Protein Sci 5:2319-2328. PMID 8931150"
+    }
+  ]
+}
