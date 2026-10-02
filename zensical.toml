@@ -24,7 +24,7 @@ nav = [
     { "Imagens e vídeos" = "dinamica/md-visual.md" },
   ] },
   { "Doutorado" = [
-    { "Sistemas" = "tese/sistemas.md" },
+    { "Preparo dos sistemas" = "tese/sistemas.md" },
   ] },
   { "Sobre" = "sobre.md" },
 ]
