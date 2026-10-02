@@ -7,7 +7,6 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=8G
 #SBATCH --job-name=run_rep1
-#SBATCH --output=%j.out
 #SBATCH --mail-user=<youremail>@unesp.br
 #SBATCH --mail-type=ALL
 
@@ -25,9 +24,7 @@ echo "Diretório: $(pwd)"
 echo "Nós alocados: $SLURM_NODELIST"
 echo ""
 
-nvidia-smi --query-gpu=timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv
-
-# Executa o script de verificação dentro do container
+# Executa o script dentro do container
 job-nanny apptainer exec --nv gromacs-gpu.sif bash md1.sh
 
 echo ""

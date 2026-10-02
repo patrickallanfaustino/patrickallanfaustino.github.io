@@ -13,7 +13,7 @@
   "limiar_sasa_agua": 1.0,
   "b_max_agua": null,
   "modelo_agua": "opc",
-  "arquivo_itp_agua": "../../../../software/gromacs-2026.3-qmmm/share/gromacs/top/amber19sb.ff/opc.itp",
+  "arquivo_itp_agua": "../../../../software/gromacs-2026.4-qmmm/share/gromacs/top/amber19sb.ff/opc.itp",
   "protonation_overrides": [
     {
       "cadeia": "A",

@@ -3,7 +3,7 @@
 !!! info "Testado em"
 
     - Distro: Ubuntu 24.04.4 (kernel 6.8)
-    - GROMACS: 2026.3
+    - GROMACS: 2026.4
     - ROCm: 6.4
 
 !!! warning "Atenção!"
@@ -256,15 +256,15 @@ unzip libtorch-shared-with-deps-2.9.0+cpu.zip
 Agora vamos compilar o GROMACS 2026.x com suporte a GPU AMD e Torch (somente CPU):
 ```bash
 cd ~/Downloads
-wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
-tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.4.tar.gz
+tar -xvf gromacs-2026.4.tar.gz && cd gromacs-2026.4
 mkdir -p build && cd build
 ```
 
 Para compilar:
 ```bash
 sudo cmake .. \
-	-DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3 \
+	-DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.4 \
 	-DCMAKE_C_COMPILER=/opt/rocm/bin/amdclang \
 	-DCMAKE_CXX_COMPILER=/opt/rocm/bin/amdclang++ \
 	-DCMAKE_HIP_COMPILER=/opt/rocm/bin/amdclang++ \
@@ -288,7 +288,7 @@ make -j$(nproc)
 make check -j$(nproc)
 make install -j$(nproc)
 
-source $HOME/software/gromacs-2026.3/bin/GMXRC    # configurar no .bashrc
+source $HOME/software/gromacs-2026.4/bin/GMXRC    # configurar no .bashrc
 source ~/.bashrc
 
 gmx -version
@@ -310,7 +310,7 @@ gmx -version
     -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
     -DGMX_GPU=SYCL \
     -DGMX_SYCL=ACPP \
-    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3 \
+    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.4 \
     -DHIPSYCL_TARGETS='hip:gfx1032' \
     -DGMX_SIMD=AVX2_256 \
     -DGMX_HWLOC=ON \

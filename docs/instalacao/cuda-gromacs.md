@@ -4,12 +4,12 @@
 
     **Ubuntu 24.04.4** (kernel 6.17)
 
-    - GROMACS: 2026.3
+    - GROMACS: 2026.4
     - CUDA: 13.3
 
     **Ubuntu 26.04.1** (kernel 7.0)
 
-    - GROMACS: 2026.3
+    - GROMACS: 2026.4
     - CUDA: 13.4
 
 ## :lucide-laptop: Computador testado e pré-requisitos:
@@ -317,7 +317,7 @@ sudo apt install \
     --with-libxsmm=install \
     --with-libxc=install \
     --with-libint=install \
-    --with-plumed=install \
+    --with-plumed=no \
     --with-gsl=install \
     --with-libvdwxc=no \
     --with-spglib=no \
@@ -344,14 +344,14 @@ sudo apt install \
 
     ```bash
     cd ~/Downloads
-    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
-    tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.4.tar.gz
+    tar -xvf gromacs-2026.4.tar.gz && cd gromacs-2026.4
     mkdir -p build && cd build
     ```
 
     ```bash
     cmake .. \
-    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3-qmmm \
+    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.4-qmmm \
     -DCMAKE_PREFIX_PATH="/usr;/usr/local/cuda" \
     -DBUILD_SHARED_LIBS=OFF \
     -DGMX_MPI=ON \
@@ -384,7 +384,7 @@ sudo apt install \
     make check -j$(nproc)
     make install -j$(nproc)
 
-    source $HOME/software/gromacs-2026.3-qmmm/bin/GMXRC    # configurar no .bashrc
+    source $HOME/software/gromacs-2026.4-qmmm/bin/GMXRC    # configurar no .bashrc
     source ~/.bashrc
 
     gmx -version
@@ -402,8 +402,8 @@ sudo apt install \
 
     ```bash
     cd ~/Downloads
-    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
-    tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+    wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.4.tar.gz
+    tar -xvf gromacs-2026.4.tar.gz && cd gromacs-2026.4
     mkdir -p build && cd build
     ```
 
@@ -421,7 +421,7 @@ sudo apt install \
     -DCUDAToolkit_ROOT=/usr/local/cuda \
     -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
     -DCMAKE_CUDA_ARCHITECTURES=native \
-    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3 \
+    -DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.4 \
     -DGMX_HWLOC=ON \
     -DGMX_USE_HDF5=ON \
     -DGMX_USE_PLUMED=ON \
@@ -437,7 +437,7 @@ sudo apt install \
     make check -j$(nproc)
     make install -j$(nproc)
 
-    source $HOME/software/gromacs-2026.3/bin/GMXRC    # configurar no .bashrc
+    source $HOME/software/gromacs-2026.4/bin/GMXRC    # configurar no .bashrc
     source ~/.bashrc
 
     gmx -version

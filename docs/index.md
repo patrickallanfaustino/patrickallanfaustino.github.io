@@ -6,7 +6,7 @@
     <img src="assets/logo.svg">
 </div>
 
-Tutoriais e workflows práticos de simulação de dinâmica molecular de
+Tutoriais e *workflows* práticos de simulação de dinâmica molecular de
 biomoléculas, voltados a quem está começando: alunos de iniciação
 científica e de pós-graduação.
 
@@ -24,8 +24,7 @@ primeira simulação do início ao fim, com a [DM básica](dinamica/md-easy.md).
 
 ## :lucide-graduation-cap: Acompanhamento do doutorado { #acompanhamento-do-doutorado }
 
-Este site também é um diário das etapas do meu
-doutorado. Acompanhe o progresso na seção **Doutorado**, começando pelo
+Este site é um diário das etapas da minha tese. Acompanhe o progresso na seção **Doutorado**, começando pelo
 [Sistemas](tese/sistemas.md).
 
 ## :lucide-info: Sobre este material { #sobre-este-material }

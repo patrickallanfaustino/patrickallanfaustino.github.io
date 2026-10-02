@@ -3,7 +3,7 @@
 !!! info "Testado em"
 
     - Ambiente: contêiner Apptainer (Ubuntu 24.04 + CUDA 12.9.1)
-    - GROMACS: 2026.2
+    - GROMACS: 2026.4
     - CUDA: 12 (sm_89)
 
 

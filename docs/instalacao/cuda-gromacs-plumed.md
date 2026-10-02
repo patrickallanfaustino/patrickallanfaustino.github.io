@@ -1,10 +1,10 @@
-# Instalação do GROMACS 2026.3 com CUDA 13.x e PLUMED 2.x
+# Instalação do GROMACS 2026.x com CUDA 13.x e PLUMED 2.x
 
 !!! warning "Atenção!"
 
-    Atualmente, o suporte do PLUMED 2.x para o GROMACS 2026.3 esta **em desenvolvimento**.
+    Atualmente, o suporte do PLUMED 2.x para o GROMACS 2026.4 esta **em desenvolvimento**.
 
-## :lucide-gem: Instalação do GROMACS 2026.3
+## :lucide-gem: Instalação do GROMACS 2026.4
 
 Para instalar bibliotecas auxiliares para o GROMACS:
 ```bash
@@ -61,11 +61,11 @@ plumed info --version
 which plumed
 ```
 
-Para compilar o GROMACS 2026.3 com suporte a CUDA 13.x, siga os passos abaixo:
+Para compilar o GROMACS 2026.4 com suporte a CUDA 13.x, siga os passos abaixo:
 ```bash
 cd ~/Downloads
-wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.3.tar.gz
-tar -xvf gromacs-2026.3.tar.gz && cd gromacs-2026.3
+wget ftp://ftp.gromacs.org/gromacs/gromacs-2026.4.tar.gz
+tar -xvf gromacs-2026.4.tar.gz && cd gromacs-2026.4
 mkdir -p build && cd build
 ```
 
@@ -79,7 +79,7 @@ cd build
 
 ```bash
 cmake .. \
--DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.3-plumed \
+-DCMAKE_INSTALL_PREFIX=$HOME/software/gromacs-2026.4-plumed \
 -DCMAKE_PREFIX_PATH="/usr;/usr/local/cuda" \
 -DBUILD_SHARED_LIBS=OFF \
 -DGMX_MPI=ON \
@@ -106,7 +106,7 @@ make -j$(nproc)
 make check -j$(nproc)
 make install -j$(nproc)
 
-source $HOME/software/gromacs-2026.3-plumed/bin/GMXRC    # configurar no .bashrc
+source $HOME/software/gromacs-2026.4-plumed/bin/GMXRC    # configurar no .bashrc
 source ~/.bashrc
 
 gmx -version
