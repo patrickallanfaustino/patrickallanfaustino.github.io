@@ -25,7 +25,7 @@ primeira simulação do início ao fim, com a [DM básica](dinamica/md-easy.md).
 ## :lucide-graduation-cap: Acompanhamento do doutorado { #acompanhamento-do-doutorado }
 
 Este site é um diário das etapas da minha tese. Acompanhe o progresso na seção **Doutorado**, começando pelo
-[Sistemas](tese/sistemas.md).
+[Preparo dos Sistemas](tese/sistemas.md).
 
 ## :lucide-info: Sobre este material { #sobre-este-material }
 
