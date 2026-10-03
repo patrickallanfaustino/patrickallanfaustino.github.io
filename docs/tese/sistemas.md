@@ -11,9 +11,7 @@
     Nenhuma atualização de software será realizada ao longo da pesquisa, salvo sob estrita necessidade 
     de correção para preservar a confiabilidade dos dados.
 
-> Primeira etapa do projeto de doutorado: seleção, preparo e ajuste das
-> moléculas de interesse que serão utilizadas nas simulações subsequentes.
-
+---
 ## :lucide-file-text: Preprint e publicação relacionada
 
 Este conteúdo também servirá como material suplementar do artigo
@@ -267,13 +265,6 @@ Valores esperados no relatório:
 
 Íons pelo SLTCAP a partir da contagem de águas do bulk (ex.: 27 036 águas,
 Q = −9 → 152 Na⁺ e 142 Cl⁻).
-
----
-## Passo 9 — GROMACS
-
-- md.mdp: 400 ns no Tier 1 e no APO.
-- Réplicas: 5 no Tier 1 e no APO, 3 no Tier 2.
-- Sistemas com etanol a 10 %: ainda precisam de uma etapa de montagem própria antes de rodar.
 
 ---
 ## :lucide-book-search: Referências

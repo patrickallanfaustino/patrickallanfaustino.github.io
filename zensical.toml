@@ -25,6 +25,7 @@ nav = [
   ] },
   { "Doutorado" = [
     { "Preparo dos sistemas" = "tese/sistemas.md" },
+    { "Produção" = "tese/producao.md" },
   ] },
   { "Sobre" = "sobre.md" },
 ]
