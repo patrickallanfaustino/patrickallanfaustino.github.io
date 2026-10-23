@@ -25,13 +25,11 @@ Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br]
 ---
 ## :lucide-download: Arquivos iniciais
 
-Para iniciar a simulação, obtenha os arquivos de topologia (campos de força), as coordenadas iniciais da biomolécula e os parâmetros de entrada para a dinâmica molecular.
-
-Utilize a estrutura da **Xilanase** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB, que possui uma resolução de 1,49 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Uma resolução menor proporciona maior detalhamento cristalográfico. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
+Utilize a estrutura da **Xilanase** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB com resolução de 1,49 Å. **Dê preferência para estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
 
 A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica.
 
-Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), possui extrema importância por determinar o estado de protonação correto dos aminoácidos tituláveis; ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
+Paralelamente, o ajuste do estado de protonação dos aminoácidos pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
 
 !!! note "Dica:"
     Desenvolvi um notebook para fazer os ajustes necessários na molécula. Faça o download dos arquivos e configure corretamente o notebook.
@@ -47,67 +45,70 @@ Paralelamente, o ajuste preciso do pH, que pode ser feito pelo servidor [H++](ht
 ---
 ## :lucide-atom: Preparo da topologia da molécula: campos de forças
 
-O arquivo **1S0Q.pdb** contém, além das coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realize essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
+O arquivo **1XNB.pdb** contém as coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realize essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
 
+```bash
+grep -v HETATM 1XNB.pdb > 1XNB_clean.pdb    # para remover todos os ligantes + água
+
+grep -v HOH 1XNB.pdb > 1XNB_clean.pdb    # remove apenas água
 ```
-grep -v HETATM 1S0Q.pdb > 1S0Q_clean.pdb
 
-# grep -v HOH 1S0Q.pdb > 1S0Q_clean.pdb
-```
+Observe que algumas biomoléculas apresenta múltiplas cadeias, identificadas como `chain A`, `chain B`, e assim por diante. Defina uma cadeia para os estudos.
 
-Observe que algumas biomoléculas apresenta múltiplas cadeias, identificadas como `chain A`, `chain B`, e assim por diante.
+Depois de limpar o arquivo PDB, faça o ajuste dos estados de protonação dos resíduos de aminoácidos, garantindo que a biomolécula esteja em um estado de carga adequado para simulação.
 
 Em seguida, escolha o campo de força e o modelo de água que serão usados na simulação:
 
-!!! note "Dica:"
-
-    Caso utilize um campo de força externo, coloque a pasta correspondente no diretório de trabalho como <<name>>.ff.
-
-
 ```bash
-gmx pdb2gmx -v -f 1S0Q_clean.pdb -o tripsina.gro
+gmx pdb2gmx -v -f 1XNB_clean.pdb -o xilanase.gro
 
 # -v = verbose, para visualizar o processo.
 # -f = file input, arquivo de entrada das coordenadas.
 # -o = file output, arquivo de saída das coordenadas.
 ```
 
-O programa solicitará duas escolhas em sequência. Responda a cada prompt digitando o número correspondente.
+!!! note "Dica:"
+
+    Caso utilize um campo de força externo, coloque a pasta correspondente no diretório de trabalho como <<name>>.ff.
+
 
 O GROMACS utiliza estados de protonação canônicos para cada aminoácido (assumindo pH neutro) e adiciona os hidrogênios correspondentes. Ao final do processo, o programa conserva a carga líquida total da biomolécula. Confirme este valor no terminal, procurando pela mensagem: `Total charge in system 8.000 e`.
 
 Para visualizar no VMD, utilize:
 ```bash
-vmd tripsina.gro
+vmd xilanase.gro
 ```
 
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [gmx2pdb](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-pdb2gmx.html).
 
     Serão criados os arquivos:
-    - insulina.gro = arquivo com as posições iniciais de cada átomo da biomolécula compatível com o campo de força escolhido.
+
+    - xilanase.gro = arquivo com as posições iniciais de cada átomo da biomolécula compatível com o campo de força escolhido.
+    
     - topol.top = arquivo com os parâmetros necessários para as integrações e derivações numéricas.
+    
     - posre.itp = arquivo de topologia auxiliar indicando os átomos com restrições por padrão.
 
+| Campo de força | Informações | Modelo de água | Interações não ligadas | Referências |
+|---|---|---|---|---|
+| **OPLS-AA** | Átomo explícito, desenvolvido por Jorgensen para fases condensadas: proteínas, pequenas moléculas e solventes orgânicos (lipídios: variante L-OPLS). A versão mais recente é a OPLS-AA/M, distribuída pelo grupo de Jorgensen também em formato GROMACS; o `oplsaa.ff` do GROMACS é a OPLS-AA/L. | TIP4P (recomendado no `pdb2gmx`); TIP3P também é usado. | `rvdw` 1.0–1.2 nm, PME, `DispCorr = EnerPres` | [Jorgensen et al. 1996](https://doi.org/10.1021/ja9621760)<br>[Robertson et al. 2015](https://doi.org/10.1021/acs.jctc.5b00356) (OPLS-AA/M)<br>[Siu et al. 2012](https://doi.org/10.1021/ct200908r) (L-OPLS) |
+| **AMBER** | Proteínas e ácidos nucleicos. O GROMACS traz nativamente amber99sb-ildn, amber14sb e amber19sb, entre outros. Para DNA e RNA, o AMBER recomenda OL15 e OL3. Pequenas moléculas: GAFF/GAFF2 via ACPYPE. | Depende da versão: TIP3P para ff99SB-ILDN e ff14SB; OPC ou OPC3 para ff19SB. | `rvdw` 0.8–1.0 nm (até 1.2 nm), PME, `DispCorr = EnerPres` | [Lindorff-Larsen et al. 2010](https://doi.org/10.1002/prot.22711) (ff99SB-ILDN)<br>[Maier et al. 2015](https://doi.org/10.1021/acs.jctc.5b00255) (ff14SB)<br>[Tian et al. 2020](https://doi.org/10.1021/acs.jctc.9b00591) (ff19SB)<br>[Zgarbová et al. 2015](https://doi.org/10.1021/acs.jctc.5b00716) (OL15)<br>[Zgarbová et al. 2011](https://doi.org/10.1021/ct200162x) (OL3)<br>[Wang et al. 2004](https://doi.org/10.1002/jcc.20035) (GAFF)<br>[Sousa da Silva & Vranken 2012](https://doi.org/10.1186/1756-0500-5-367) (ACPYPE) |
+| **CHARMM36/36m** | Átomo explícito; muito detalhado para lipídios, proteínas (C36m) e carboidratos; pequenas moléculas via CGenFF. Port mais recente para GROMACS: fev/2026 (laboratório MacKerell), em versão *force-switch* (`charmm36-feb2026_cgenff-5.0.ff`, padrão) e LJ-PME (`charmm36-feb2026_ljpme_cgenff-5.0.ff`). | TIP3P do CHARMM (com LJ nos H); não substituir pelo TIP3P original. | *Force-switch*: 1.0→1.2 nm, PME com `rcoulomb = 1.2`, `DispCorr = no` em bicamadas. LJ-PME: PME para Coulomb e LJ, corte de 0.9 nm. | [Best et al. 2012](https://doi.org/10.1021/ct300400x) (C36)<br>[Huang et al. 2017](https://doi.org/10.1038/nmeth.4067) (C36m)<br>[Klauda et al. 2010](https://doi.org/10.1021/jp101759q) (lipídios)<br>[Yu et al. 2021](https://doi.org/10.1021/acs.jctc.0c01326) (LJ-PME)<br>[Vanommeslaeghe et al. 2010](https://doi.org/10.1002/jcc.21367) (CGenFF)<br>[MacKerell et al. 1998](https://doi.org/10.1021/jp973084f) (CHARMM22) |
+| **GROMOS (54A7)** | Átomo unido: H alifáticos incorporados aos carbonos. Parametrizado contra energias livres de hidratação e solvatação (53A6/54A7). O GROMACS traz 43a1, 43a2, 45a3, 53a5, 53a6 e 54a7. | SPC | Parametrizado com *twin-range* 0.8/1.4 nm e campo de reação (εRF ≈ 62). No GROMACS atual: corte único de 1.4 nm com campo de reação ou PME; o manual alerta que propriedades como a densidade podem diferir. | [Oostenbrink et al. 2004](https://doi.org/10.1002/jcc.20090) (53A5/53A6)<br>[Schmid et al. 2011](https://doi.org/10.1007/s00249-011-0700-9) (54A7)<br>[Tironi et al. 1995](https://doi.org/10.1063/1.469273) (campo de reação) |
 
-Campo de Força  |  Informações  |  Modelo de água  |  cut-off
-------- | ---------- | -------- | -------- 
-**OPLS**    | O campo de força OPLS-AA (Optimized Potentials for Liquid Simulations – All Atom) é amplamente usado para simulações de proteínas, pequenas moléculas, solventes, lipídios, dentre outros. | TIP4P recomendado, mas pode usar TIP3P. Não recomendado SPC. | 1.0~1.2 nm
-**AMBER**   | A família de campos de força AMBER (como amber99sb, amber99sb-ildn, amber14, etc.) é amplamente usada para proteínas, DNA/RNA e simulações biomoleculares. | TIP3P ou OPC, não recomendado TIP4P e SPC. | 1.0~1.2 nm
-**CHARMM**  | O campo de força CHARMM (como charmm36-jul2022.ff) é extremamente detalhado, especialmente para lipídios, proteínas e açúcares, e foi parametrizado com *switching functions*, o que o diferencia das abordagens anteriores. | TIP3P modificado, não substituir por TIP3P comum. | 1.2 nm
-**GROMOS**  | O campo de força GROMOS96 (como gromos54a7.ff) é uma escolha clássica para simulações de proteínas, sistemas aquosos e alguns tipos de estudos de bioenergia. Ele é o único desta lista a usar potencial truncado sem PME. | SPC | 1.4 nm
+| Modelo | Sítios | Descrição | Referências |
+|---|---|---|---|
+| **SPC** | 3 | Rígido; O–H = 1.0 Å e ângulo tetraédrico de 109.47°. Ajustado à densidade e à energia de vaporização do líquido. Água de referência do GROMOS. | [Berendsen et al. 1981](https://doi.org/10.1007/978-94-015-7658-1_21) |
+| **SPC/E** | 3 | SPC reparametrizado com cargas maiores, incluindo na parametrização uma correção pela energia de autopolarização. Melhora densidade e difusão em relação ao SPC. | [Berendsen et al. 1987](https://doi.org/10.1021/j100308a038) |
+| **TIP3P** | 3 | Rígido, geometria experimental (0.9572 Å; 104.52°). Padrão do ff14SB; o CHARMM usa versão modificada com LJ nos H. Barato, mas superestima a difusão e subestima a viscosidade. | [Jorgensen et al. 1983](https://doi.org/10.1063/1.445869) |
+| **TIP4P** | 4 | Carga negativa num sítio virtual (M) na bissetriz HOH; o oxigênio guarda só o LJ. Variantes: TIP4P-Ew (Ewald), TIP4P/2005 (diagrama de fases), TIP4P/Ice. | [Jorgensen et al. 1983](https://doi.org/10.1063/1.445869)<br>[Horn et al. 2004](https://doi.org/10.1063/1.1683075) (TIP4P-Ew)<br>[Abascal & Vega 2005](https://doi.org/10.1063/1.2121687) (TIP4P/2005)<br>[Abascal et al. 2005](https://doi.org/10.1063/1.1931662) (TIP4P/Ice) |
+| **OPC** | 4 | Rígido, 4 pontos e 3 cargas, otimizado para reproduzir um conjunto de propriedades do líquido. Recomendado com ff19SB; custo semelhante ao de outros modelos de 4 pontos. | [Izadi et al. 2014](https://doi.org/10.1021/jz501780a) |
+| **OPC3** | 3 | Versão de 3 pontos da mesma abordagem; mais preciso que TIP3P e SPC/E nas propriedades do líquido, com o custo de um modelo de 3 pontos. | [Izadi & Onufriev 2016](https://doi.org/10.1063/1.4960175) |
+| **TIP5P** | 5 | Duas cargas negativas em sítios virtuais nos pares isolados do O. Reproduz o máximo de densidade perto de 4 °C; mais caro. Com PME, preferir o TIP5P-E. | [Mahoney & Jorgensen 2000](https://doi.org/10.1063/1.481505)<br>[Rick 2004](https://doi.org/10.1063/1.1652434) (TIP5P-E) |
 
-| Modelo | Tipo | Descrição |
-|--------|---------|--------------------------------|
-| **SPC** | 3 pontos | Modelo rígido, ângulo fixo de 109.47°, parametrizado para propriedades macroscópicas. |
-| **SPC/E** | 3 pontos | Versão estendida do SPC, com correção de energia de polarização. Melhor densidade e constante dielétrica. |
-| **TIP3P** | 3 pontos | Muito usado com AMBER e CHARMM. Simples e compatível com muitos campos de força. |
-| **TIP4P** | 4 pontos | Inclui ponto virtual (M-site) para carga negativa fora do oxigênio, melhorando propriedades de fase. |
-| **OPC** | 3 e 4 pontos | É o novo padrão para simulações com campos de força modernos (como AMBER), equilibrando precisão estrutural e custo. |
-| **TIP5P** | 5 pontos | Dois pontos extra para os pares de elétrons do oxigênio. Mais preciso para estrutura tetraédrica, porém mais custoso. |
-
-!!! warning
+!!! warning "Atenção!"
 
     Escolha o campo de força e o modelo de água com base na natureza do seu sistema e nas propriedades que você deseja investigar.
 
@@ -126,41 +127,41 @@ gmx editconf -f tripsina.gro -o box.gro -c -d 1.0 -bt cubic
 # -bt = box type, formato da caixa.
 ```
 
-Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da sua biomolécula. O objetivo é selecionar um formato que otimize o volume do sistema, reduzindo o número de moléculas de solvente. Essa otimização economiza recursos computacionais ao equilibrar o tempo de simulação e a demanda energética.
+Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da sua biomolécula. Geralmente, selecionamos `cubic` ou `dodecahedron`, pois essas formas proporcionam um volume de simulação eficiente.
 
-Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-se de que a distância mínima entre a biomolécula e as bordas da caixa esteja na **faixa de 1,0 a 2,0 nm, pois esses valores são ideais para a simulação**.
+Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-se de que a distância mínima entre a biomolécula e as bordas da caixa esteja na **faixa de 1,0 a 1,6 nm**.
 
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [editconf](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-editconf.html).
 
     Essa função é util para converter arquivos .pdb <--> .gro usando `gmx editconf -f <file>.gro -o <file>.pdb`.
 
 
-!!! note
+!!! note "Nota:"
 
-    A tag `-box` pode ser utilizada para definir as dimensões da caixa de simulação. Por exemplo, ao executar `gmx editconf -f insulina.gro -o box.gro -c -d 2.5 -bt cubic -box 10 10 10`, obtém-se uma caixa cúbica com arestas de 10 nm. Nessa configuração, a distância da borda definida como 2,5 nm será considerada, resultando em um espaço útil de 7,5 nm para a acomodação das moléculas, garantindo o afastamento adequado entre a molécula e as bordas da caixa.
+    A tag `-box` pode ser utilizada para definir as dimensões da caixa de simulação. Por exemplo, ao executar `gmx editconf -f xilanase.gro -o box.gro -c -d 2.5 -bt cubic -box 10 10 10`, obtém-se uma caixa cúbica com arestas de 10 nm. Nessa configuração, a distância da borda definida como 2,5 nm será considerada, resultando em um espaço útil de 7,5 nm para a acomodação das moléculas, garantindo o afastamento adequado entre a molécula e as bordas da caixa.
 
     **E quando não definimos `-box`?** Nessa configuração, o algoritmo do GROMACS definirá as dimensões da caixa com base no tamanho máximo da biomolécula, acrescido da distância especificada para a borda. Essa abordagem proporciona uma margem suficiente para garantir uma dinâmica molecular segura, ao mesmo tempo em que promove o uso eficiente dos recursos computacionais.
 
 
 <div align="center">
-<img src="../assets/dinamica/box.png" alt="caixa de simulação">
+    <img src="../assets/dinamica/box.png" alt="caixa de simulação">
 </div>
 
->PDB 1S0Q, tripsina em uma caixa de simulação cúbica.
+>Xilanase em uma caixa de simulação cúbica.
 
 Para vizualisar no VMD:
 
 ```bash
 vmd box.gro
 
-Extensions > Tk Console > pbc box -color blue
+Extensions > Tk Console > pbc box -color red
 ```
 
 ### :lucide-droplets: Solvatação
 
-Em seguida, preencha a caixa de simulação com moléculas de água para solvatar a insulina. Este procedimento garante que a biomolécula fique imersa em um ambiente aquoso, simulando as condições fisiológicas necessárias para a análise da dinâmica molecular.
+Em seguida, preencha a caixa de simulação com moléculas de água para solvatar a Xilanase. Este procedimento garante que a biomolécula fique imersa em um ambiente aquoso, simulando as condições fisiológicas necessárias para a análise da dinâmica molecular.
 
 ```bash
 gmx solvate -cp box.gro -cs spc216.gro -o solvated.gro -p topol.top
@@ -172,23 +173,18 @@ gmx solvate -cp box.gro -cs spc216.gro -o solvated.gro -p topol.top
 
 O GROMACS acaba de preencher a caixa com moléculas de água do arquivo `spc216.gro` (compatível com o modelo TIP3P), identificando-as com o resíduo **SOL**. Verifique na mensagem de saída a linha `Number of solvent molecules` para confirmar a quantidade de solvente adicionado. O programa já atualizou essa informação automaticamente na seção `[ molecules ]` do seu arquivo `topol.top`.
 
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [solvate](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-solvate.html).
 
-    Adicionalmente, pode ser definido **-box** para as dimensões de uma nova caixa de simulação e **-maxsol** para limitar a quantidade máxima de moleculas adicionadas, útil quando existe uma concentração calculada.
-
-
-!!! warning
-
-    Para modelos de água TIP4P, `-cs` utilize `tip4p.gro`.
+    Para modelos de água TIP4P (4 pontos), `-cs tip4p.gro`.
 
 
 <div align="center">
-<img src="../assets/dinamica/solvated.png" alt="tripsina solvatada">
+    <img src="../assets/dinamica/solvated.png" alt="xilanase solvatada">
 </div>
 
->PDB 1S0Q solvatada com água modelo TIP3P
+>Xilanase solvatada com água
 
 ### :lucide-scale: Neutralização
 A etapa final na preparação da caixa é a neutralização do sistema com a adição de íons. Este passo é fundamental, pois os algoritmos da simulação funcionam com maior eficiência em sistemas eletricamente neutros. Como visto na etapa anterior, a carga total da insulina é de 8,000 e. Portanto, adicione dois cátions para compensar essa carga e zerar a carga total do sistema.
