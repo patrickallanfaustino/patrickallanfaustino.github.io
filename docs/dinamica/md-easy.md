@@ -129,6 +129,8 @@ gmx editconf -f xilanase.gro -o box.gro -c -d 1.0 -bt cubic
 
 Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da biomolécula. Geralmente, selecionamos `cubic` ou `dodecahedron`, pois essas formas proporcionam maior eficiência.
 
+Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-se de que a distância mínima entre a biomolécula e as bordas da caixa esteja na **faixa de 1,0 a 1,6 nm**.
+
 !!! note "Nota:"
 
     Saiba mais sobre [editconf](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-editconf.html).
@@ -225,7 +227,7 @@ Na mensagem de saída, pode-se observar a mensagem `Will try to add XX NA ions a
 
 
 <div align="center">
-    <img src="../assets/dinamica/neutralization.png" alt="tripsina solvatada e neutralizada">
+    <img src="../assets/dinamica/neutralization.png" alt="sistema solvatado e neutralizado">
 </div>
 
 
