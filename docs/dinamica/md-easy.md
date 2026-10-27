@@ -29,7 +29,7 @@ Utilize a estrutura da **Xilanase** com o código [1XNB](https://www.rcsb.org/st
 
 A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica.
 
-Paralelamente, o ajuste do estado de protonação dos aminoácidos pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka), ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
+Paralelamente, o ajuste do estado de protonação dos aminoácidos pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka). Ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
 
 !!! note "Dica:"
     Desenvolvi um notebook para fazer os ajustes necessários na molécula. Faça o download dos arquivos e configure corretamente o notebook.
@@ -45,7 +45,7 @@ Paralelamente, o ajuste do estado de protonação dos aminoácidos pode ser feit
 ---
 ## :lucide-atom: Preparo da topologia da molécula: campos de forças
 
-O arquivo **1XNB.pdb** contém as coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realize essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
+O arquivo **1XNB.pdb** contém as coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realizamos essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
 
 ```bash
 grep -v HETATM 1XNB.pdb > 1XNB_clean.pdb    # para remover todos os ligantes + água
@@ -72,7 +72,7 @@ gmx pdb2gmx -v -f 1XNB_clean.pdb -o xilanase.gro
     Caso utilize um campo de força externo, coloque a pasta correspondente no diretório de trabalho como <<name>>.ff.
 
 
-O GROMACS utiliza estados de protonação canônicos para cada aminoácido (assumindo pH neutro) e adiciona os hidrogênios correspondentes. Ao final do processo, o programa conserva a carga líquida total da biomolécula. Confirme este valor no terminal, procurando pela mensagem: `Total charge in system 8.000 e`.
+O GROMACS utiliza estados de protonação canônicos para cada aminoácido (assumindo pH neutro) e adiciona os hidrogênios correspondentes. Ao final do processo, o programa conserva a carga líquida total da biomolécula. Confirme este valor no terminal, procurando pela mensagem: `Total charge in system X.000 e`.
 
 Para visualizar no VMD, utilize:
 ```bash
@@ -117,19 +117,17 @@ vmd xilanase.gro
 
 ## :lucide-box: Definindo a caixa de simulação: dimensões, solvatação e neutralização
 
-Nesta etapa, defina a caixa de simulação e ajuste seus parâmetros, como as dimensões, a distância da biomolécula até as bordas e outras configurações relevantes para a correta montagem do sistema.
+Nesta etapa, definimos as dimensões da caixa de simulação, adicionamos moléculas de água (solvente) e neutralizamos o sistema.
 
 ```bash
-gmx editconf -f tripsina.gro -o box.gro -c -d 1.0 -bt cubic
+gmx editconf -f xilanase.gro -o box.gro -c -d 1.0 -bt cubic
 
 # -c = center, para centralizar a biomolécula na caixa.
 # -d = distance, distância em nm entre todas moléculas e a borda.
 # -bt = box type, formato da caixa.
 ```
 
-Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da sua biomolécula. Geralmente, selecionamos `cubic` ou `dodecahedron`, pois essas formas proporcionam um volume de simulação eficiente.
-
-Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-se de que a distância mínima entre a biomolécula e as bordas da caixa esteja na **faixa de 1,0 a 1,6 nm**.
+Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da biomolécula. Geralmente, selecionamos `cubic` ou `dodecahedron`, pois essas formas proporcionam maior eficiência.
 
 !!! note "Nota:"
 
@@ -149,14 +147,12 @@ Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-s
     <img src="../assets/dinamica/box.png" alt="caixa de simulação">
 </div>
 
->Xilanase em uma caixa de simulação cúbica.
-
 Para vizualisar no VMD:
 
 ```bash
 vmd box.gro
 
-Extensions > Tk Console > pbc box -color red
+# Extensions > Tk Console > pbc box -color red
 ```
 
 ### :lucide-droplets: Solvatação
@@ -184,10 +180,8 @@ O GROMACS acaba de preencher a caixa com moléculas de água do arquivo `spc216.
     <img src="../assets/dinamica/solvated.png" alt="xilanase solvatada">
 </div>
 
->Xilanase solvatada com água
-
 ### :lucide-scale: Neutralização
-A etapa final na preparação da caixa é a neutralização do sistema com a adição de íons. Este passo é fundamental, pois os algoritmos da simulação funcionam com maior eficiência em sistemas eletricamente neutros. Como visto na etapa anterior, a carga total da insulina é de 8,000 e. Portanto, adicione dois cátions para compensar essa carga e zerar a carga total do sistema.
+A etapa final na preparação da caixa é a neutralização com a adição de íons. Este passo é fundamental, pois os algoritmos da simulação funcionam com maior eficiência em sistemas eletricamente neutros.
 
 Antes de neutralizar com a função `genion`, é necessário gerar um arquivo binário `.tpr` com as informações necessárias para o processamento:
 
@@ -199,11 +193,11 @@ gmx grompp -v -f inputs/ions.mdp -o ions.tpr -c solvated.gro -p topol.top
 
 Na tag -f está indicado o arquivo [ions.mdp](../assets/dinamica/inputs-easy/ions.mdp) da pasta `/inputs`. Esse arquivo possui todos os parâmetros necessários para o processamento dessa etapa. Recomenda-se o [estudo intensivo](https://manual.gromacs.org/current/user-guide/mdp-options.html) sobre os parâmetros desse arquivo.
 
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [grompp](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-grompp.html).
 
-    Em algumas oportunidades, o GROMACS gera `warnings` que devem ser verificados e, se necessário, suprimidos com **-maxwarn [x]**, onde `x` é a quantidade de `warnings` a ser suprimidos. Novamente, revise!
+    Em algumas oportunidades, o GROMACS gera `warnings` que devem ser verificados e, se necessário, suprimidos com **-maxwarn [x]**, onde `x` é a quantidade de `warnings` a ser suprimidos. Novamente: revise!
 
 
 O programa genion solicitará que você selecione um grupo de moléculas para substituir pelos íons. A convenção é sempre escolher o grupo de solvente (**SOL**). Portanto, quando solicitado, digite o número correspondente à opção SOL.
@@ -220,21 +214,20 @@ gmx genion -s ions.tpr -o solvated_ions.gro -p topol.top -pname NA -nname CL -ne
 # -conc 0.15 = concentration, define a concentração em mol/L.
 ```
 
-Por padrão, o GROMACS adiciona íons de sódio (NA) e cloreto (CL) em quantidade suficiente apenas para neutralizar o sistema. Neste caso, considerando a carga líquida de 8,000 e serão adicionados oito íons CL ao sistema. Entretanto, ao utilizar as opções `-conc 0.15` e, opcionalmente, `-neutral`, é possível garantir a adição de uma solução fisiológica a 0,9 % (m/m), simulando o ambiente semelhante ao sistema biológico humano, além de assegurar a neutralidade do sistema.
+Por padrão, o GROMACS adiciona íons de sódio (NA) e cloreto (CL) em quantidade suficiente apenas para neutralizar o sistema. Entretanto, ao utilizar as opções `-conc 0.15` e, opcionalmente, `-neutral`, é possível garantir a adição de uma solução fisiológica a 0,9 % (m/m), simulando o ambiente semelhante ao sistema biológico humano, além de assegurar a neutralidade do sistema.
 
 Na mensagem de saída, pode-se observar a mensagem `Will try to add XX NA ions and XX CL ions`, indicando o número de íons adicionados para atingir a concentração e a neutralidade. O arquivo `topol.top` é atualizado com as quantidades de ions adicionadas.
 
 
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [genion](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-genion.html).
 
 
 <div align="center">
-<img src="../assets/dinamica/neutralization.png" alt="tripsina solvatada e neutralizada">
+    <img src="../assets/dinamica/neutralization.png" alt="tripsina solvatada e neutralizada">
 </div>
 
->PDB 1S0Q solvatada e neutralizada. Em 🔵 NA e 🟢 CL.
 
 ## :lucide-trending-down: Minimização do sistema
 
