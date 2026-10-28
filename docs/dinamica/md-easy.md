@@ -3,21 +3,21 @@
 !!! warning "Atenção!"
     Página em reformulação.
 
-O objetivo é simular uma biomolécula em uma caixa periódica com água a 298,15 K e 1 bar, sem viés — e terminar com um resultado que você consiga defender.
+O objetivo deste tutorial é simular uma biomolécula em caixa periódica com água a 298,15 K e 1 bar, sem potenciais de viés, e obter resultados estatisticamente defensáveis.
 
-Três decisões separam uma trajetória que roda de uma que significa alguma coisa:
+Três decisões distinguem uma trajetória que apenas executa de uma trajetória com significado físico:
 
-1. **Como preparar o sistema?**. Não em três etapas, mas em dez, liberando os graus de liberdade na ordem em que eles relaxam.
-2. **Como saber que a equilibração terminou?**. Com um teste numérico, não olhando o formato da curva de densidade.
-3. **Quantas vezes simular?**. Uma trajetória não permite estimar a própria incerteza, por mais longa que seja.
+1. **Como preparar o sistema?** Em dez etapas, e não em três, liberando os graus de liberdade na ordem em que relaxam.
+2. **Como determinar o fim da equilibração?** Por um critério numérico, e não pela inspeção visual da curva de densidade.
+3. **Quantas simulações realizar?** Uma única trajetória, por mais longa que seja, não permite estimar a própria incerteza.
 
 !!! info "Por que dez etapas?"
 
-    * O solvente reorganiza-se em picossegundos. Cadeias laterais levam centenas de picossegundos. Estrutura secundária, nanossegundos.
+    * O solvente se reorganiza em picossegundos; as cadeias laterais, em centenas de picossegundos; a estrutura secundária, em nanossegundos.
 
-    * Retirar todas as restrições ao mesmo tempo faz o calor liberado ao relaxar um contato estérico se dissipar deformando a vizinhança. A restrição escalar resolve isso prendendo o que é lento enquanto o rápido relaxa, e afrouxando por degraus.
+    * A remoção simultânea de todas as restrições faz com que a energia liberada no relaxamento de contatos estéricos se dissipe deformando a vizinhança. As restrições escalonadas evitam esse efeito: mantêm fixos os graus de liberdade lentos enquanto os rápidos relaxam, e são reduzidas progressivamente.
 
-    * O custo é na ordem de unidades de ns por réplica — irrelevante frente a uma produção de centenas de nanossegundos.
+    * O custo adicional é da ordem de poucos nanossegundos por réplica, desprezível diante de uma produção de centenas de nanossegundos.
 
 
 Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
@@ -25,71 +25,73 @@ Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br]
 ---
 ## :lucide-download: Arquivos iniciais
 
-Utilize a estrutura da **Xilanase** com o código [1XNB](https://www.rcsb.org/structure/1XNB) do PDB com resolução de 1,49 Å. **Dê preferência para estruturas com resolução cristalográfica inferior a 2,5 Å**, pois isso garante uma geometria molecular mais confiável e detalhada, o que é fundamental para a qualidade da simulação. Você também pode obter estruturas do [AlphaFold](https://alphafold.ebi.ac.uk/).
+Utilize a estrutura da **xilanase** de código [1XNB](https://www.rcsb.org/structure/1XNB) no PDB, resolvida a 1,49 Å. **Dê preferência a estruturas com resolução cristalográfica inferior a 2,5 Å**, que fornecem geometria mais confiável e detalhada, fundamental para a qualidade da simulação. Estruturas preditas também podem ser obtidas no [AlphaFold](https://alphafold.ebi.ac.uk/).
 
-A preparação rigorosa de uma estrutura cristalográfica é uma etapa crítica antes de simulações ou docagem, onde a reconstrução de resíduos faltantes — utilizando bibliotecas robustas como o [Modeller](https://salilab.org/modeller/) ou servidores web rápidos como o [SWISS-MODEL](https://swissmodel.expasy.org/) — é essencial para evitar o colapso do modelo e garantir a integridade física da cadeia polipeptídica.
+A preparação da estrutura cristalográfica é uma etapa crítica antes de simulações ou de docagem. A reconstrução de resíduos ausentes, com bibliotecas como o [Modeller](https://salilab.org/modeller/) ou servidores como o [SWISS-MODEL](https://swissmodel.expasy.org/), evita lacunas na cadeia polipeptídica e preserva sua integridade física.
 
-Paralelamente, o ajuste do estado de protonação dos aminoácidos pode ser feito pelo servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou por ferramentas de linha de comando como [PROPKA](https://github.com/jensengroup/propka). Ignorar essa etapa resulta em atribuições de cargas elétricas erradas, o que distorce completamente as interações eletrostáticas, a formação de pontes de hidrogênio e a estabilidade conformacional de todo o sistema durante o estudo computacional.
+Também é necessário atribuir o estado de protonação dos resíduos tituláveis, com o servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou com ferramentas de linha de comando como o [PROPKA](https://github.com/jensengroup/propka). Estados de protonação incorretos alteram as cargas atribuídas e, consequentemente, as interações eletrostáticas, a rede de ligações de hidrogênio e a estabilidade conformacional do sistema.
 
 !!! note "Dica:"
-    Desenvolvi um notebook para fazer os ajustes necessários na molécula. Faça o download dos arquivos e configure corretamente o notebook.
-    Download [aqui](../assets/notebooks/protein_builder.ipynb) ou [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder.ipynb)
+    Desenvolvi um notebook para realizar esses ajustes na molécula. Faça o download dos arquivos e configure o notebook para o seu sistema.
+    [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder.ipynb)
 
 <div align="center">
-    <img src="../assets/dinamica/xilanase.png">
+    <img src="../assets/dinamica/xilanase.png" alt="estrutura cristalográfica da xilanase">
 </div>
 
->Xilanase, 1XNB. O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para Hélices 3-10; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
+>Xilanase, 1XNB. O VMD (*Visual Molecular Dynamics*) possui esquema de cores para estruturas de biomoléculas: 🟣 violeta para alfa-hélices; 🟡 amarelo para beta-folhas; 🔵 azul para hélices 3₁₀; 🔵 ciano para voltas e ⚪ branco para novelos ou cordas.
 
 
 ---
 ## :lucide-atom: Preparo da topologia da molécula: campos de forças
 
-O arquivo **1XNB.pdb** contém as coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes extras para evitar erros nas etapas subsequentes. Realizamos essa limpeza de duas maneiras: editando o arquivo manualmente ou utilizando os comandos de terminal apresentados a seguir.
+O arquivo **1XNB.pdb** contém, além das coordenadas da biomolécula, moléculas de água (`HOH`) e outros ligantes (`HETATM`). Remova esses componentes para evitar erros nas etapas seguintes, editando o arquivo manualmente ou com os comandos a seguir:
 
 ```bash
-grep -v HETATM 1XNB.pdb > 1XNB_clean.pdb    # para remover todos os ligantes + água
+grep -v HETATM 1XNB.pdb > 1XNB_clean.pdb    # remove ligantes e água
 
-grep -v HOH 1XNB.pdb > 1XNB_clean.pdb    # remove apenas água
+grep -v HOH 1XNB.pdb > 1XNB_clean.pdb       # remove apenas a água
 ```
 
-Observe que algumas biomoléculas apresenta múltiplas cadeias, identificadas como `chain A`, `chain B`, e assim por diante. Defina uma cadeia para os estudos.
+Algumas biomoléculas apresentam múltiplas cadeias, identificadas como `chain A`, `chain B` e assim por diante. Defina a(s) cadeia(s) que serão estudadas.
 
-Depois de limpar o arquivo PDB, faça o ajuste dos estados de protonação dos resíduos de aminoácidos, garantindo que a biomolécula esteja em um estado de carga adequado para simulação.
+Após a limpeza, ajuste os estados de protonação dos resíduos, de modo que a biomolécula tenha o estado de carga adequado ao pH de interesse.
 
-Em seguida, escolha o campo de força e o modelo de água que serão usados na simulação:
+Em seguida, gere a topologia, escolhendo o campo de força e o modelo de água. Escolha ff19SB + OPC, se possível:
 
 ```bash
-gmx pdb2gmx -v -f 1XNB_clean.pdb -o xilanase.gro
+gmx pdb2gmx -v -f 1XNB_clean.pdb -o xilanase.gro -ignh
 
-# -v = verbose, para visualizar o processo.
-# -f = file input, arquivo de entrada das coordenadas.
-# -o = file output, arquivo de saída das coordenadas.
+# -v = verbose, exibe o andamento do processo.
+# -f = arquivo de entrada com as coordenadas.
+# -o = arquivo de saída com as coordenadas.
+# -ignh = ignora hidrogênios já presentes no arquivo de entrada.
 ```
 
 !!! note "Dica:"
 
-    Caso utilize um campo de força externo, coloque a pasta correspondente no diretório de trabalho como <<name>>.ff.
+    Para utilizar um campo de força externo, coloque a pasta correspondente no diretório de trabalho com o nome `<nome>.ff`.
 
 
-O GROMACS utiliza estados de protonação canônicos para cada aminoácido (assumindo pH neutro) e adiciona os hidrogênios correspondentes. Ao final do processo, o programa conserva a carga líquida total da biomolécula. Confirme este valor no terminal, procurando pela mensagem: `Total charge in system X.000 e`.
+Sem informação adicional, o `pdb2gmx` atribui estados de protonação canônicos a cada aminoácido (pH próximo de 7) e adiciona os hidrogênios correspondentes. Ao final, confira a carga líquida da biomolécula na mensagem `Total charge in system X.000 e`.
 
 Para visualizar no VMD, utilize:
+
 ```bash
 vmd xilanase.gro
 ```
 
 !!! note "Nota:"
 
-    Saiba mais sobre [gmx2pdb](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-pdb2gmx.html).
+    Saiba mais sobre [pdb2gmx](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-pdb2gmx.html).
 
     Serão criados os arquivos:
 
-    - xilanase.gro = arquivo com as posições iniciais de cada átomo da biomolécula compatível com o campo de força escolhido.
-    
-    - topol.top = arquivo com os parâmetros necessários para as integrações e derivações numéricas.
-    
-    - posre.itp = arquivo de topologia auxiliar indicando os átomos com restrições por padrão.
+    - `xilanase.gro`: coordenadas iniciais de cada átomo, com a nomenclatura do campo de força escolhido.
+
+    - `topol.top`: topologia do sistema, com os parâmetros de interação do campo de força.
+
+    - `posre.itp`: topologia auxiliar com as restrições de posição padrão dos átomos pesados.
 
 | Campo de força | Informações | Modelo de água | Interações não ligadas | Referências |
 |---|---|---|---|---|
@@ -110,46 +112,39 @@ vmd xilanase.gro
 
 !!! warning "Atenção!"
 
-    Escolha o campo de força e o modelo de água com base na natureza do seu sistema e nas propriedades que você deseja investigar.
+    Escolha o campo de força e o modelo de água com base na natureza do sistema e nas propriedades que serão investigadas.
 
-    É de extrema importância o conhecimento completo sobre os formatos de arquivos utilizados pelo GROMACS. Para estudos: [File formats topology](https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html) e [File formats](https://manual.gromacs.org/current/reference-manual/file-formats.html).
+    É fundamental conhecer os formatos de arquivo utilizados pelo GROMACS. Consulte: [File formats topology](https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html) e [File formats](https://manual.gromacs.org/current/reference-manual/file-formats.html).
 
-
+---
 ## :lucide-box: Definindo a caixa de simulação: dimensões, solvatação e neutralização
 
-Nesta etapa, definimos as dimensões da caixa de simulação, adicionamos moléculas de água (solvente) e neutralizamos o sistema.
+Nesta etapa, definem-se as dimensões da caixa de simulação, adicionam-se as moléculas de água (solvente) e neutraliza-se o sistema.
 
 ```bash
-gmx editconf -f xilanase.gro -o box.gro -c -d 1.0 -bt cubic
+gmx editconf -f xilanase.gro -o box.gro -c -d 1.2 -bt dodecahedron
 
-# -c = center, para centralizar a biomolécula na caixa.
-# -d = distance, distância em nm entre todas moléculas e a borda.
+# -c = centraliza a biomolécula na caixa.
+# -d = distância mínima, em nm, entre o soluto e as faces da caixa.
 # -bt = box type, formato da caixa.
 ```
 
-Escolha o formato da caixa de simulação (entre `cubic`, `triclinic`, `octahedron` ou `dodecahedron`) considerando a geometria da biomolécula. Geralmente, selecionamos `cubic` ou `dodecahedron`, pois essas formas proporcionam maior eficiência.
+Escolha o formato da caixa (`cubic`, `triclinic`, `octahedron` ou `dodecahedron`) de acordo com a geometria da biomolécula. Para solutos aproximadamente globulares, o `dodecahedron` exige cerca de 71 % do volume de uma caixa cúbica com a mesma distância mínima entre imagens periódicas, o que reduz o número de moléculas de água e o custo computacional.
 
-Verifique as dimensões da caixa na mensagem de saída do programa. Certifique-se de que a distância mínima entre a biomolécula e as bordas da caixa esteja na **faixa de 1,0 a 1,6 nm**.
+Verifique as dimensões da caixa na saída do programa. A distância mínima entre a biomolécula e as faces da caixa deve estar **entre 1,0 e 2,0 nm**, de modo que o soluto não interaja com as próprias imagens periódicas.
 
 !!! note "Nota:"
 
     Saiba mais sobre [editconf](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-editconf.html).
 
-    Essa função é util para converter arquivos .pdb <--> .gro usando `gmx editconf -f <file>.gro -o <file>.pdb`.
-
-
-!!! note "Nota:"
-
-    A tag `-box` pode ser utilizada para definir as dimensões da caixa de simulação. Por exemplo, ao executar `gmx editconf -f xilanase.gro -o box.gro -c -d 2.5 -bt cubic -box 10 10 10`, obtém-se uma caixa cúbica com arestas de 10 nm. Nessa configuração, a distância da borda definida como 2,5 nm será considerada, resultando em um espaço útil de 7,5 nm para a acomodação das moléculas, garantindo o afastamento adequado entre a molécula e as bordas da caixa.
-
-    **E quando não definimos `-box`?** Nessa configuração, o algoritmo do GROMACS definirá as dimensões da caixa com base no tamanho máximo da biomolécula, acrescido da distância especificada para a borda. Essa abordagem proporciona uma margem suficiente para garantir uma dinâmica molecular segura, ao mesmo tempo em que promove o uso eficiente dos recursos computacionais.
+    As opções `-d` e `-box` são formas alternativas de dimensionar a caixa. Com `-box`, as arestas são fixadas explicitamente; por exemplo, `-bt cubic -box 10 10 10` gera uma caixa cúbica de 10 nm de aresta, cabendo ao usuário verificar se a margem em torno do soluto é suficiente. Com `-d`, o GROMACS calcula as dimensões a partir da maior extensão do soluto acrescida da distância especificada, o que garante a margem mínima sem volume excedente. Não combine as duas opções.
 
 
 <div align="center">
     <img src="../assets/dinamica/box.png" alt="caixa de simulação">
 </div>
 
-Para vizualisar no VMD:
+Para visualizar no VMD:
 
 ```bash
 vmd box.gro
@@ -157,68 +152,70 @@ vmd box.gro
 # Extensions > Tk Console > pbc box -color red
 ```
 
+---
 ### :lucide-droplets: Solvatação
 
-Em seguida, preencha a caixa de simulação com moléculas de água para solvatar a Xilanase. Este procedimento garante que a biomolécula fique imersa em um ambiente aquoso, simulando as condições fisiológicas necessárias para a análise da dinâmica molecular.
+Em seguida, preencha a caixa com moléculas de água para solvatar a xilanase, de modo que a biomolécula fique imersa em meio aquoso.
 
 ```bash
-gmx solvate -cp box.gro -cs spc216.gro -o solvated.gro -p topol.top
+gmx solvate -cp box.gro -cs tip4p.gro -o solvated.gro -p topol.top
 
-# -cp = coordenates protein, coordenadas do nosso soluto (geralmente, proteina).
-# -cs = coordenates solvent, coordenadas da molecula que será usada como solvente.
-# -p = processing, para processar o arquivo de topologia do sistema.
+# -cp = coordenadas do soluto (geralmente, a proteína).
+# -cs = coordenadas do solvente.
+# -p = topologia do sistema, atualizada com o número de moléculas de solvente.
 ```
 
-O GROMACS acaba de preencher a caixa com moléculas de água do arquivo `spc216.gro` (compatível com o modelo TIP3P), identificando-as com o resíduo **SOL**. Verifique na mensagem de saída a linha `Number of solvent molecules` para confirmar a quantidade de solvente adicionado. O programa já atualizou essa informação automaticamente na seção `[ molecules ]` do seu arquivo `topol.top`.
+O GROMACS preenche a caixa com moléculas de água a partir do arquivo `tip4p.gro`, que contém uma caixa pré-equilibrada de água com 4 sítios, e as identifica como o resíduo **SOL**. Confira a quantidade de solvente adicionado na linha `Number of solvent molecules` da saída. Essa informação é atualizada automaticamente na seção `[ molecules ]` do arquivo `topol.top`.
 
 !!! note "Nota:"
 
     Saiba mais sobre [solvate](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-solvate.html).
 
-    Para modelos de água TIP4P (4 pontos), `-cs tip4p.gro`.
+    Para modelos de água de 3 sítios, utilize `-cs spc216.gro`.
 
 
 <div align="center">
-    <img src="../assets/dinamica/solvated.png" alt="xilanase solvatada">
+    <img src="../assets/dinamica/solvated.png" alt="caixa solvatada">
 </div>
 
 ### :lucide-scale: Neutralização
-A etapa final na preparação da caixa é a neutralização com a adição de íons. Este passo é fundamental, pois os algoritmos da simulação funcionam com maior eficiência em sistemas eletricamente neutros.
+A etapa final da preparação da caixa é a adição de íons. Com o somatório de Ewald (PME), um sistema com carga líquida recebe implicitamente um fundo de carga uniforme que o neutraliza, o que pode introduzir artefatos nas energias e na estrutura. Por isso, o sistema é neutralizado com contraíons explícitos.
 
-Antes de neutralizar com a função `genion`, é necessário gerar um arquivo binário `.tpr` com as informações necessárias para o processamento:
+Antes de executar o `genion`, gere um arquivo binário `.tpr` com as informações do sistema:
 
 ```bash
 gmx grompp -v -f inputs/ions.mdp -o ions.tpr -c solvated.gro -p topol.top
 
-# -c = coordenates, arquivo com as coordenadas do sistema.
+# -f = arquivo de parâmetros (.mdp).
+# -c = coordenadas do sistema.
 ```
 
-Na tag -f está indicado o arquivo [ions.mdp](../assets/dinamica/inputs-easy/ions.mdp) da pasta `/inputs`. Esse arquivo possui todos os parâmetros necessários para o processamento dessa etapa. Recomenda-se o [estudo intensivo](https://manual.gromacs.org/current/user-guide/mdp-options.html) sobre os parâmetros desse arquivo.
+A opção `-f` indica o arquivo [ions.mdp](../assets/dinamica/inputs/ions.mdp), da pasta `inputs/`, que contém os parâmetros desta etapa. Recomenda-se o estudo detalhado das [opções dos arquivos .mdp](https://manual.gromacs.org/current/user-guide/mdp-options.html).
 
 !!! note "Nota:"
 
     Saiba mais sobre [grompp](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-grompp.html).
 
-    Em algumas oportunidades, o GROMACS gera `warnings` que devem ser verificados e, se necessário, suprimidos com **-maxwarn [x]**, onde `x` é a quantidade de `warnings` a ser suprimidos. Novamente: revise!
+    O `grompp` pode emitir avisos (`warnings`), que devem ser analisados um a um. Somente após confirmar que um aviso não compromete a simulação, suprima-o com `-maxwarn x`, em que `x` é o número de avisos a serem ignorados.
 
 
-O programa genion solicitará que você selecione um grupo de moléculas para substituir pelos íons. A convenção é sempre escolher o grupo de solvente (**SOL**). Portanto, quando solicitado, digite o número correspondente à opção SOL.
+O `genion` solicitará o grupo de moléculas que será substituído pelos íons. Selecione o grupo do solvente (**SOL**), digitando o número correspondente.
 
-Agora, adicione os íons necessários para neutralizar a carga da caixa de simulação e garantir que o sistema seja eletricamente neutro.
+Adicione os íons para neutralizar o sistema e atingir a concentração salina desejada:
 
 ```bash
-gmx genion -s ions.tpr -o solvated_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
+gmx genion -s ions.tpr -o neutralized.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
 
-# -s = submit binary, arquivo binário criado anteriormente com todas informações do sistema.
-# -pname = nome do cátion(+), nesse caso NA Sódio.
-# -nname = nome do ânion(-), nesse caso CL Cloro.
-# -neutral = para neutralizar completamente o sistema, às vezes desnecessário.
-# -conc 0.15 = concentration, define a concentração em mol/L.
+# -s = arquivo de entrada da simulação (.tpr) gerado na etapa anterior.
+# -pname = nome do cátion, neste caso sódio (NA).
+# -nname = nome do ânion, neste caso cloreto (CL).
+# -neutral = adiciona contraíons até neutralizar a carga líquida.
+# -conc = concentração salina, em mol/L.
 ```
 
-Por padrão, o GROMACS adiciona íons de sódio (NA) e cloreto (CL) em quantidade suficiente apenas para neutralizar o sistema. Entretanto, ao utilizar as opções `-conc 0.15` e, opcionalmente, `-neutral`, é possível garantir a adição de uma solução fisiológica a 0,9 % (m/m), simulando o ambiente semelhante ao sistema biológico humano, além de assegurar a neutralidade do sistema.
+Sem as opções `-neutral`, `-conc`, `-np` ou `-nn`, o `genion` não adiciona íons. A opção `-neutral` neutraliza a carga líquida, e `-conc 0.15` acrescenta NaCl até 0,15 mol/L, concentração próxima à fisiológica (≈ 0,9 % m/v).
 
-Na mensagem de saída, pode-se observar a mensagem `Will try to add XX NA ions and XX CL ions`, indicando o número de íons adicionados para atingir a concentração e a neutralidade. O arquivo `topol.top` é atualizado com as quantidades de ions adicionadas.
+A saída informa `Will try to add XX NA ions and XX CL ions`, com o número de íons adicionados. O arquivo `topol.top` é atualizado com essas quantidades.
 
 
 !!! note "Nota:"
@@ -226,63 +223,95 @@ Na mensagem de saída, pode-se observar a mensagem `Will try to add XX NA ions a
     Saiba mais sobre [genion](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-genion.html).
 
 
-<div align="center">
-    <img src="../assets/dinamica/neutralization.png" alt="sistema solvatado e neutralizado">
-</div>
+---
+## :lucide-vibrate: Restrições de posição
+As restrições de posição mantêm os átomos da biomolécula próximos de suas posições de referência durante as etapas iniciais. Elas são definidas em arquivos `.itp`, que indicam os átomos restringidos e a constante de força do potencial harmônico aplicado a cada um.
 
+A minimização e as etapas de ajuste de temperatura e pressão são realizadas de forma escalonada. Inicialmente, a biomolécula permanece fortemente restringida, e apenas a água e os íons relaxam. As restrições são então reduzidas progressivamente, permitindo que a biomolécula se acomode ao solvente.
 
+```bash
+gmx make_ndx -f neutralized.gro -o index.ndx
+
+gmx genrestr -f neutralized.gro -n index.ndx -o posre_bb.itp -fc 1000 1000 1000    # Escolha 'MainChain'
+
+gmx genrestr -f neutralized.gro -n index.ndx -o posre_sc.itp -fc 1000 1000 1000    # Escolha 'SideChain-H'
+```
+
+Esses comandos geram dois arquivos de restrição: `posre_bb.itp`, para os átomos da cadeia principal (*backbone*), e `posre_sc.itp`, para os átomos pesados das cadeias laterais (*side chains*). O valor de 1000 kJ mol⁻¹ nm⁻² é apenas provisório: ele será substituído por variáveis, para que a constante de força possa ser ajustada em cada etapa.
+
+```bash
+awk '($1 ~ /^[0-9]+$/ && NF == 5) {printf "%6s %5s %14s %14s %14s\n", $1, $2, "POSRES_FC_BB", "POSRES_FC_BB", "POSRES_FC_BB"; next} {print}' posre_bb.itp > tmp && mv tmp posre_bb.itp
+
+awk '($1 ~ /^[0-9]+$/ && NF == 5) {printf "%6s %5s %14s %14s %14s\n", $1, $2, "POSRES_FC_SC", "POSRES_FC_SC", "POSRES_FC_SC"; next} {print}' posre_sc.itp > tmp && mv tmp posre_sc.itp
+```
+
+Verifique se, em `posre_bb.itp` e `posre_sc.itp`, o valor `1000` foi substituído pelas variáveis `POSRES_FC_BB` e `POSRES_FC_SC`, respectivamente. Essas variáveis são definidas na diretiva `define` de cada arquivo `.mdp`, o que permite reduzir as restrições etapa a etapa.
+
+Por fim, inclua `posre_bb.itp` e `posre_sc.itp` no arquivo `topol.top`, para que o GROMACS aplique as restrições durante a simulação.
+
+---
 ## :lucide-trending-down: Minimização do sistema
 
-O próximo passo é a minimização de energia. Este procedimento remove sobreposições entre as moléculas e garante uma configuração estrutural estável, essencial para as etapas seguintes da simulação. Para isso, execute duas ações em sequência: primeiro, gere um novo arquivo binário `.tpr` para a minimização; depois, execute o comando de minimização de energia com o arquivo recém-criado.
+A etapa seguinte é a minimização de energia, que remove contatos estéricos desfavoráveis e leva o sistema a um mínimo local de energia potencial antes da dinâmica. Cada etapa consiste em gerar um arquivo `.tpr` com o `grompp` e executá-lo com o `mdrun`.
+
+A minimização é escalonada: as três primeiras etapas restringem a biomolécula com constantes de força decrescentes, de modo que o solvente e os íons relaxem primeiro. A última etapa é realizada sem restrições.
+
+| Etapa | Cadeia principal (kJ mol⁻¹ nm⁻²) | Cadeias laterais (kJ mol⁻¹ nm⁻²) |
+|---|---|---|
+| em1_rest | 2100 | 2100  |
+| em2_rest | 800 | 800  |
+| em3_rest | 40 | 40  |
+| em4_free | 0 | 0  |
 
 ```bash
-gmx grompp -v -f inputs/minim.mdp -c solvated_ions.gro -o em.tpr -p topol.top
+gmx grompp -v -f inputs/em1_rest.mdp -c neutralized.gro -r neutralized.gro -p topol.top -o em1.tpr
+gmx mdrun -v -deffnm em1
+
+gmx grompp -v -f inputs/em2_rest.mdp -c em1.gro -r neutralized.gro -p topol.top -o em2.tpr
+gmx mdrun -v -deffnm em2
+
+gmx grompp -v -f inputs/em3_rest.mdp -c em2.gro -r neutralized.gro -p topol.top -o em3.tpr
+gmx mdrun -v -deffnm em3
+
+gmx grompp -v -f inputs/em4_free.mdp -c em3.gro -r neutralized.gro -p topol.top -o em4.tpr
+gmx mdrun -v -deffnm em4
+
+# -r = coordenadas de referência para as restrições de posição.
+# -deffnm = define o nome padrão dos arquivos de entrada e saída.
 ```
-```bash
-gmx mdrun -v -deffnm em
 
-# -deffnm = define o nome padrão de todos arquivos de entrada e saida.
-```
+O `mdrun` é o programa que executa a minimização e a dinâmica no GROMACS. A opção `-deffnm` padroniza os nomes dos arquivos de entrada e saída; o nome usado em `grompp -o <nome>.tpr` deve ser o mesmo informado em `-deffnm`.
 
-A função `mdrun` constitui o núcleo do processo de dinâmica molecular no GROMACS. Recomenda-se simplificar os nomes dos arquivos de entrada e saída utilizando a opção `-deffnm`. O nome utilizado em `grompp -o <name>.tpr` deve ser o mesmo especificado em `-deffnm`, garantindo consistência entre os arquivos utilizados. Para a etapa de minimização, é adotado o arquivo de parâmetros [minim.mdp](../assets/dinamica/inputs-easy/minim.mdp), que contém os parâmetros para o procedimento de minimização.
-
-
-!!! note
+!!! note "Nota:"
 
     Saiba mais sobre [mdrun](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-mdrun.html).
 
 
-Analise a energia potencial para acompanhar o sucesso desta etapa. Para fazer isso, processe o arquivo de energia (.edr) para extrair os dados em um formato gráfico (.xvg). Este procedimento é essencial para avaliar graficamente se o sistema alcançou a convergência e a estabilidade energética.
+Avalie a minimização pela energia potencial da última etapa. Para isso, extraia os dados do arquivo de energia (`.edr`) para um arquivo gráfico (`.xvg`) e verifique se a energia potencial atingiu um patamar. Confira também, na saída do `mdrun`, se a força máxima (`Fmax`) ficou abaixo do critério `emtol` definido no `.mdp`.
 
 ```bash
-gmx energy -f em.edr -s em.tpr -o potential.xvg
-```
+gmx energy -f em4.edr -s em4.tpr -o potential.xvg
 
-Verifique na tabela o número correspondente a 'Potential' e digite-o, seguindo por um espaço e pelo número 0 (zero). Exemplo: `11 0`.
-
-!!! note
-
-    Saiba mais sobre [energy](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-energy.html).
-
-
-Utilize o `XMGrace` para visualizar o gráfico:
-
-```bash
 xmgrace potential.xvg
 ```
 
-Observe a curva no gráfico, a qual indica a minimização efetiva do sistema.
+Quando solicitado, digite o número correspondente a `Potential`, seguido de um espaço e de 0 (zero) para encerrar a seleção. Exemplo: `11 0`.
+
+!!! note "Nota:"
+
+    Saiba mais sobre [energy](https://manual.gromacs.org/documentation/current/onlinehelp/gmx-energy.html).
 
 <div align="center">
-<img src="../assets/dinamica/minim.png" alt="gráfico da energia minimizada">
+    <img src="../assets/dinamica/minim.png" alt="gráfico da energia minimizada">
 </div>
 
+---
 ## :lucide-sliders-horizontal: Equilíbrio NVT e NPT: termostatos e barostatos
 
 As próximas etapas são a equilibração da temperatura e da pressão do sistema. Primeiro, ajuste a temperatura para 298,15 K (25 °C) e, em seguida, a pressão para 1 bar (0,98 atm). Essas condições visam simular um ambiente termodinâmico semelhante ao meio biológico.
 
 ### :lucide-thermometer: NVT: ajustando a temperatura da caixa de simulação
-Inicie a equilibração de temperatura (ensemble NVT), na qual o número de moléculas (N), o volume (V) e a temperatura (T) são mantidos constantes. Para esta etapa, gere o arquivo binário `.tpr` utilizando o arquivo de parâmetros [nvt.mdp](../assets/dinamica/inputs-easy/nvt.mdp). Este arquivo contém as seguintes definições:
+Inicie a equilibração de temperatura (ensemble NVT), na qual o número de moléculas (N), o volume (V) e a temperatura (T) são mantidos constantes. Para esta etapa, gere o arquivo binário `.tpr` utilizando o arquivo de parâmetros [nvt.mdp](../assets/dinamica/inputs/nvt.mdp). Este arquivo contém as seguintes definições:
 
 * Define a restrição da biomolécula, com `define = -DPOSRES`.
 * Define o tempo para o ajuste da temperatura, em `nsteps = 50000 x 0,002 (dt) = 100 ps`.
@@ -327,7 +356,7 @@ xmgrace temperature.xvg
 Após 20 ps, observe que a temperatura do sistema estabilizou em 298,15 K. Caso a estabilização não seja alcançada, aumente o valor de `nsteps` e realiza novamente a etapa. Após a temperatura devidamente controlada, procede-se ao ajuste da pressão do sistema.
 
 ### :lucide-gauge: NPT: ajustando a pressão da caixa de simulação
-Concluída a equilibração da temperatura, inicie a equilibração da pressão (ensemble NPT). Nesta etapa, a densidade do sistema será ajustada para a pressão correta, mantendo-se constantes o número de moléculas (N), a pressão (P) e a temperatura (T). Para isso, gere um novo arquivo binário .tpr utilizando o arquivo de parâmetros [npt.mdp](../assets/dinamica/inputs-easy/npt.mdp). Este arquivo contém as seguintes definições:
+Concluída a equilibração da temperatura, inicie a equilibração da pressão (ensemble NPT). Nesta etapa, a densidade do sistema será ajustada para a pressão correta, mantendo-se constantes o número de moléculas (N), a pressão (P) e a temperatura (T). Para isso, gere um novo arquivo binário .tpr utilizando o arquivo de parâmetros [npt.mdp](../assets/dinamica/inputs/npt.mdp). Este arquivo contém as seguintes definições:
 
 * O algoritmo responsável por ajustar a pressão, com `pcoul = C-rescale`.
 * A constante de acoplamento da pressão, em `tau-p = 3.0`.
@@ -386,7 +415,7 @@ A seguir, apresentamos um breve resumo dos principais termostatos e barostatos d
 ## :lucide-play: Produção: integradores
 A etapa final é a simulação de produção. Se todos os passos anteriores foram concluídos sem erros, seu sistema foi preparado corretamente e a simulação de produção tem grandes chances de ser bem-sucedida. Durante a execução, que pode ser longa, monitore a carga de trabalho (CPU/GPU) e a temperatura do seu computador, pois problemas externos de hardware ou software ainda podem interromper o processo.
 
-Inicie a simulação de produção. Primeiro, gere o arquivo de entrada binário (.tpr) com base no arquivo de parâmetros [md.mdp](../assets/dinamica/inputs-easy/md.mdp). Logo depois, inicie a simulação final de dinâmica molecular executando o comando a partir desse arquivo `.tpr`.
+Inicie a simulação de produção. Primeiro, gere o arquivo de entrada binário (.tpr) com base no arquivo de parâmetros [md.mdp](../assets/dinamica/inputs/md.mdp). Logo depois, inicie a simulação final de dinâmica molecular executando o comando a partir desse arquivo `.tpr`.
 
 ```bash
 gmx grompp -v -f inputs/md.mdp -c npt.gro -t npt.cpt -o md_5ns.tpr -p topol.top

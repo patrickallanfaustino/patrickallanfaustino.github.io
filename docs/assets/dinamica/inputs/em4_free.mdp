@@ -1,0 +1,33 @@
+; =====================================================================
+; EM 4/4 - sistema livre; unico passo em que emtol pode nao ser atingido
+; Escada de minimizacao adaptada de Roe & Brooks, J. Chem. Phys. 153,
+; 054123 (2020), passos 1, 3, 4 e 5.
+; Etapa deterministica: identica para todas as replicas.
+; =====================================================================
+
+; sem restricoes posicionais
+
+; RUN CONTROL PARAMETERS
+integrator  = steep
+emtol       = 100.0          ; Fmax alvo (kJ mol^-1 nm^-1)
+emstep      = 0.01
+nsteps      = 50000
+
+constraints = none           ; sem LINCS durante EM (Roe & Brooks, passo 1)
+
+; NEIGHBORSEARCHING PARAMETERS
+cutoff-scheme           = Verlet
+nstlist                 = 20
+pbc                     = xyz
+rlist                   = 1.0
+
+; OPTIONS FOR ELECTROSTATICS AND VDW
+coulombtype             = PME
+rcoulomb                = 1.0
+pme-order               = 4
+fourierspacing          = 0.12
+
+vdwtype                 = Cut-off
+vdw-modifier            = Potential-shift
+rvdw                    = 1.0
+DispCorr                = EnerPres

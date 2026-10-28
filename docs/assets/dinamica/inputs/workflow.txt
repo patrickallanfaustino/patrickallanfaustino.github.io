@@ -1,0 +1,90 @@
+watch "grep 'cpu MHz' /proc/cpuinfo"
+
+=================================================================================
+Versão do GROMACS         : 2026.3
+Estrutura de partida      : https://www.rcsb.org/structure/1XNB
+Campo de força            : ff19SB + OPC
+Parametrização não-padrão : não se aplica
+Protonação                : Notebook v17 | MODELLER | PDBFIXER | PDB2PQR | PROPKA a pH 5.7
+Ensemble                  : 5 rep. x 300 ns
+Arquivos .mdp             : mdout.mdp
+Caixa			  : dodecaedrica, margem 1,2 nm
+Termostato		  : V-rescale a tau-t 1,0 ps
+Barostato		  : C-rescale a tau-p 3,0 ps isotropico
+Ambiente                  : Ubuntu 26.04.1 LTS | CUDA 13 | Ryzen 9 5900XT | RTX 4070 Ti
+=================================================================================
+
+gmx pdb2gmx -v -f protonated.pdb -o xilanase.gro -ignh
+gmx editconf -f xilanase_water.gro -o box.gro -c -d 1.2 -bt dodecahedron
+gmx solvate -cp box.gro -cs tip4p.gro -o solvated.gro -p topol.top
+
+gmx grompp -v -f inputs/ions.mdp -c solvated.gro -o ions.tpr -p topol.top -maxwarn 1
+gmx select -s ions.tpr -on water_bulk.ndx -select '"SOL"resname SOL and not resnr 186 to 192'
+gmx genion -s ions.tpr -n water_bulk.ndx -o neutralized.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
+
+gmx make_ndx -f neutralized.gro -o index.ndx
+gmx genrestr -f neutralized.gro -n index.ndx -o posre_bb.itp -fc 1000 1000 1000
+Escolha 'MainChain'
+gmx genrestr -f neutralized.gro -n index.ndx -o posre_sc.itp -fc 1000 1000 1000
+Escolha 'SideChain-H'
+
+awk '($1 ~ /^[0-9]+$/ && NF == 5) {printf "%6s %5s %14s %14s %14s\n", $1, $2, "POSRES_FC_BB", "POSRES_FC_BB", "POSRES_FC_BB"; next} {print}' posre_bb.itp > tmp && mv tmp posre_bb.itp
+
+awk '($1 ~ /^[0-9]+$/ && NF == 5) {printf "%6s %5s %14s %14s %14s\n", $1, $2, "POSRES_FC_SC", "POSRES_FC_SC", "POSRES_FC_SC"; next} {print}' posre_sc.itp > tmp && mv tmp posre_sc.itp
+
+# Insira no topol.top posre_bb.itp e posre_sc.itp
+
+=============
+MINIMIZAÇÃO
+=============
+gmx grompp -v -f inputs/em1_rest.mdp -c neutralized.gro -r neutralized.gro -p topol.top -o em1.tpr
+gmx mdrun -v -deffnm em1
+
+gmx grompp -v -f inputs/em2_rest.mdp -c em1.gro -r neutralized.gro -p topol.top -o em2.tpr
+gmx mdrun -v -deffnm em2
+
+gmx grompp -v -f inputs/em3_rest.mdp -c em2.gro -r neutralized.gro -p topol.top -o em3.tpr
+gmx mdrun -v -deffnm em3
+
+gmx grompp -v -f inputs/em4_free.mdp -c em3.gro -r neutralized.gro -p topol.top -o em4.tpr
+gmx mdrun -v -deffnm em4
+gmx energy -f em4.edr -s em4.tpr -o em4_potential.xvg
+xmgrace em4_potential.xvg
+
+=============
+NVT REPLICAS AQUI
+=============
+gmx grompp -v -f inputs/nvt1_heat.mdp -c em4.gro -r em4.gro -p topol.top -o nvt1.tpr -po mdout_nvt1.mdp
+gmx mdrun -v -deffnm nvt1
+gmx energy -f nvt1.edr -o qc_temperatura.xvg
+xmgrace qc_temperatura.xvg
+
+gmx grompp -v -f inputs/nvt2_hold.mdp -c nvt1.gro -r em4.gro -t nvt1.cpt -p topol.top -o nvt2.tpr -po mdout_nvt2.mdp
+gmx mdrun -v -deffnm nvt2
+
+=============
+NPT
+=============
+gmx grompp -v -f inputs/npt1.mdp -c nvt2.gro -r em4.gro -t nvt2.cpt -p topol.top -o npt1.tpr -po mdout_npt1.mdp
+gmx mdrun -v -deffnm npt1
+
+gmx grompp -v -f inputs/npt2.mdp -c npt1.gro -r em4.gro -t npt1.cpt -p topol.top -o npt2.tpr -po mdout_npt2.mdp
+gmx mdrun -v -deffnm npt2
+
+gmx grompp -v -f inputs/npt3.mdp -c npt2.gro -r em4.gro -t npt2.cpt -p topol.top -o npt3.tpr -po mdout_npt3.mdp
+gmx mdrun  -v -deffnm npt3
+
+gmx grompp -v -f inputs/npt4.mdp -c npt3.gro -t npt3.cpt -p topol.top -o npt4.tpr -po mdout_npt4.mdp
+gmx mdrun -v -deffnm npt4
+gmx energy -f npt4.edr -o qc_densidade.xvg
+xmgrace qc_densidade.xvg
+gmx energy -f npt4.edr -o qc_energia.xvg
+xmgrace qc_energia.xvg
+gmx energy -f npt4.edr -o qc_pressao.xvg
+xmgrace qc_pressao.xvg
+
+=============
+MD
+=============
+gmx grompp -v -f inputs/md.mdp -c npt4.gro -t npt4.cpt -p topol.top -o md_300ns.tpr -po mdout_md.mdp
+gmx mdrun -v -deffnm md_300ns
