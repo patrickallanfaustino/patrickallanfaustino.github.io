@@ -308,7 +308,7 @@ Quando solicitado, digite o número correspondente a `Potential`, seguido de um 
 ---
 ## :lucide-sliders-horizontal: Equilíbrio NVT e NPT: termostatos e barostatos
 
-As próximas etapas são a equilibração da temperatura e da pressão do sistema. Primeiro, ajuste a temperatura para 298,15 K (25 °C) e, em seguida, a pressão para 1 bar (0,98 atm). Essas condições visam simular um ambiente termodinâmico semelhante ao meio biológico.
+As próximas etapas são as equilibrações da temperatura e da pressão do sistema. Primeiro, ajuste a temperatura para 298,15 K (25 °C) e, em seguida, a pressão para 1 bar (0,98 atm). Essas condições visam simular um ambiente termodinâmico semelhante ao meio biológico.
 
 ### :lucide-thermometer: NVT: ajustando a temperatura da caixa de simulação
 Inicie a equilibração de temperatura (ensemble NVT), na qual o número de moléculas (N), o volume (V) e a temperatura (T) são mantidos constantes. Para esta etapa, gere o arquivo binário `.tpr` utilizando o arquivo de parâmetros [nvt.mdp](../assets/dinamica/inputs/nvt.mdp). Este arquivo contém as seguintes definições:
