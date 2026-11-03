@@ -19,7 +19,7 @@ nav = [
     { "gridUNESP" = "instalacao/gridunesp.md" },
   ] },
   { "Dinâmica molecular" = [
-    { "DM básica" = "dinamica/md-easy.md" },
+    { "DM não enviesada Xilanase" = "dinamica/md-easy.md" },
     { "Análise de resultados" = "dinamica/md-analysis.md" },
     { "Imagens e vídeos" = "dinamica/md-visual.md" },
   ] },
