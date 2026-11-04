@@ -83,7 +83,7 @@ Download dos arquivos 4L40 e 4L54 do PDB, e criação das pastas de trabalho con
 ## Passo 2 — Parâmetros do heme (apenas conferir)
 
 Os mol2/frcmod de IC6 e CPDI já estão em `01_parametros`, extraídos sem
-alteração do suplementar de Shahrokh et al. (2012).
+alteração do suplementar de [Shahrokh et al. (2012)](https://doi.org/10.1002/jcc.21922).
 
 Conferência (`extracao_si.log`): HEM + CYP = −2,0000 em IC6 e em CPDI.
 `CPDI_errata.frcmod` corrige o erro de digitação `cd-nd-fe-sh` do SI (sem ele

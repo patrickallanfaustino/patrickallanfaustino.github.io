@@ -31,6 +31,9 @@ A preparação da estrutura cristalográfica é uma etapa crítica antes de simu
 
 Também é necessário atribuir o estado de protonação dos resíduos tituláveis, com o servidor [H++](http://newbiophysics.cs.vt.edu/H++/) ou com ferramentas de linha de comando como o [PROPKA](https://github.com/jensengroup/propka). Estados de protonação incorretos alteram as cargas atribuídas e, consequentemente, as interações eletrostáticas, a rede de ligações de hidrogênio e a estabilidade conformacional do sistema.
 
+- Para download do arquivo PDB utilizado: [1XNB_protonated](../assets/dinamica/1XNB_protonated.pdb).
+- Para download dos arquivos inputs `.mdp`: [inputs](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/tree/main/docs/assets/dinamica/inputs).
+
 !!! note "Dica:"
     Desenvolvi um notebook para realizar esses ajustes na molécula. Faça o download dos arquivos e configure o notebook para o seu sistema.
     [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/patrickallanfaustino/patrickallanfaustino.github.io/blob/main/docs/assets/notebooks/protein_builder.ipynb)
@@ -258,10 +261,10 @@ A minimização é escalonada: as três primeiras etapas restringem a biomolécu
 
 | Etapa | Cadeia principal (kJ mol⁻¹ nm⁻²) | Cadeias laterais (kJ mol⁻¹ nm⁻²) |
 |---|---|---|
-| em1_rest | 2100 | 2100  |
-| em2_rest | 800 | 800  |
-| em3_rest | 40 | 40  |
-| em4_free | 0 | 0  |
+| [em1_rest](../assets/dinamica/inputs/em1_rest.mdp) | 2100 | 2100  |
+| [em2_rest](../assets/dinamica/inputs/em2_rest.mdp) | 800 | 800  |
+| [em3_rest](../assets/dinamica/inputs/em3_rest.mdp) | 40 | 40  |
+| [em4_free](../assets/dinamica/inputs/em4_free.mdp) | 0 | 0  |
 
 ```bash
 gmx grompp -v -f inputs/em1_rest.mdp -c neutralized.gro -r neutralized.gro -p topol.top -o em1.tpr
@@ -308,160 +311,178 @@ Quando solicitado, digite o número correspondente a `Potential`, seguido de um 
 ---
 ## :lucide-sliders-horizontal: Equilíbrio NVT e NPT: termostatos e barostatos
 
-As próximas etapas são as equilibrações da temperatura e da pressão do sistema. Primeiro, ajuste a temperatura para 298,15 K (25 °C) e, em seguida, a pressão para 1 bar (0,98 atm). Essas condições visam simular um ambiente termodinâmico semelhante ao meio biológico.
+Após a minimização, o sistema é levado a 298,15 K e 1 bar por meio de seis etapas curtas, adaptadas do protocolo de [Roe e Brooks (2020)](https://doi.org/10.1063/5.0013849): aquecimento gradual em NVT, seguido de redução progressiva das restrições de posição em NPT. A ordem de liberação acompanha a hierarquia dos tempos de relaxação: solvente e íons, cadeias laterais e, por último, esqueleto. As constantes de força foram convertidas de kcal mol⁻¹ Å⁻² para kJ mol⁻¹ nm⁻² (fator 418,4).
 
-### :lucide-thermometer: NVT: ajustando a temperatura da caixa de simulação
-Inicie a equilibração de temperatura (ensemble NVT), na qual o número de moléculas (N), o volume (V) e a temperatura (T) são mantidos constantes. Para esta etapa, gere o arquivo binário `.tpr` utilizando o arquivo de parâmetros [nvt.mdp](../assets/dinamica/inputs/nvt.mdp). Este arquivo contém as seguintes definições:
+| Etapa | Arquivo | Ensemble | dt | Duração | k<sub>esqueleto</sub> | k<sub>cadeias laterais</sub> |
+|:-----:|---------|----------|:--:|:-------:|------------:|------------:|
+| 1 | [nvt1_heat.mdp](../assets/dinamica/inputs/nvt1_heat.mdp) | NVT, 50 → 298,15 K | 1 fs | 500 ps | 2100 | 2100 |
+| 2 | [nvt2_hold.mdp](../assets/dinamica/inputs/nvt2_hold.mdp) | NVT, 298,15 K | 2 fs | 200 ps | 800 | 800 |
+| 3 | [npt1.mdp](../assets/dinamica/inputs/npt1.mdp) | NPT | 2 fs | 500 ps | 400 | 400 |
+| 4 | [npt2.mdp](../assets/dinamica/inputs/npt2.mdp) | NPT | 2 fs | 500 ps | 200 | 200 |
+| 5 | [npt3.mdp](../assets/dinamica/inputs/npt3.mdp) | NPT | 2 fs | 500 ps | 200 | 0 |
+| 6 | [npt4.mdp](../assets/dinamica/inputs/npt4.mdp) | NPT | 2 fs | 2 ns | — | — |
 
-* Define a restrição da biomolécula, com `define = -DPOSRES`.
-* Define o tempo para o ajuste da temperatura, em `nsteps = 50000 x 0,002 (dt) = 100 ps`.
-* Define o algoritmo para o ajuste da temperatura, em `tcoupl = V-rescale`.
-* Define os grupos para o ajuste da temperatura, com `tc-grps = Protein   non-Protein`.
-* Define a constante de acoplamento da temperatura, com `tau-t = 1.0`.
-* Define a temperatura de referência, em `ref-t = 298.15`.
+Constantes de força em kJ mol⁻¹ nm⁻². Parâmetros comuns: V-rescale (`tc-grps = System`, `tau-t = 1.0` ps, `ref-t = 298.15` K) e, nas etapas NPT, C-rescale isotrópico (`tau-p = 2.0` ps, `ref-p = 1.0` bar, `compressibility = 4.5e-5` bar⁻¹).
 
-Algumas considerações específicas:
 
-* **Restrições de Posição**: Utilize restrições de posição para manter os átomos pesados da proteína (não-hidrogênios) "congelados" em suas posições iniciais. Esta técnica é crucial para permitir que as moléculas de água se acomodem e relaxem ao redor da proteína sem desestabilizar a sua estrutura. O arquivo `posre.itp` define a força máxima dessa restrição (padrão de 1000 kJ/mol/nm). Se um átomo sofrer um choque muito forte, a restrição permite que apenas ele se mova ligeiramente para aliviar a tensão, preservando a estabilidade do resto da molécula.
+### :lucide-copy: Réplicas e sementes
+ 
+Por ser a dinâmica molecular intrinsecamente caótica, a incerteza de um observável só pode ser estimada a partir de um conjunto de réplicas independentes; uma trajetória longa não substitui esse conjunto [Wan; Sinclair; Coveney, 2021](https://doi.org/10.1098/rsta.2020.0082), [Knapp; Ospina; Deane, 2018](https://doi.org/10.1021/acs.jctc.8b00391). Este tutorial emprega 5 réplicas de 300 ns.
+ 
+A minimização é determinística e compartilhada. As réplicas divergem em `nvt1_heat.mdp`, única etapa com `gen-vel = yes`. As sementes são explícitas, para que o protocolo seja reconstruível, e adotou-se a regra **3000 + 100 × réplica + etapa**: `gen-seed` = base + 1 e `ld-seed` = base + 2 (NVT1) até base + 8 (produção). O `ld-seed` também é relevante, pois V-rescale e C-rescale são estocásticos. Faça as alterações manualmente no arquivo `.mdp`.
 
-* **Grupos de Temperatura (Termostato)**: Separe o controle de temperatura em dois grupos com o parâmetro `tc-grps = Protein Non-Protein`. Esta abordagem aumenta a precisão e a eficiência do controle de temperatura. Ela permite que o termostato meça e ajuste a temperatura da proteína e do solvente de forma independente, corrigindo as variações térmicas de cada componente com maior acurácia.
+!!! danger "Verificação obrigatória"
+ 
+    Sementes idênticas entre diretórios produzem réplicas idênticas, sem qualquer mensagem de erro. Evite `gen-seed = -1`, que garante independência, mas impede a reconstrução do protocolo para publicação.
 
-* **Constante de Acoplamento da Temperatura (tau-t)**: Ajuste a frequência de atuação do termostato com o parâmetro `tau-t = 1.0`. Este valor, em picossegundos (ps), define a frequência com que o termostato corrige a temperatura do sistema. Mantenha tau-t na faixa de **0,5 a 1,0** ps e certifique-se de que ele seja **sempre menor que a constante de acoplamento da pressão (tau-p)**, que será definida na próxima etapa. Atenção: Evite usar valores muito baixos para tau-t. Isso faria o termostato agir de forma agressiva, o que pode causar instabilidades e levar ao colapso da simulação ("explosão").
 
-```bash
-gmx grompp -v -f inputs/nvt.mdp -c em.gro -r em.gro -o nvt.tpr -p topol.top
-
-# -r = restrain file, arquivo de coordenadas com as restrinções iniciais (geralmente mesmo arquivo).
+### :lucide-thermometer: NVT1: aquecimento
+ 
+A temperatura é elevada linearmente de 50 K a 298,15 K em 400 ps (≈ 0,62 K ps⁻¹), seguida de 100 ps de patamar, por *simulated annealing*:
+ 
 ```
-```bash
-gmx mdrun -v -deffnm nvt
+dt                = 0.001
+tau-t             = 0.5
+annealing         = single
+annealing-npoints = 2
+annealing-time    = 0    400
+annealing-temp    = 50   298.15
+gen-vel           = yes
+gen-temp          = 50
 ```
+ 
+`gen-temp` deve coincidir com a primeira temperatura da rampa; caso contrário, as velocidades são geradas já na temperatura final e o termostato resfria o sistema antes de reaquecê-lo. O `tau-t` reduzido (0,5 ps) permite ao termostato acompanhar a rampa, e o passo de 1 fs acomoda as forças ainda elevadas.
 
-Após a equilibração, verifique se a temperatura do sistema se estabilizou corretamente. Para isso, gere e analise o gráfico de temperatura. No gráfico, confirme se a temperatura média corresponde ao valor definido nos parâmetros e observe se as flutuações estão estáveis.
-
+ 
 ```bash
-gmx energy -f nvt.edr -s nvt.tpr -o temperature.xvg
-```
+gmx grompp -v -f inputs/nvt1_heat.mdp -c em4.gro -r em4.gro -p topol.top -o nvt1.tpr
+gmx mdrun -v -deffnm nvt1
 
-Selecione o número correspondente a 'Temperature' seguida por espaço e 0 (zero).
-
-```bash
-xmgrace temperature.xvg
-```
-
-<div align="center">
-<img src="../assets/dinamica/temperature.png" alt="gráfico da temperatura">
-</div>
-
-Após 20 ps, observe que a temperatura do sistema estabilizou em 298,15 K. Caso a estabilização não seja alcançada, aumente o valor de `nsteps` e realiza novamente a etapa. Após a temperatura devidamente controlada, procede-se ao ajuste da pressão do sistema.
-
-### :lucide-gauge: NPT: ajustando a pressão da caixa de simulação
-Concluída a equilibração da temperatura, inicie a equilibração da pressão (ensemble NPT). Nesta etapa, a densidade do sistema será ajustada para a pressão correta, mantendo-se constantes o número de moléculas (N), a pressão (P) e a temperatura (T). Para isso, gere um novo arquivo binário .tpr utilizando o arquivo de parâmetros [npt.mdp](../assets/dinamica/inputs/npt.mdp). Este arquivo contém as seguintes definições:
-
-* O algoritmo responsável por ajustar a pressão, com `pcoul = C-rescale`.
-* A constante de acoplamento da pressão, em `tau-p = 3.0`.
-* A pressão de referência, em bar, `ref-p = 1.0`.
-
-Você notará que a maioria dos parâmetros para a etapa NPT é idêntica ou semelhante à da etapa NVT anterior. A principal diferença é que o tempo de simulação para a equilibração de pressão costuma ser maior. É importante destacar que o GROMACS utiliza o estado final da equilibração NVT como o ponto de partida para esta nova etapa. Esse encadeamento garante a continuidade do processo, aplicando agora as novas condições de pressão constante.
-
-```bash
-gmx grompp -v -f inputs/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -o npt.tpr -p topol.top
-
-# -t = time file, arquivo com checkpoint anterior (geralmente utilizado para indicar o ponto de partida com relação a dinâmica anterior)
-```
-```bash
-gmx mdrun -v -deffnm npt
-```
-```bash
-gmx energy -f npt.edr -s npt.tpr -o pressure.xvg
-gmx energy -f npt.edr -s npt.tpr -o density.xvg
+gmx energy -f nvt1.edr -o qc_temperatura.xvg     # Temperature
+xmgrace qc_temperatura.xvg
 ```
 
 <div align="center">
-<img src="../assets/dinamica/pressure.png" alt="gráfico da pressão">
+    <img src="../assets/dinamica/qc_temperatura.png" alt="rampa de temperatura da NVT1">
 </div>
+
+A temperatura deve acompanhar a rampa nominal e flutuar em torno de 298,15 K no patamar. Um salto inicial indica `gen-temp` incorreto; um atraso sistemático, `tau-t` excessivo.
+
+
+### :lucide-gauge: NVT2 a NPT3: estabilização e liberação das restrições
+ 
+A partir da NVT2, `gen-vel = no` e `continuation = yes`, e cada etapa parte do *checkpoint* anterior (`-t`), que preserva posições, velocidades e estado dos acopladores em precisão total. Na NPT1, o barostato é ativado e a caixa ajusta seu volume; na NPT3, as cadeias laterais são liberadas enquanto o esqueleto permanece restrito.
+ 
+```bash
+gmx grompp -v -f inputs/nvt2_hold.mdp -c nvt1.gro -r em4.gro -t nvt1.cpt -p topol.top -o nvt2.tpr
+gmx mdrun -v -deffnm nvt2
+ 
+gmx grompp -v -f inputs/npt1.mdp -c nvt2.gro -r em4.gro -t nvt2.cpt -p topol.top -o npt1.tpr
+gmx mdrun -v -deffnm npt1
+ 
+gmx grompp -v -f inputs/npt2.mdp -c npt1.gro -r em4.gro -t npt1.cpt -p topol.top -o npt2.tpr
+gmx mdrun -v -deffnm npt2
+ 
+gmx grompp -v -f inputs/npt3.mdp -c npt2.gro -r em4.gro -t npt2.cpt -p topol.top -o npt3.tpr
+gmx mdrun -v -deffnm npt3
+```
+ 
+### :lucide-unlock: NPT4: equilibração livre e critério de parada
+ 
+A última etapa é realizada sem restrições, nas mesmas condições da produção:
+ 
+```bash
+gmx grompp -v -f inputs/npt4.mdp -c npt3.gro -t npt3.cpt -p topol.top -o npt4.tpr
+gmx mdrun -v -deffnm npt4
+
+gmx energy -f npt4.edr -o qc_densidade.xvg       # Density
+gmx energy -f npt4.edr -o qc_pressao.xvg         # Pressure
+```
+ 
+A pressão instantânea flutua centenas de bar; avalia-se apenas se sua média é compatível com 1 bar dentro da estimativa de erro (`Err.Est.`). O critério de equilíbrio é a densidade, avaliada objetivamente segundo [Roe e Brooks (2020)](https://doi.org/10.1063/5.0013849).
+
 <div align="center">
-<img src="../assets/dinamica/density.png" alt="gráfico da densidade">
+    <img src="../assets/dinamica/qc_densidade.png" alt="densidade da NPT4 com ajuste exponencial">
 </div>
 
-Para avaliar a equilibração da pressão, evite focar no gráfico de pressão, pois suas flutuações são geralmente muito altas e pouco informativas. Em vez disso, analise o gráfico de densidade, que é o indicador correto para esta etapa. No gráfico, verifique se a curva se estabiliza em um valor médio, apresentando apenas pequenas variações. Essa estabilização confirma que o sistema atingiu a densidade correta e está em equilíbrio.
-
-A seguir, apresentamos um breve resumo dos principais termostatos e barostatos disponíveis para controlar a temperatura e a pressão em suas simulações.
-
-| Termostato | Características | Vantagens | Limitações
-|--------|---------|-------------|---------------|
-| **Berendsen** | Rápido para equilibrar temperatura | Simples e eficiente para equilíbrios | Não reproduz corretamente as flutuações canônicas |
-| **V-rescale*** | Mantém temperatura média correta e flutuações realistas | Estável e mais preciso que Berendsen | Ligeiramente mais complexo |
-| **Nose-Hoover** | Mantém distribuição canônica (NVT) | Correto estatisticamente | Pode ter acoplamento mais lento |
-
-| Barostato | Características | Vantagens | Limitações
-|--------|---------|-------------|---------------|
-| **Berendsen** | Ajusta pressão rapidamente durante o equilíbrio | Simples, ideal para pré-produção | Não reproduz corretamente as flutuações canônicas |
-| **Parrinello-Rahman** | Permite flutuações de volume e forma da caixa (NPT) | Correto para simulações de produção | Pode ser instável sem bom equilíbrio inicial |
-| **C-rescale*** | Versão estocástica rigorosa de controle de pressão. Mantém flutuações canônicas corretas no ensemble NPT | Produz NPT canônico exato, mais robusto e estável que Parrinello-Rahman em algumas situações | Disponível a partir do GROMACS 2023, pouco testado em comparação com Parrinello-Rahman |
-
-!!! warning
-
-    A escolha do termostato e barostato deve considerar a natureza do sistema e as propriedades que se deseja investigar.
-
-    O GROMACS recomenda: **V-rescale** e **C-rescale**.
+| Algoritmo | Tipo | Ensemble correto | Observação |
+|-----------|------|:----------------:|------------|
+| Berendsen | termostato / barostato | Não | Suprime flutuações; não recomendado pela documentação do GROMACS |
+| V-rescale | termostato | Sim | Estocástico, robusto fora do equilíbrio [Bussi; Donadio; Parrinello, 2007](https://doi.org/10.1063/1.2408420) |
+| Nosé-Hoover | termostato | Sim | Determinístico; oscila longe da temperatura-alvo |
+| Parrinello-Rahman | barostato | Sim | Oscila e pode instabilizar se iniciado fora do equilíbrio |
+| C-rescale | barostato | Sim | Estocástico, estável desde a primeira etapa NPT; disponível desde o GROMACS 2021 [Bernetti; Bussi, 2020](https://doi.org/10.1063/5.0020514) |
 
 
-!!! tip
+A combinação V-rescale + C-rescale, recomendada pela documentação do GROMACS, permite usar os mesmos algoritmos na equilibração e na produção. Valores usuais de `tau-t` situam-se entre 0,1 e 1,0 ps; de `tau-p`, entre 1 e 5 ps para o C-rescale. Adotar `tau-p` maior que `tau-t` é prática comum, não exigência do algoritmo.
 
-    Verifique a performance na mensagem de saída, pode ser útil para planejar o tempo da simulação baseado no seu computador. Exemplo: 995.45 ns/day ou 0.024 hour/ns.
-
-
+---
 ## :lucide-play: Produção: integradores
-A etapa final é a simulação de produção. Se todos os passos anteriores foram concluídos sem erros, seu sistema foi preparado corretamente e a simulação de produção tem grandes chances de ser bem-sucedida. Durante a execução, que pode ser longa, monitore a carga de trabalho (CPU/GPU) e a temperatura do seu computador, pois problemas externos de hardware ou software ainda podem interromper o processo.
+ 
+Concluída e aprovada a equilibração em todas as réplicas, a simulação de produção é realizada sem restrições de posição, de modo que a dinâmica da proteína resulte exclusivamente do campo de força, do solvente e do acoplamento termodinâmico. Neste tutorial, cada uma das 5 réplicas é simulada por 300 ns no ensemble NPT, nas mesmas condições da NPT4.
 
-Inicie a simulação de produção. Primeiro, gere o arquivo de entrada binário (.tpr) com base no arquivo de parâmetros [md.mdp](../assets/dinamica/inputs/md.mdp). Logo depois, inicie a simulação final de dinâmica molecular executando o comando a partir desse arquivo `.tpr`.
+### :lucide-file-cog: Parâmetros
+ 
+Os principais parâmetros de [md.mdp](../assets/dinamica/inputs/md.mdp) são:
+ 
+| Parâmetro | Valor | Justificativa |
+|-----------|-------|---------------|
+| `integrator` | `md` | Leap-frog (Hockney; Goel; Eastwood, 1974) |
+| `dt` / `nsteps` | 0,002 ps / 150 000 000 | 300 ns; passo de 2 fs viabilizado pelas restrições em ligações com hidrogênio |
+| `constraints` | `h-bonds` (LINCS) | Remove as vibrações mais rápidas (Hess et al., 1997) |
+| `coulombtype` / `rcoulomb` | PME / 1,0 nm | Eletrostática de longo alcance (Essmann et al., 1995) |
+| `rvdw` / `dispcorr` | 1,0 nm / `EnerPres` | Correção de dispersão para energia e pressão |
 
+ 
+A frequência de gravação determina o número de amostras disponíveis para a análise, mas quadros consecutivos são correlacionados. Por isso, a unidade estatística das análises é a réplica.
+
+
+### :lucide-terminal: Execução
+ 
+Em cada diretório de réplica:
+ 
 ```bash
-gmx grompp -v -f inputs/md.mdp -c npt.gro -t npt.cpt -o md_5ns.tpr -p topol.top
-
-gmx mdrun -v -deffnm md_5ns
+gmx grompp -v -f inputs/md.mdp -c npt4.gro -t npt4.cpt -p topol.top -o md_300ns.tpr
+gmx mdrun -v -deffnm md_300ns
 ```
-Pontos importantes sobre os parâmetros da simulação de produção:
-
-- **Remoção das Restrições de Posição**: Diferentemente das etapas de equilibração, remova todas as restrições de posição da biomolécula. Agora que o sistema está equilibrado, o objetivo é permitir que a molécula se mova e se comporte livremente, sob a influência apenas das forças físicas do sistema. É nesta fase que observamos a dinâmica "natural" da biomolécula, o que caracteriza a simulação de produção.
-
-- **Seleção do Integrador (`integrator = md`)**: A escolha do algoritmo (integrador) que calcula o movimento dos átomos é crucial. Para simulações de produção padrão, utilize o integrador `md`. Este integrador, que implementa o algoritmo Leap-Frog, é altamente eficiente e otimizado no GROMACS para performance e precisão. Embora existam outros integradores, como o `sd` (Dinâmica Estocástica), eles são geralmente aplicados em contextos específicos, como cálculos de energia livre.
-
-| Integrador     | Características                          | Vantagens                          | Limitações / Quando evitar                   | Uso típico                                    |
-|----------------|------------------------------------------|------------------------------------|----------------------------------------------|-----------------------------------------------|
-| **md***         | Leap-frog Verlet. Passo de tempo curto (1–2 fs). Conserva bem energia e momento.         | Robusto, padrão, eficiente.        | Velocidades não coincidem com posições.      | Produção em proteínas, membranas, solventes.  |
-| **md-vv**      | Velocity-Verlet. Calcula velocidades no mesmo ponto que posições.                         | Melhora cálculo de velocidades.    | Pouco ganho em muitos casos.                 | Transporte, difusão, análise energética.      |
-| **md-vv-avek** | Velocity-Verlet com controle de energia cinética média (AVEK). | Temperatura estável sem termostato.| Mais pesado; pouco usado.                    | Equilíbrios longos sensíveis a flutuações.    |
-| **sd**         | Dinâmica de Langevin (stochastic). Força de fricção + ruído gaussiano..            | Excelente controle térmico.        | Distorce dinâmica real em excesso.           | Sistemas viscosos, líquidos iônicos, membranas.|
-| **bd**         | Dinâmica Browniana (Langevin overdamped). Ignora momento, apenas difusão.        | Simples e estável.                 | Perde informação de movimento rápido.        | Difusão lenta, modelos grosseiros (CG).       |
-| **steep**      | Minimização por gradiente descendente. Desce na direção de maior inclinação.   | Rápido para remover contatos ruins.| Convergência lenta perto do mínimo.          | Pré-MD, relaxamento inicial.                  |
-| **cg**         | Minimização gradiente conjugado.         | Mais eficiente que *steep*.        | Menos robusto no início.                     | Refinar após steep.                           |
-| **l-bfgs**     | Minimização quasi-Newton.                | Muito rápido em sistemas pequenos. | Ineficiente em sistemas grandes.             | Clusters ou moléculas pequenas.               |
-
-!!! note
-
-    O GROMACS salva checkpoint da dinâmica molecular a cada 15 minutos em um arquivo `.cpt`. Esse tempo pode ser alterado com a tag `-cpt [x]`.
-
-
-Caso sua simulação seja interrompida por algum problema, retome-a a partir do último ponto salvo (checkpoint). Para fazer isso, adicione a flag `-cpi` ao seu comando `mdrun`, especificando o nome do arquivo de checkpoint:
+ 
+O `mdrun` grava um *checkpoint* (`md_300ns.cpt`) a cada 15 min, intervalo ajustável com `-cpt` (em minutos). Em caso de interrupção, a simulação é retomada exatamente do último *checkpoint*, e os novos dados são anexados aos arquivos existentes:
+ 
 ```bash
-gmx mdrun -v -deffnm md_5ns -cpi md_5ns.cpt
-
-# -cpi = checkpoint, arquivo com o ultimo estado salvo (backup).
+gmx mdrun -v -deffnm md_300ns -cpi md_300ns.cpt
 ```
+ 
+Ao final, confirme a integridade da trajetória e registre o desempenho:
+ 
+```bash
+gmx check -f md_300ns.xtc
+grep Performance md_300ns.log
+```
+
+| Integrador | Algoritmo | Uso indicado | Limitações | Referência |
+|------------|-----------|--------------|------------|------------|
+| **`md`** | Leap-frog: posições e velocidades avaliadas em meios passos alternados | Produção e equilibração em solvente explícito | Velocidades defasadas meio passo em relação às posições | Hockney; Goel; Eastwood (1974) |
+| **`md-vv`** | Velocity Verlet: posições e velocidades no mesmo instante | Integração reversível com Nosé-Hoover e MTTK; energia cinética em tempo completo | Custo ligeiramente maior; nem todas as funcionalidades de GPU disponíveis | Swope et al. (1982) |
+| **`md-vv-avek`** | Velocity Verlet com energia cinética média dos dois meios passos | Equivalente ao `md-vv`, com energia cinética mais exata para acopladores | Mesmas do `md-vv`; requer termostato como os demais | Swope et al. (1982); Manual do GROMACS |
+| **`sd`** | Dinâmica estocástica (Langevin) leap-frog: atrito e ruído atuam como termostato | Cálculos de energia livre alquímica; sistemas em que se deseja termostato local | O atrito altera propriedades dinâmicas (difusão, cinética) quando `tau-t` é pequeno | Goga et al. (2012) |
+| **`bd`** | Dinâmica browniana (Langevin superamortecida): sem termo inercial | Solvente implícito e modelos de granulação grossa | Não descreve movimentos inerciais; inadequado para solvente explícito | Ermak; McCammon (1978) |
+| **`steep`** | Máxima descida com passo adaptativo | Remoção de contatos ruins no início da preparação | Convergência lenta próximo ao mínimo | Manual do GROMACS |
+| **`cg`** | Gradientes conjugados | Refinamento após `steep` (ex.: antes de análise de modos normais) | Não admite restrições de ligação, inclusive SETTLE (exige água flexível) | Hestenes; Stiefel (1952) |
+| **`l-bfgs`** | Quasi-Newton de memória limitada | Minimização precisa de sistemas pequenos | Execução apenas serial no GROMACS | Liu; Nocedal (1989) |
+ 
+!!! note "Escolha neste tutorial"
+ 
+    Minimização com `steep` (EM1–EM4) e dinâmica com `md` em todas as etapas, acoplado a V-rescale e C-rescale. A combinação dispensa o integrador `sd` como termostato e mantém inalteradas as propriedades dinâmicas do solvente.
+
 
 Para estender o tempo de uma simulação que já foi concluída, acrescentando mais tempo:
 ```bash
-gmx convert-tpr -s md_5ns.tpr -extend 5000 -o md_10ns.tpr
+gmx convert-tpr -s md_300ns.tpr -extend 5000 -o md_305ns.tpr
+gmx mdrun -v -deffnm md_305ns -cpi md_300ns.cpt -noappend
 
-# -extend = indica o tempo, em ps, a ser acrescentado.
-```
-```bash
-gmx mdrun -v -deffnm md_10ns -cpi md_5ns.cpt -noappend
-```
-```bash
-gmx trjcat -f md_5ns.xtc md_10ns.part0002.xtc -o final.xtc
+gmx trjcat -f md_300ns.xtc md_305ns.part0002.xtc -o final.xtc
+
+# -extend = indica o tempo adicionado, em ps.
 ```
 
 !!! note
@@ -469,52 +490,12 @@ gmx trjcat -f md_5ns.xtc md_10ns.part0002.xtc -o final.xtc
     Saiba mais sobre [convert-tpr](https://manual.gromacs.org/current/onlinehelp/gmx-convert-tpr.html).
 
 
-Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/IQGiznRc0Xo](https://youtu.be/IQGiznRc0Xo).
+Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/ygxD4YCAXkQ?si=yOoxpgsyJHQ7fxu3](https://youtu.be/ygxD4YCAXkQ?si=yOoxpgsyJHQ7fxu3).
 
-- [Imagens e video](md-visual.md)
-- [Análises de resultados](md-analysis.md)
-
----
-
-## :lucide-clipboard-list: Resumo
-
-```
-grep -v HETATM 1S0Q.pdb > 1S0Q_clean.pdb
-gmx pdb2gmx -v -f 1S0Q_clean.pdb -o tripsina.gro
-```
-```bash
-gmx editconf -f tripsina.gro -o box.gro -c -d 1.0 -bt cubic
-gmx solvate -cp box.gro -cs spc216.gro -o solvated.gro -p topol.top
-gmx grompp -v -f inputs/ions.mdp -o ions.tpr -c solvated.gro -p topol.top
-gmx genion -s ions.tpr -o solvated_ions.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
-```
-```bash
-gmx grompp -v -f inputs/minim.mdp -c solvated_ions.gro -o em.tpr -p topol.top
-gmx mdrun -v -deffnm em
-gmx energy -f em.edr -s em.tpr -o potential.xvg
-xmgrace potential.xvg
-```
-```bash
-gmx grompp -v -f inputs/nvt.mdp -c em.gro -r em.gro -o nvt.tpr -p topol.top
-gmx mdrun -v -deffnm nvt
-gmx energy -f nvt.edr -s nvt.tpr -o temperature.xvg
-xmgrace temperature.xvg
-```
-```bash
-gmx grompp -v -f inputs/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -o npt.tpr -p topol.top
-gmx mdrun -v -deffnm npt
-gmx energy -f npt.edr -s npt.tpr -o pressure.xvg
-xmgrace pressure.xvg
-gmx energy -f npt.edr -s npt.tpr -o density.xvg
-xmgrace density.xvg
-```
-```bash
-gmx grompp -v -f inputs/md.mdp -c npt.gro -t npt.cpt -o md_5ns.tpr -p topol.top
-gmx mdrun -v -deffnm md_5ns
-```
+- [Figuras e video](md-visual.md)
+- [Análises de resultados Xilanase](md-analysis.md)
 
 ---
-
 ## :lucide-file-text: Preprint e publicação relacionada
 
 Este tutorial também serve como material suplementar do artigo

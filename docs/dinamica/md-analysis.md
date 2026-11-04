@@ -6,7 +6,7 @@
     passo a passo para calcular RMSD, RMSF, DSSP, pontes de hidrogênio, SASA,
     raio de giro (Rg), distribuição radial e propriedades termodinâmicas a
     partir da dinâmica molecular básica descrita em
-    [DM básica](md-easy.md).
+    [DM não enviesada Xilanase](md-easy.md).
 
 > Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 

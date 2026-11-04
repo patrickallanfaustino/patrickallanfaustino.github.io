@@ -20,7 +20,7 @@ Se você nunca instalou o GROMACS na sua máquina, comece pela seção
 - [gridUNESP](instalacao/gridunesp.md) — cluster HPC via contêiner Apptainer
 
 Com o GROMACS instalado, siga para **Dinâmica molecular** e rode sua
-primeira simulação do início ao fim, com a [DM básica](dinamica/md-easy.md).
+primeira simulação do início ao fim, com a [DM não enviesada Xilanase](dinamica/md-easy.md).
 
 ## :lucide-graduation-cap: Acompanhamento do doutorado { #acompanhamento-do-doutorado }
 

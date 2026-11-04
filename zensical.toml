@@ -20,8 +20,8 @@ nav = [
   ] },
   { "Dinâmica molecular" = [
     { "DM não enviesada Xilanase" = "dinamica/md-easy.md" },
-    { "Análise de resultados" = "dinamica/md-analysis.md" },
-    { "Imagens e vídeos" = "dinamica/md-visual.md" },
+    { "Análise de resultados Xilanase" = "dinamica/md-analysis.md" },
+    { "Figuras e vídeos" = "dinamica/md-visual.md" },
   ] },
   { "Doutorado" = [
     { "Preparo dos sistemas" = "tese/sistemas.md" },

@@ -341,7 +341,7 @@ python -m openmm.testInstallation
 
 !!! note "Dica:"
 
-    Para atualizar utilize `conda update --all` e para listar os pacotes instalados `conda list`.
+    Para atualizar utilize `conda update --all -c conda-forge` e para listar os pacotes instalados `conda list`.
     Para remover o ambiente conda criado `conda env remove --name openmm` e para listar todas os ambientes utilize `conda env list`.
 
 ---

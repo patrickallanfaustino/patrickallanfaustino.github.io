@@ -12,7 +12,7 @@ comm-mode               = Linear
 nstcomm                 = 100
 
 ; LANGEVIN DYNAMICS OPTIONS
-ld-seed                 = 5510507
+ld-seed                 = 3107
 
 ; OUTPUT CONTROL OPTIONS
 nstxout			= 0	    ; salva coordenadas em trr

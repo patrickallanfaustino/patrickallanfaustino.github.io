@@ -1,9 +1,9 @@
 # Documentação sobre Química Biofísica Computacional
 
 Site estático em Zensical, publicado em patrickallanfaustino.github.io.
-Conteúdo em português do Brasil, público-alvo: alunos de iniciação científica e de pós-graduação começando em simulação de biomoléculas.
+Conteúdo em português do Brasil, público-alvo: alunos de iniciação científica e de pós-graduação na area de simulação de biomoléculas.
 
-O conteudo do site é sobre quimica biofisica computacional aplicado a termodinâmica.
+O conteudo do site é sobre quimica biofisica computacional aplicado a termodinâmica e outras áreas.
 
 ## Estrutura
 - `docs/` — fonte markdown. Config em `zensical.toml`.
@@ -20,4 +20,5 @@ O conteudo do site é sobre quimica biofisica computacional aplicado a termodin�
 Rodar `zensical build --clean` e confirmar que não há links quebrados.
 
 ## Quando solicitar envio ao repositório
-Escrever uma mensagem, revisar completamente, commit e pull/envio.
+Perguntar se deseja realizar uma revisão gramatical e de conteudo.
+Escrever uma mensagem, revisar, commit e pull/envio.

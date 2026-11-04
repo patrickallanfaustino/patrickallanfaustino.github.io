@@ -18,7 +18,7 @@ comm-mode               = Linear
 nstcomm                 = 100
 
 ; LANGEVIN DYNAMICS OPTIONS
-ld-seed                 = 5510502    ; semente replica
+ld-seed                 = 3102    ; semente replica
 
 ; OUTPUT CONTROL OPTIONS
 nstxout			= 0	    ; salva coordenadas em trr
@@ -65,7 +65,7 @@ annealing-temp          = 50   298.15
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                 = yes
 gen-temp                = 50        ; DEVE coincidir com annealing-temp inicial
-gen-seed                = 5510401    ; semente replica
+gen-seed                = 3101    ; semente replica
 
 ; OPTIONS FOR BONDS  
 continuation            = no

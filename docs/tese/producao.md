@@ -24,9 +24,10 @@ relacionado a esta etapa da pesquisa.
 ---
 ## Sistemas
 
-- md.mdp: 400 ns no Tier 1, Tier 2 e no APO.
-- Réplicas: 5 no Tier 1 e no APO, 3 no Tier 2.
-- Sistemas com etanol a 10 %: ainda precisam de uma etapa de montagem própria antes de rodar.
+- 400 ns no Tier 1, Tier 2 e no APO.
+- 5 réplicas para Tier 1 e APO, 3 para Tier 2.
+- Arquivos 4L54 APO: [sistema_GMX.gro](../assets/tese/4L54_apo/sistema_GMX.gro), [sistema_GMX.top](../assets/tese/4L54_apo/sistema_GMX.top), [posre_bb.itp](../assets/tese/4L54_apo/posre_bb.itp), [posre_heme.itp](../assets/tese/4L54_apo/posre_heme.itp), [posre_sc.itp](../assets/tese/4L54_apo/posre_sc.itp).
+- Inputs: [inputs](https://github.com/patrickallanfaustino/patrickallanfaustino.github.io/tree/main/docs/assets/tese/oleT_inputs).
 
 ---
 ## Estrutura do ambiente
@@ -62,16 +63,10 @@ sistema_4L54_IC6_apo
 └── rep5
 ```
 
-Cada sistema terá a sua estrutura de pastas, com as devidas réplicas.
-
-Os arquivos de entrada (`.mdp`) estão em `inputs/` e podem ser baixados em [oleT_mdp.zip](../assets/tese/oleT_mdp.zip).
-
 ---
 ## Sementes das réplicas
 
-Cada semente segue o padrão **777 + réplica + etapa**: `777` fixo, um dígito
-para a réplica (1–5) e dois dígitos para a ordem da semente no protocolo
-(01–08). Assim, cada réplica parte de velocidades próprias e usa um ruído
+Cada semente segue o padrão **777000 + 100 × réplica + etapa**: `777208` significa réplica 2, etapa 8. Assim, cada réplica parte de velocidades próprias e usa um ruído
 próprio no termostato V-rescale.
 
 | Etapa | Parâmetro | rep1 | rep2 | rep3 | rep4 | rep5 |
@@ -85,8 +80,6 @@ próprio no termostato V-rescale.
 | `npt4` | `ld-seed` | 777107 | 777207 | 777307 | 777407 | 777507 |
 | `md` | `ld-seed` | 777108 | 777208 | 777308 | 777408 | 777508 |
 
-Os arquivos do `oleT_mdp.zip` trazem as sementes da rep1. Nas demais réplicas,
-troque o dígito da réplica antes do `grompp`. O Tier 2 usa só rep1–rep3.
 
 ---
 ## Configuração do ambiente
