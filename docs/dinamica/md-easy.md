@@ -1,8 +1,5 @@
 # Dinâmica Molecular Clássica não enviesada Xilanase
 
-!!! warning "Atenção!"
-    Página em reformulação.
-
 O objetivo deste tutorial é simular uma biomolécula em caixa periódica com água a 298,15 K e 1 bar, sem potenciais de viés, e obter resultados estatisticamente defensáveis.
 
 Três decisões distinguem uma trajetória que apenas executa de uma trajetória com significado físico:
@@ -490,9 +487,9 @@ gmx trjcat -f md_300ns.xtc md_305ns.part0002.xtc -o final.xtc
     Saiba mais sobre [convert-tpr](https://manual.gromacs.org/current/onlinehelp/gmx-convert-tpr.html).
 
 
-Link para visualizar o video demonstrativo da dinâmica: [https://youtu.be/ygxD4YCAXkQ?si=yOoxpgsyJHQ7fxu3](https://youtu.be/ygxD4YCAXkQ?si=yOoxpgsyJHQ7fxu3).
+Link para visualizar o vídeo demonstrativo da dinâmica: [https://www.youtube.com/watch?v=ygxD4YCAXkQ](https://www.youtube.com/watch?v=ygxD4YCAXkQ).
 
-- [Figuras e video](md-visual.md)
+- [Figuras e vídeo](md-visual.md)
 - [Análises de resultados Xilanase](md-analysis.md)
 
 ---
