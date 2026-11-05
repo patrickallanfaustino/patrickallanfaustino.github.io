@@ -18,12 +18,6 @@ Esta página analisa as cinco réplicas de 300 ns da [DM não enviesada da xilan
 ---
 ## :lucide-flask-conical: Preparação e equilibração
 
-A Figura 1 resume a escada de preparação em três painéis:
- 
-- **A**, a energia potencial ao longo das quatro minimizações;
-- **B**, a temperatura nas etapas de dinâmica, com a rampa nominal de 50 → 298,15 K;
-- **C**, a constante de força das restrições em cada etapa, no esqueleto e nas cadeias laterais.
-
 <div align="center">
     <iframe src="../assets/plots/etapas_equilibracao.html" width="100%" height="1000px" style="border:none;" loading="lazy"></iframe>
 </div>
