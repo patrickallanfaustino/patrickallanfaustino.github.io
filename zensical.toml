@@ -120,6 +120,12 @@ link = "https://x.com/pkfaustino"
 icon = "fontawesome/brands/linkedin"
 link = "https://www.linkedin.com/in/pckfaustino"
 
+# Cartões de prévia (Open Graph/Twitter) para links compartilhados
+[project.plugins.social]
+
+# Compressão de PNG/JPEG no build (PNG requer pngquant no PATH)
+[project.plugins.optimize]
+
 [project.markdown_extensions]
 abbr = {}
 admonition = {}
