@@ -19,13 +19,14 @@ nav = [
     { "gridUNESP" = "instalacao/gridunesp.md" },
   ] },
   { "Dinâmica molecular" = [
-    { "DM não enviesada Xilanase" = "dinamica/md-easy.md" },
-    { "Análise de resultados Xilanase" = "dinamica/md-analysis.md" },
-    { "Figuras e vídeos" = "dinamica/md-visual.md" },
+    { "DM não enviesada Xilanase GH11" = "dinamica/md-easy.md" },
+    { "Análise de resultados Xilanase GH11" = "dinamica/md-analysis.md" },
+    { "Figuras e vídeos para dinâmica molecular" = "dinamica/md-visual.md" },
   ] },
   { "Doutorado" = [
     { "Preparo dos sistemas" = "tese/sistemas.md" },
-    { "Produção" = "tese/producao.md" },
+    { "Produção 4L54 IC6 APO" = "tese/producao-4l54-ic6-apo.md" },
+    { "Resultados e discussão 4L54 IC6 APO" = "tese/resultados-4l54-ic6-apo.md" },
   ] },
   { "Foguetemodelismo" = [
     { "Foguetes" = "foguetes/foguetes.md" },

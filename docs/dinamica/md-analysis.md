@@ -6,8 +6,8 @@
 
 > Explore, colabore e estude! :lucide-smile: Dúvidas: [patrick.faustino@unesp.br](mailto:patrick.faustino@unesp.br)
 
-Esta página analisa as cinco réplicas de 300 ns da [DM não enviesada da xilanase](md-easy.md). Os resultados estão agrupados em seis conjuntos, seguidos dos notebooks utilizados nas análises:
- 
+Esta página analisa as cinco réplicas de 300 ns da [DM não enviesada da xilanase](md-easy.md). Antes das análises, as trajetórias passam por um [ajuste](#ajuste-da-trajetoria) que corrige a representação das condições periódicas de contorno. Os resultados estão agrupados em seis conjuntos, seguidos dos notebooks utilizados nas análises:
+
 1. [Preparação e equilibração](#preparacao-e-equilibracao).
 2. [Estacionariedade e réplicas](#estacionariedade-e-replicas).
 3. [Estrutura global comparada ao cristal](#estrutura-global-comparada-ao-cristal).
@@ -15,6 +15,51 @@ Esta página analisa as cinco réplicas de 300 ns da [DM não enviesada da xilan
 5. [Sítio ativo](#sitio-ativo).
 6. [Solvente](#solvente).
 7. [Notebooks para análises](#notebooks-para-analises). 
+
+---
+## :lucide-route: Ajuste da trajetória
+
+### Por que ajustar?
+
+A simulação usa condições periódicas de contorno: a caixa é replicada infinitamente em todas as direções, e uma molécula que sai por uma face reentra pela face oposta. O GROMACS grava cada átomo dentro da caixa principal, de modo que, no arquivo `.xtc`, moléculas que cruzam uma face aparecem **quebradas** em duas partes, e a proteína pode se deslocar até ficar dividida entre lados opostos da caixa.
+
+A dinâmica não está errada: trata-se apenas da forma como as coordenadas são representadas. Mas qualquer análise calculada sobre moléculas quebradas produz resultados espúrios. O RMSD e o raio de giração saltam para valores irreais, e distâncias entre resíduos atravessam a caixa inteira. Por isso, a trajetória é reconstruída antes de qualquer análise.
+
+### Passo 1: reconstruir as moléculas
+
+A opção `-pbc whole` junta as partes de cada molécula quebrada pela face da caixa:
+
+```bash
+gmx trjconv -s md_300ns.tpr -f md_300ns.xtc -o md_whole.xtc -pbc whole
+
+# -pbc whole = reconstrói as moléculas quebradas pelas condições periódicas.
+# grupo de saída: System (sistema inteiro)
+```
+
+### Passo 2: centralizar a proteína
+
+A opção `-center` coloca a proteína no centro da caixa em cada quadro, e `-pbc mol` reposiciona as demais moléculas inteiras ao redor dela. A opção `-ur compact` representa a caixa dodecaédrica na forma mais compacta em torno da proteína, em vez da célula triclínica equivalente:
+
+```bash
+gmx trjconv -s md_300ns.tpr -f md_whole.xtc -o md_300ns_mol.xtc -pbc mol -center -ur compact
+
+# -pbc mol = mantém cada molécula inteira, com o centro de massa dentro da caixa.
+# -center = centraliza o grupo escolhido.
+# -ur compact = representação compacta da célula unitária.
+# grupos: Protein (centralização) / System (saída)
+```
+
+O passo 1 evita que a proteína, já quebrada no quadro de entrada, seja centralizada pelo centro de massa errado.
+
+### Referência e demais réplicas
+
+A estrutura minimizada (EM4), usada como referência do RMSD, recebe o mesmo tratamento, uma única vez, na pasta do sistema:
+
+```bash
+gmx trjconv -s em4.tpr -f em4.gro -o em4_mol.gro -pbc mol -center -ur compact
+
+# grupos: Protein (centralização) / System (saída)
+```
 
 ---
 ## :lucide-flask-conical: Preparação e equilibração
@@ -39,7 +84,15 @@ O comportamento é coerente com o protocolo do tutorial, adaptado de [Roe e Broo
 ### RMSD (*Root Mean Square Deviation*)
  
 O RMSD mede quanto a estrutura se afasta de uma referência depois de removidas translação e rotação. É um **diagnóstico**, não um observável físico: um platô é condição necessária, mas não suficiente, de convergência [Grossfield et al., 2018](https://doi.org/10.33011/livecoms.1.1.5067). Aqui a referência é a estrutura minimizada (EM4), comum às cinco réplicas, para que as médias sejam comparáveis.
- 
+
+```bash
+# Cα: ajuste e RMSD no mesmo grupo (escolha: C-alpha, C-alpha)
+gmx rms -s em4.gro -f md_300ns_mol.xtc -o rmsd_ca.xvg -tu ns
+
+# cadeia principal (escolha: Backbone, Backbone)
+gmx rms -s em4.gro -f md_300ns_mol.xtc -o rmsd_bb.xvg -tu ns
+```
+
 A Figura 2 mostra o RMSD dos Cα e da cadeia principal ao longo dos 300 ns, com a distribuição da produção à direita.
 
 <div align="center">
@@ -91,8 +144,15 @@ Para médias globais, cinco réplicas são suficientes e coerentes com a recomen
  
 ### Raio de giração e forma
  
-O raio de giração (Rg) mede a compactação global e é invariante à rotação. Os autovalores do tensor de giração dão descritores de forma (Theodorou; Suter, 1985): a anisotropia relativa κ² vale 0 numa esfera e 1 num bastão.
- 
+O raio de giração (Rg) mede a compactação global e é invariante à rotação. Os autovalores do tensor de giração dão descritores de forma [Theodorou; Suter, 1985](https://doi.org/10.1021/ma00149a018): a anisotropia relativa κ² vale 0 numa esfera e 1 num bastão.
+
+```bash
+gmx gyrate -s md_300ns.tpr -f md_300ns_mol.xtc -sel Protein -mode mass -o rg.xvg -tu ns
+
+# cristal, mesmo cálculo (saída do pdb2gmx)
+gmx gyrate -s xilanase.gro -f xilanase.gro -sel Protein -mode mass -o rg_cristal.xvg -tu ns
+```
+
 A Figura 5 mostra o Rg, a asfericidade *b*, a acilindricidade *c* e κ² ao longo da produção, com a linha do cristal.
 
 <div align="center">
@@ -116,8 +176,17 @@ A diferença com o cristal tem leitura física: em solução e sem contatos de r
 
 ### Área superficial acessível ao solvente (SASA)
  
-A SASA é a área que uma sonda do tamanho de uma água (raio de 0,14 nm) consegue tocar (Shrake; Rupley, 1973). Separada em parte polar (N, O) e apolar (C, S), ela indica quanto da superfície hidrofóbica está exposta, um indicador precoce de perda da estrutura terciária.
- 
+A SASA é a área que uma sonda do tamanho de uma água (raio de 0,14 nm) consegue tocar [Shrake; Rupley, 1973](https://doi.org/10.1016/0022-2836(73)90011-9). Separada em parte polar (N, O) e apolar (C, S), ela indica quanto da superfície hidrofóbica está exposta, um indicador precoce de perda da estrutura terciária.
+
+```bash
+gmx sasa -s md_300ns.tpr -f md_300ns_mol.xtc -o sasa.xvg -tu ns \
+         -surface 'group Protein' \
+         -output 'group Protein and (element C or element S)' 'group Protein and (element N or element O)'
+
+# cristal
+gmx sasa -s xilanase.gro -f xilanase.gro -o sasa_cristal.xvg -surface 'group Protein'
+```
+
 A Figura 6 mostra a SASA total, polar e apolar ao longo da produção, com a linha do cristal.
 
 <div align="center">
@@ -142,8 +211,12 @@ Em solução, a BcX expõe mais superfície hidrofóbica que no cristal. A fenda
 
 ### Estrutura secundária (DSSP)
  
-O DSSP atribui a cada resíduo, em cada quadro, um de oito estados de estrutura secundária a partir do padrão de ligações de hidrogênio da cadeia principal (Kabsch; Sander, 1983). Comparado ao cristal, ele responde se o enovelamento se mantém resíduo a resíduo.
- 
+O DSSP atribui a cada resíduo, em cada quadro, um de oito estados de estrutura secundária a partir do padrão de ligações de hidrogênio da cadeia principal [Kabsch; Sander, 1983](https://doi.org/10.1002/bip.360221211). Comparado ao cristal, ele responde se o enovelamento se mantém resíduo a resíduo.
+
+```bash
+gmx dssp -s md_300ns.tpr -f md_300ns_mol.xtc -sel Protein -o dssp.dat -num dssp_num.xvg -tu ns -hmode dssp
+```
+
 A Figura 7 mostra três séries ao longo do tempo: a fração de folha-β, a de hélice e a concordância com o cristal (fração de resíduos no mesmo estado do 1XNB). A Figura 8 mostra, para cada resíduo, o estado em cada instante.
  
 <div align="center">
@@ -177,7 +250,12 @@ O enovelamento β-*jellyroll*, com uma única hélice α sob a palma, é a assin
 ### RMSF por resíduo
  
 O RMSF mede quanto cada resíduo flutua em torno da própria posição média. Diferentemente do RMSD, é um **perfil** ao longo da cadeia, não uma série temporal. Cada réplica foi alinhada à própria estrutura média, porque alinhar a um quadro instantâneo infla o RMSF de forma sistemática.
- 
+
+```bash
+# escolha: C-alpha
+gmx rmsf -s md_300ns.tpr -f md_300ns_mol.xtc -o rmsf_ca.xvg -res -oq bfator.pdb -ox media.pdb
+```
+
 A Figura 9 mostra o RMSF dos Cα:
  
 - a média das cinco réplicas, com faixa ± EP;
@@ -201,7 +279,7 @@ Os picos ficam nas alças e no polegar, e as fitas β do núcleo são rígidas, 
 
 ### Comparação com o fator B cristalográfico
  
-O fator B é a única medida experimental de flutuação por átomo vinda do cristal. A relação B = (8π²/3)·RMSF² converte o RMSF em um "B equivalente". A comparação é de **forma**, não de valor: o B contém desordem estática e movimentos da rede que a DM em solução não tem (Kuzmanic; Pannu; Zagrovic, 2014).
+O fator B é a única medida experimental de flutuação por átomo vinda do cristal. A relação B = (8π²/3)·RMSF² converte o RMSF em um "B equivalente". A comparação é de **forma**, não de valor: o B contém desordem estática e movimentos da rede que a DM em solução não tem [Kuzmanic; Pannu; Zagrovic, 2014](https://doi.org/10.1038/ncomms4220).
  
 A Figura 10 mostra dois painéis:
  
@@ -288,8 +366,18 @@ A BcX hidrolisa o xilano por um mecanismo de **retenção** com dois glutamatos:
 - **Glu78**, o nucleófilo (pKa 4,6);
 - **Glu172**, o ácido/base geral (pKa 6,7) (McIntosh et al., 1996).
 
-Em glicosidases de retenção, os dois resíduos catalíticos ficam tipicamente a cerca de 5,5 Å um do outro; nas de inversão, a 6–11 Å, distância que acomoda a molécula de água nucleofílica entre eles (McCarter; Withers, 1994; Davies; Henrissat, 1995). As fontes consultadas não especificam entre quais átomos a distância é medida. Por isso, o valor de referência é usado aqui como ordem de grandeza, e a comparação quantitativa é feita com o cristal 1XNB. Manter essa geometria é um teste funcional da simulação.
- 
+Em glicosidases de retenção, os dois resíduos catalíticos ficam tipicamente a cerca de 5,5 Å um do outro; nas de inversão, a 6–11 Å, distância que acomoda a molécula de água nucleofílica entre eles [McCarter; Withers, 1994; Davies; Henrissat, 1995](https://doi.org/10.1016/0959-440x(94)90271-2). As fontes consultadas não especificam entre quais átomos a distância é medida. Por isso, o valor de referência é usado aqui como ordem de grandeza, e a comparação quantitativa é feita com o cristal 1XNB. Manter essa geometria é um teste funcional da simulação.
+
+```bash
+# CD–CD entre os glutamatos catalíticos
+gmx distance -s md_300ns.tpr -f md_300ns_mol.xtc -oall glu_cd.xvg -tu ns \
+             -select 'resnr 78 and name CD plus resnr 172 and name CD'
+
+# menor distância O–O entre os carboxilatos
+gmx pairdist -s md_300ns.tpr -f md_300ns_mol.xtc -o glu_oo.xvg -tu ns \
+             -ref 'resnr 78 and name OE1 OE2' -sel 'resnr 172 and name OE1 OE2'
+```
+
 A Figura 13 mostra duas distâncias ao longo da produção: CD–CD entre os dois glutamatos e a menor distância O–O entre os carboxilatos.
  
 <div align="center">
@@ -322,8 +410,14 @@ O afastamento não é um evento raro, e sim um desvio sistemático do estado sim
 
 ### Estrutura da água no sistema: RDF O–O
  
-A função de distribuição radial g(r) mede a probabilidade de encontrar um átomo a uma distância *r* de outro, relativa a um fluido sem estrutura. Para a água, o primeiro pico de g<sub>OO</sub> é a camada de ligações de hidrogênio. Para não confundir o efeito da proteína com o do modelo, só entram como referência as águas a mais de 1,5 nm de qualquer átomo pesado da proteína, em cada quadro (água de *bulk*).
- 
+A função de distribuição radial g em função da distância mede a probabilidade de encontrar um átomo a uma distância *r* de outro, relativa a um fluido sem estrutura. Para a água, o primeiro pico de g<sub>OO</sub> é a camada de ligações de hidrogênio. Para não confundir o efeito da proteína com o do modelo, só entram como referência as águas a mais de 1,5 nm de qualquer átomo pesado da proteína, em cada quadro (água de *bulk*).
+
+```bash
+gmx rdf -s md_300ns.tpr -f md_300ns_mol.xtc -o rdf_bulk.xvg -cn cn_bulk.xvg \
+        -ref 'name OW and not within 1.5 of (group Protein and not element H)' \
+        -sel 'name OW'
+```
+
 A Figura 14 apresenta três elementos de comparação:
  
 - a g<sub>OO</sub> em função da distância, da água de *bulk* do sistema;
@@ -346,7 +440,15 @@ A coincidência com a OPC pura indica que a análise é consistente e que o pico
 ### Difusão da água no sistema
  
 O coeficiente de difusão é a principal propriedade de transporte da água. A proteína o reduz, porque as águas da camada de hidratação são mais lentas que as do *bulk*.
- 
+
+```bash
+# trajetória sem saltos de PBC (escolha: System)
+gmx trjconv -s md_300ns.tpr -f md_300ns.xtc -o md_nojump.xtc -pbc nojump
+
+gmx msd -s md_300ns.tpr -f md_nojump.xtc -sel 'name OW' -o msd_agua.xvg \
+        -trestart 100 -beginfit 500 -endfit 5000 -maxtau 10000
+```
+
 A Figura 15 mostra três painéis:
  
 - **A**, o MSD das águas;
