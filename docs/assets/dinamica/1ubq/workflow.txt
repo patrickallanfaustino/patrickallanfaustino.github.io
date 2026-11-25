@@ -1,0 +1,45 @@
+watch "grep 'cpu MHz' /proc/cpuinfo"
+
+=============
+PREPARO
+=============
+gmx pdb2gmx -v -f 1ubq_clean.pdb -o ubiquitina.gro
+gmx editconf -f ubiquitina.gro -o box.gro -c -d 1.2 -bt dodecahedron
+gmx solvate -cp box.gro -cs tip4p.gro -o solvated.gro -p topol.top
+
+gmx grompp -v -f inputs/ions.mdp -c solvated.gro -o ions.tpr -p topol.top
+gmx genion -s ions.tpr -o neutralized.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
+
+=============
+MINIMIZAÇÃO
+=============
+gmx grompp -v -f inputs/em.mdp -c neutralized.gro -p topol.top -o em.tpr
+gmx mdrun -v -deffnm em
+
+gmx energy -f em.edr -s em.tpr -o potential.xvg
+xmgrace potential.xvg
+
+=============
+NVT
+=============
+gmx grompp -v -f inputs/nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
+gmx mdrun -v -deffnm nvt
+gmx energy -f nvt.edr -o temperatura.xvg
+xmgrace temperatura.xvg
+
+=============
+NPT
+=============
+gmx grompp -v -f inputs/npt.mdp -c nvt.gro -r em.gro -t nvt.cpt -p topol.top -o npt.tpr
+gmx mdrun -v -deffnm npt
+
+gmx energy -f npt.edr -o pressao.xvg
+xmgrace pressao.xvg
+gmx energy -f npt.edr -o densidade.xvg
+xmgrace densidade.xvg
+
+=============
+MD
+=============
+gmx grompp -v -f inputs/md.mdp -c npt.gro -t npt.cpt -p topol.top -o md.tpr
+gmx mdrun -v -deffnm md
