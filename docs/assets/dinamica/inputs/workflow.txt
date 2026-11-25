@@ -4,7 +4,7 @@ watch "grep 'cpu MHz' /proc/cpuinfo"
 PREPARO
 =============
 gmx pdb2gmx -v -f protonated.pdb -o xilanase.gro -ignh
-gmx editconf -f xilanase_water.gro -o box.gro -c -d 1.2 -bt dodecahedron
+gmx editconf -f xilanase.gro -o box.gro -c -d 1.2 -bt dodecahedron
 gmx solvate -cp box.gro -cs tip4p.gro -o solvated.gro -p topol.top
 
 gmx grompp -v -f inputs/ions.mdp -c solvated.gro -o ions.tpr -p topol.top
