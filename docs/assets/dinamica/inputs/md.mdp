@@ -10,7 +10,7 @@ comm-mode               = Linear
 nstcomm                 = 100
 
 ; LANGEVIN DYNAMICS OPTIONS
-ld-seed                 = 3108
+ld-seed                 = -1
 
 ; OUTPUT CONTROL OPTIONS
 nstxout			= 0	    ; salva coordenadas em trr
@@ -55,7 +55,7 @@ compressibility         = 4.5e-5
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                 = no
 
-; OPTIONS FOR BONDS 
+; OPTIONS FOR BONDS
 continuation            = yes
 constraint-algorithm    = lincs
 constraints             = h-bonds

@@ -1,26 +1,14 @@
 watch "grep 'cpu MHz' /proc/cpuinfo"
 
-=================================================================================
-Versão do GROMACS         : 2026.3
-Estrutura de partida      : https://www.rcsb.org/structure/1XNB
-Campo de força            : ff19SB + OPC
-Parametrização não-padrão : não se aplica
-Protonação                : Notebook v17 | MODELLER | PDBFIXER | PDB2PQR | PROPKA a pH 5.7
-Ensemble                  : 5 rep. x 300 ns
-Arquivos .mdp             : mdout.mdp
-Caixa			  : dodecaedrica, margem 1,2 nm
-Termostato		  : V-rescale a tau-t 1,0 ps
-Barostato		  : C-rescale a tau-p 3,0 ps isotropico
-Ambiente                  : Ubuntu 26.04.1 LTS | CUDA 13 | Ryzen 9 5900XT | RTX 4070 Ti
-=================================================================================
-
+=============
+PREPARO
+=============
 gmx pdb2gmx -v -f protonated.pdb -o xilanase.gro -ignh
 gmx editconf -f xilanase_water.gro -o box.gro -c -d 1.2 -bt dodecahedron
 gmx solvate -cp box.gro -cs tip4p.gro -o solvated.gro -p topol.top
 
-gmx grompp -v -f inputs/ions.mdp -c solvated.gro -o ions.tpr -p topol.top -maxwarn 1
-gmx select -s ions.tpr -on water_bulk.ndx -select '"SOL"resname SOL and not resnr 186 to 192'
-gmx genion -s ions.tpr -n water_bulk.ndx -o neutralized.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
+gmx grompp -v -f inputs/ions.mdp -c solvated.gro -o ions.tpr -p topol.top
+gmx genion -s ions.tpr -o neutralized.gro -p topol.top -pname NA -nname CL -neutral -conc 0.15
 
 gmx make_ndx -f neutralized.gro -o index.ndx
 gmx genrestr -f neutralized.gro -n index.ndx -o posre_bb.itp -fc 1000 1000 1000
@@ -52,7 +40,7 @@ gmx energy -f em4.edr -s em4.tpr -o em4_potential.xvg
 xmgrace em4_potential.xvg
 
 =============
-NVT REPLICAS AQUI
+NVT *REPLICAS AQUI
 =============
 gmx grompp -v -f inputs/nvt1_heat.mdp -c em4.gro -r em4.gro -p topol.top -o nvt1.tpr -po mdout_nvt1.mdp
 gmx mdrun -v -deffnm nvt1
